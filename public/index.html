@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de control | |Admins </title>
+</head>
+<body>
+  <h1>Panel de control</h1>
+  <div id="info"></div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      window.location.href = "/login.html";
+    }
+
+    document.getElementById("info").innerHTML =
+      "Usuario: " + user.username + " | Rol: " + user.role;
+  </script>
+</html>
