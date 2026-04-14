@@ -8,41 +8,67 @@
 /* 🧾 BODY */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #f9f9f9; /* blanco suave */
+  background: #f4f4f4;
   color: #111;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
+
+/* 🔝 HEADER (blanco + negro + verde detalle) */
+header {
+  background: #ffffff;
+  border-bottom: 2px solid #e5e5e5;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-/* 📦 CARD */
+/* 🐢 LOGO */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: 40px;
+}
+
+.logo h1 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #111;
+}
+
+/* 🟢 detalle verde */
+.logo h1 span {
+  color: #22c55e;
+}
+
+/* 📦 CONTENEDOR CENTRAL */
+.center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* 🧱 CARD */
 .card {
   background: #ffffff;
   padding: 35px;
   width: 320px;
   border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
   text-align: center;
-}
-
-/* 🐢 LOGO */
-.logo {
-  margin-bottom: 20px;
-}
-
-.logo img {
-  width: 50px;
-}
-
-.logo h1 {
-  font-size: 18px;
-  margin-top: 5px;
-  font-weight: 600;
+  z-index: 2;
 }
 
 /* 📝 TITULO */
-h2 {
+.card h2 {
   margin-bottom: 20px;
   font-weight: 500;
 }
@@ -80,7 +106,37 @@ p {
 }
 
 a {
-  color: black;
+  color: #22c55e;
   font-weight: bold;
   text-decoration: none;
+}
+
+/* 🧿 HEXAGON BACKGROUND (ESQUINA) */
+.hex-bg {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: repeating-linear-gradient(
+    60deg,
+    rgba(34,197,94,0.08) 0px,
+    rgba(34,197,94,0.08) 2px,
+    transparent 2px,
+    transparent 20px
+  );
+  clip-path: polygon(
+    25% 5%, 75% 5%, 100% 50%,
+    75% 95%, 25% 95%, 0% 50%
+  );
+}
+
+/* 🔝 esquina superior */
+.hex-top {
+  top: 40px;
+  left: 40px;
+}
+
+/* 🔻 esquina inferior */
+.hex-bottom {
+  bottom: 40px;
+  right: 40px;
 }
