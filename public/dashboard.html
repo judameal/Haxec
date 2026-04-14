@@ -13,9 +13,11 @@
 
   <div id="nav"></div>
 </header>
-<h1>Panel de Control</h1>
+<div class="admin-container">
+  <h1 class="admin-title">Panel de Control</h1>
 
-<table border="1" id="tablaUsuarios">
+<div class="admin-card">
+  <table id="tablaUsuarios">
   <tr>
     <th>Usuario</th>
     <th>Rol</th>
@@ -23,7 +25,7 @@
   </tr>
 </table>
 
-<button onclick="back()">Volver</button>
+<button class="back-btn" onclick="back()">Volver</button>
 
 <script>
 const API = "/api";
@@ -45,11 +47,11 @@ async function cargarUsuarios() {
     row.innerHTML = `
       <td>${u.username}</td>
       <td>${u.role}</td>
-      <td>
-        <button onclick="hacerAdmin('${u.username}')">Admin</button>
-        <button onclick="quitarAdmin('${u.username}')">User</button>
-        <button onclick="eliminar('${u.username}')">Eliminar</button>
-      </td>
+      <td class="actions">
+  <button class="btn-admin" onclick="hacerAdmin('${u.username}')">Admin</button>
+  <button class="btn-user" onclick="quitarAdmin('${u.username}')">User</button>
+  <button class="btn-delete" onclick="eliminar('${u.username}')">Eliminar</button>
+</td>
     `;
 
     tabla.appendChild(row);

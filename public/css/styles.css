@@ -204,3 +204,101 @@ a {
   bottom: 40px;
   right: 40px;
 }
+
+/* 🧑‍💻 PANEL ADMIN */
+.admin-container {
+  padding: 30px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* 🧾 TÍTULO */
+.admin-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* 📦 CARD PANEL */
+.admin-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* 🧾 TABLA PRO */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+}
+
+th {
+  background: #111;
+  color: white;
+  font-weight: 500;
+}
+
+td {
+  background: #ffffff;
+  border-bottom: 1px solid #eee;
+}
+
+/* 🎯 FILA HOVER */
+tr:hover td {
+  background: #f9f9f9;
+}
+
+/* 🔘 BOTONES ACCIONES */
+.actions button {
+  margin: 3px;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* 🟢 ADMIN */
+.btn-admin {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-admin:hover {
+  background: #16a34a;
+}
+
+/* ⚪ USER */
+.btn-user {
+  background: #e5e5e5;
+  color: #111;
+}
+
+.btn-user:hover {
+  background: #d4d4d4;
+}
+
+/* 🔴 DELETE */
+.btn-delete {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+}
+
+/* 🔙 BOTÓN VOLVER */
+.back-btn {
+  margin-top: 20px;
+  background: #111;
+}
+
+.back-btn:hover {
+  background: #333;
+}
