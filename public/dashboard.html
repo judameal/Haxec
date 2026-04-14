@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haxec Esport | Admin</title>
+</head>
+<body>
+
+  <h1>Panel de Control</h1>
+
+  <div id="info"></div>
+
+  <button onclick="goHaxball()">Ver Liga</button>
+  <button onclick="logout()">Cerrar sesión</button>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      window.location.href = "/login.html";
+    }
+
+    document.getElementById("info").innerHTML =
+      "Usuario: " + user.username + " | Rol: " + user.role;
+
+    function goHaxball() {
+      window.location.href = "/haxball.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "/login.html";
+    }
+  </script>
+</html>
