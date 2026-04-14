@@ -62,15 +62,8 @@ async function register() {
   }
 
   if (res.ok) {
-    alert("Usuario registrado correctamente");
-
-    // 🔥 opcional: auto login
-    localStorage.setItem("user", JSON.stringify({
-      username,
-      role: username === "Judameal" ? "admin" : "user"
-    }));
-
-    window.location.href = "/haxball.html";
+    alert("Usuario registrado");
+    window.location.href = "/login.html";
   } else {
     alert(data.message);
   }
