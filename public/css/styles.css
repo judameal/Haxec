@@ -322,3 +322,53 @@ tr:hover td {
   background: #111;
   color: white;
 }
+
+/* 🔝 NAV BOTONES (header) */
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* 🔘 BOTONES MINIMALISTAS */
+.nav-buttons button {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 🔥 HOVER PRO */
+.nav-buttons button:hover {
+  background: #111;
+  color: white;
+}
+
+/* 📊 GRID STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+/* 📦 ITEM */
+.stat-item {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 🔥 HOVER */
+.stat-item:hover {
+  background: #111;
+  color: white;
+}
