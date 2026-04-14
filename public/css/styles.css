@@ -14,11 +14,29 @@ body {
 
 /* 🔝 HEADER */
 header {
-  background: #1a2058;
+  background: #052e16; /* más oscuro */
   padding: 15px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* 🐢 LOGO + TITLE */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+.logo h1 {
+  font-size: 22px;
+  color: #4ade80; /* verde más claro */
+  font-weight: bold;
 }
 
 /* 🐢 LOGO + TITLE */

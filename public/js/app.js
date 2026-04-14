@@ -68,3 +68,9 @@ async function register() {
     alert(data.message);
   }
 }
+
+// 🔒 LOGOUT
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "/login.html";
+}T
