@@ -74,9 +74,42 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background: #f4f4f4;
   color: #111;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 🧿 HEX GLOBAL */
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: repeating-linear-gradient(
+    60deg,
+    rgba(34,197,94,0.08) 0px,
+    rgba(34,197,94,0.08) 2px,
+    transparent 2px,
+    transparent 20px
+  );
+  clip-path: polygon(
+    25% 5%, 75% 5%, 100% 50%,
+    75% 95%, 25% 95%, 0% 50%
+  );
+  z-index: 0;
+}
+
+/* esquina arriba */
+body::before {
+  top: 40px;
+  left: 40px;
+}
+
+/* esquina abajo */
+body::after {
+  bottom: 40px;
+  right: 40px;
 }
 
 /* 🔝 HEADER (blanco + negro + verde detalle) */
@@ -207,9 +240,12 @@ a {
 
 /* 🧑‍💻 PANEL ADMIN */
 .admin-container {
-  padding: 30px;
-  max-width: 1000px;
-  margin: auto;
+  padding: 40px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 30px auto;
+  position: relative;
+  z-index: 2;
 }
 
 /* 🧾 TÍTULO */
@@ -258,47 +294,31 @@ tr:hover td {
 /* 🔘 BOTONES ACCIONES */
 .actions button {
   margin: 3px;
-  padding: 6px 10px;
+  padding: 6px 12px;
   font-size: 13px;
   border-radius: 6px;
-}
-
-/* 🟢 ADMIN */
-.btn-admin {
-  background: #22c55e;
-  color: white;
-}
-
-.btn-admin:hover {
-  background: #16a34a;
-}
-
-/* ⚪ USER */
-.btn-user {
-  background: #e5e5e5;
+  background: #ffffff;
   color: #111;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.btn-user:hover {
-  background: #d4d4d4;
-}
-
-/* 🔴 DELETE */
-.btn-delete {
-  background: #ef4444;
+/* 🔥 HOVER PRO */
+.actions button:hover {
+  background: #111;
   color: white;
-}
-
-.btn-delete:hover {
-  background: #dc2626;
 }
 
 /* 🔙 BOTÓN VOLVER */
 .back-btn {
   margin-top: 20px;
-  background: #111;
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #ddd;
 }
 
 .back-btn:hover {
-  background: #333;
+  background: #111;
+  color: white;
 }

@@ -48,9 +48,9 @@ async function cargarUsuarios() {
       <td>${u.username}</td>
       <td>${u.role}</td>
       <td class="actions">
-  <button class="btn-admin" onclick="hacerAdmin('${u.username}')">Admin</button>
-  <button class="btn-user" onclick="quitarAdmin('${u.username}')">User</button>
-  <button class="btn-delete" onclick="eliminar('${u.username}')">Eliminar</button>
+  <button onclick="hacerAdmin('${u.username}')">Admin</button>
+  <button onclick="quitarAdmin('${u.username}')">User</button>
+  <button onclick="eliminar('${u.username}')">Eliminar</button>
 </td>
     `;
 
