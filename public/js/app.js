@@ -1,11 +1,11 @@
 const API = "/api";
 
-// 🔐 REGISTER
-async function register() {
+// 🔐 LOGIN
+async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch(API + "/register", {
+  const res = await fetch(API + "/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -25,8 +25,8 @@ async function register() {
   }
 
   if (res.ok) {
-    alert("Usuario registrado correctamente");
-    window.location.href = "/login.html";
+    localStorage.setItem("user", JSON.stringify(data));
+    window.location.href = "/index.html";
   } else {
     alert(data.message);
   }
