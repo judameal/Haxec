@@ -75,6 +75,8 @@ body {
   background: #f4f4f4;
   color: #111;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
   overflow-x: hidden;
 }
@@ -112,6 +114,13 @@ body::after {
   right: 40px;
 }
 
+.center {
+  flex: 1; /* 🔥 CLAVE */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 /* 🔝 HEADER (blanco + negro + verde detalle) */
 header {
   background: #ffffff;
@@ -419,11 +428,11 @@ tr:hover td {
   color: white;
 }
 
-/* ⚫ FOOTER */
 footer {
   background: #111;
   color: white;
   text-align: center;
   padding: 15px;
   font-size: 13px;
+  margin-top: auto;
 }
