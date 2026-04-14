@@ -26,7 +26,7 @@ async function login() {
 
   if (res.ok) {
     localStorage.setItem("user", JSON.stringify(data));
-    window.location.href = "/dashboard.html";
+    window.location.href = "/haxball.html";
   } else {
     alert(data.message);
   }
