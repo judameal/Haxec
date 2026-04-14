@@ -1,36 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haxec Esport | Admin</title>
+  <title>Admin Panel</title>
 </head>
 <body>
 
-  <h1>Panel de Control</h1>
+<h1>Panel de Control</h1>
 
-  <div id="info"></div>
+<table border="1" id="tablaUsuarios">
+  <tr>
+    <th>Usuario</th>
+    <th>Rol</th>
+    <th>Acciones</th>
+  </tr>
+</table>
 
-  <button onclick="goHaxball()">Ver Liga</button>
-  <button onclick="logout()">Cerrar sesión</button>
+<button onclick="back()">Volver</button>
 
-  <script>
-    const user = JSON.parse(localStorage.getItem("user"));
+<script>
+const API = "/api";
+const user = JSON.parse(localStorage.getItem("user"));
 
-    if (!user) {
-      window.location.href = "/login.html";
-    }
+if (!user || user.role !== "admin") {
+  window.location.href = "/haxball.html";
+}
 
-    document.getElementById("info").innerHTML =
-      "Usuario: " + user.username + " | Rol: " + user.role;
+async function cargarUsuarios() {
+  const res = await fetch(API + "/users");
+  const users = await res.json();
 
-    function goHaxball() {
-      window.location.href = "/haxball.html";
-    }
+  const tabla = document.getElementById("tablaUsuarios");
 
-    function logout() {
-      localStorage.removeItem("user");
-      window.location.href = "/login.html";
-    }
-  </script>
+  users.forEach(u => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${u.username}</td>
+      <td>${u.role}</td>
+      <td>
+        <button onclick="hacerAdmin('${u.username}')">Admin</button>
+        <button onclick="quitarAdmin('${u.username}')">User</button>
+        <button onclick="eliminar('${u.username}')">Eliminar</button>
+      </td>
+    `;
+
+    tabla.appendChild(row);
+  });
+}
+
+async function hacerAdmin(username) {
+  await fetch(API + "/setRole", {
+    method: "POST",
+    body: JSON.stringify({ username, role: "admin" })
+  });
+  location.reload();
+}
+
+async function quitarAdmin(username) {
+  await fetch(API + "/setRole", {
+    method: "POST",
+    body: JSON.stringify({ username, role: "user" })
+  });
+  location.reload();
+}
+
+async function eliminar(username) {
+  await fetch(API + "/deleteUser", {
+    method: "POST",
+    body: JSON.stringify({ username })
+  });
+  location.reload();
+}
+
+function back() {
+  window.location.href = "/haxball.html";
+}
+
+cargarUsuarios();
+</script>
+
+</body>
 </html>

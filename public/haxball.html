@@ -6,6 +6,21 @@
     <title>Haxec Esport | Stats</title>
 </head>
 <body>
+    <div id="adminPanelBtn"></div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+
+if (user && user.role === "admin") {
+  document.getElementById("adminPanelBtn").innerHTML = `
+    <button onclick="goAdmin()">Panel de Control</button>
+  `;
+}
+
+function goAdmin() {
+  window.location.href = "/dashboard.html";
+}
+</script>
 
   <h1>⚽ Estadísticas Haxball</h1>
 
