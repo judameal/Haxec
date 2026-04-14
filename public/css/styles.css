@@ -74,15 +74,17 @@ button {
   background: #22c55e;
   border: none;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 10px;
   color: white;
   cursor: pointer;
   margin: 5px;
-  transition: 0.3s;
+  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 button:hover {
   background: #16a34a;
+  transform: scale(1.05);
 }
 
 /* 🔴 DELETE BUTTON */

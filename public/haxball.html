@@ -17,10 +17,16 @@
 
 <script>
 const user = JSON.parse(localStorage.getItem("user"));
+const nav = document.getElementById("nav");
 
 if (user && user.role === "admin") {
-  document.getElementById("adminPanelBtn").innerHTML = `
+  nav.innerHTML = `
     <button onclick="goAdmin()">Panel de Control</button>
+    <button onclick="logout()">Cerrar sesión</button>
+  `;
+} else {
+  nav.innerHTML = `
+    <button onclick="logout()">Cerrar sesión</button>
   `;
 }
 
