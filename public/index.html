@@ -1,27 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <title>Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <div class="container">
-    <h1>Haxec Esport</h1>
+<header>
+  <div class="logo">
+    <img src="img/logo.png">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
 
+<div class="home">
+
+  <!-- 🧿 HEX DECORACIÓN -->
+  <div class="hex-bg hex-top"></div>
+  <div class="hex-bg hex-bottom"></div>
+
+  <div class="home-card">
+    <h1>Haxec Esport</h1>
     <p>Bienvenido a la plataforma</p>
 
     <button onclick="goLogin()">Iniciar sesión</button>
     <button onclick="goRegister()">Registrarse</button>
   </div>
 
-  <script>
-    function goLogin() {
-      window.location.href = "/login.html";
-    }
+</div>
 
-    function goRegister() {
-      window.location.href = "/register.html";
-    }
-  </script>
+<script>
+function goLogin() {
+  window.location.href = "/login.html";
+}
+
+function goRegister() {
+  window.location.href = "/register.html";
+}
+</script>
+
+</body>
 </html>
