@@ -1,43 +1,140 @@
+/* 🌍 RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🌑 BODY */
 body {
-  font-family: Arial;
+  font-family: 'Segoe UI', sans-serif;
   background: #0f172a;
   color: white;
+}
+
+/* 🔝 HEADER */
+header {
+  background: #166534;
+  padding: 15px 30px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
+  justify-content: space-between;
 }
 
+/* 🐢 LOGO + TITLE */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+.logo h1 {
+  font-size: 20px;
+  color: #22c55e;
+}
+
+/* 📦 CONTAINER */
 .container {
-  background: #1e293b;
   padding: 30px;
+}
+
+/* 🧱 CARD */
+.card {
+  background: #1e293b;
+  padding: 20px;
   border-radius: 12px;
-  width: 300px;
-  text-align: center;
+  margin-bottom: 20px;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 8px;
-}
-
+/* 🔘 BUTTONS */
 button {
-  width: 100%;
-  padding: 10px;
   background: #22c55e;
   border: none;
+  padding: 10px 15px;
   border-radius: 8px;
-  cursor: pointer;
   color: white;
+  cursor: pointer;
+  margin: 5px;
+  transition: 0.3s;
 }
 
 button:hover {
   background: #16a34a;
 }
 
+/* 🔴 DELETE BUTTON */
+.btn-danger {
+  background: #ef4444;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* 🔵 LINKS */
 a {
-  color: #38bdf8;
+  color: #22c55e;
+  text-decoration: none;
+}
+
+/* 🧾 TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: #166534;
+}
+
+td {
+  background: #1e293b;
+}
+
+/* 🧊 INPUTS */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 0;
+}
+
+/* 🧿 HEXAGON STYLE (detallito pro) */
+.hex {
+  width: 100px;
+  height: 55px;
+  background: #22c55e;
+  position: relative;
+  margin: 20px auto;
+}
+
+.hex:before,
+.hex:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+}
+
+.hex:before {
+  bottom: 100%;
+  border-bottom: 27.5px solid #22c55e;
+}
+
+.hex:after {
+  top: 100%;
+  border-top: 27.5px solid #22c55e;
 }
