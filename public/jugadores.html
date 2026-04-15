@@ -15,23 +15,27 @@
 
 <div class="admin-container">
 
-  <h1 class="admin-title">Jugadores</h1>
+  <h1 class="admin-title">JUGADORES</h1>
+
+  <!-- 🔙 VOLVER ARRIBA -->
+  <button class="back-btn" onclick="goBack()">Volver</button>
 
   <!-- 🔵 BOTÓN AÑADIR -->
   <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
 
+  <!-- 📥 FORM -->
   <div id="formJugador" class="form-card" style="display:none;">
 
-  <input id="dorsal" placeholder="Dorsal">
-  <input id="nombre" placeholder="Nombre">
-  <input id="equipo" placeholder="Equipo" oninput="verificarEquipo()">
+    <input id="dorsal" placeholder="Dorsal">
+    <input id="nombre" placeholder="Nombre">
+    <input id="equipo" placeholder="Equipo" oninput="verificarEquipo()">
 
-  <!-- 🔍 PREVIEW -->
-  <div id="previewEquipo" style="margin-top:10px;"></div>
+    <!-- 🔍 PREVIEW -->
+    <div id="previewEquipo"></div>
 
-  <button onclick="crearJugador()">Guardar</button>
+    <button onclick="crearJugador()">Guardar</button>
 
-</div>
+  </div>
 
   <!-- 📋 LISTA -->
   <div class="admin-card">
@@ -46,20 +50,24 @@
 
 </div>
 
-<button class="back-btn" onclick="goBack()">Volver</button>
-
-
-<script>
-    function goBack() {
-      window.location.href = "/haxball.html";
-    }
-</script>
 <script src="js/app.js"></script>
 
 <script>
+const API = "/api";
 let equipoValido = null;
 
-/* 🔍 verificar equipo */
+/* 🔙 VOLVER */
+function goBack() {
+  window.location.href = "/haxball.html";
+}
+
+/* 🔽 MOSTRAR FORM */
+function toggleForm() {
+  const form = document.getElementById("formJugador");
+  form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+/* 🔍 VERIFICAR EQUIPO */
 async function verificarEquipo() {
   const input = document.getElementById("equipo").value;
   const preview = document.getElementById("previewEquipo");
@@ -81,32 +89,31 @@ async function verificarEquipo() {
     equipoValido = encontrado.nombre;
 
     preview.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div class="preview-box preview-ok">
         <img src="${encontrado.logo}" width="30">
-        <span style="color:green;">Equipo válido</span>
+        <span><strong>${encontrado.nombre}</strong></span>
       </div>
     `;
   } else {
     equipoValido = null;
 
     preview.innerHTML = `
-      <span style="color:red;">Equipo no encontrado</span>
+      <div class="preview-box preview-error">
+        <span>Equipo no encontrado</span>
+      </div>
     `;
   }
 }
 
-const API = "/api";
-
-/* 🔽 mostrar form */
-function toggleForm() {
-  const form = document.getElementById("formJugador");
-  form.style.display = form.style.display === "none" ? "block" : "none";
-}
-
-/* ➕ crear jugador */
+/* ➕ CREAR JUGADOR */
 async function crearJugador() {
   const dorsal = document.getElementById("dorsal").value;
   const nombre = document.getElementById("nombre").value;
+
+  if (!dorsal || !nombre) {
+    alert("Completa los campos");
+    return;
+  }
 
   let equipoFinal = "Sin equipo";
 
@@ -114,9 +121,11 @@ async function crearJugador() {
     equipoFinal = equipoValido;
   }
 
-  await fetch("/api/jugadores", {
+  await fetch(API + "/jugadores", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       dorsal,
       nombre,
@@ -127,19 +136,7 @@ async function crearJugador() {
   location.reload();
 }
 
-  await fetch("/api/jugadores", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      nombre,
-      equipo: equipoFinal
-    })
-  });
-
-  location.reload();
-}
-
-/* 📥 cargar jugadores */
+/* 📥 CARGAR JUGADORES */
 async function cargarJugadores() {
   const res = await fetch(API + "/jugadores");
   const data = await res.json();
