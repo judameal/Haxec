@@ -1,4 +1,5 @@
 import clientPromise from "../lib/mongodb.js";
+import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -18,21 +19,26 @@ export default async function handler(req, res) {
       req.on("end", resolve);
     });
 
-    const { nombre, logo, uniforme, local, visitante } = JSON.parse(body);
+    const { nombre, logo, local, visitante } = JSON.parse(body);
 
-    if (!nombre) {
-      return res.status(400).json({ message: "Faltan datos" });
-    }
-
-    await teams.insertOne({
-      nombre,
-      logo,
-      uniforme,
-      local,
-      visitante
-    });
+    await teams.insertOne({ nombre, logo, local, visitante });
 
     return res.status(200).json({ message: "Equipo creado" });
+  }
+
+  if (req.method === "DELETE") {
+    let body = "";
+
+    await new Promise((resolve) => {
+      req.on("data", chunk => body += chunk);
+      req.on("end", resolve);
+    });
+
+    const { id } = JSON.parse(body);
+
+    await teams.deleteOne({ _id: new ObjectId(id) });
+
+    return res.status(200).json({ message: "Eliminado" });
   }
 
   res.status(405).end();

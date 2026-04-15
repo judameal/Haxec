@@ -15,7 +15,12 @@
 
 <div class="admin-container">
 
-  <h1 class="admin-title">Equipos</h1>
+  <!-- 🔙 VOLVER ARRIBA -->
+  <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+
+  <h1 class="admin-title" style="font-weight:bold; text-transform:uppercase;">
+    EQUIPOS
+  </h1>
 
   <!-- 🔵 BOTÓN -->
   <button class="add-btn" onclick="toggleForm()">+ Añadir equipo</button>
@@ -23,8 +28,10 @@
   <!-- 📥 FORM -->
   <div id="formTeam" class="form-card" style="display:none;">
     <input id="nombre" placeholder="Nombre del equipo">
-    <input id="logo" placeholder="URL del logo">
-    <input id="uniforme" placeholder="Código uniforme (Haxball)">
+
+    <!-- 📂 SUBIR ARCHIVO -->
+    <input type="file" id="logo">
+
     <input id="local" placeholder="Color local">
     <input id="visitante" placeholder="Color visitante">
 
@@ -37,15 +44,12 @@
       <tr>
         <th>Logo</th>
         <th>Nombre</th>
-        <th>Uniforme</th>
         <th>Local</th>
         <th>Visitante</th>
+        <th>Acciones</th>
       </tr>
     </table>
   </div>
-
-  <!-- 🔙 VOLVER -->
-  <button class="back-btn" onclick="goBack()">Volver</button>
 
 </div>
 
@@ -58,20 +62,34 @@ function toggleForm() {
   form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
+/* 📂 convertir imagen a base64 */
+function convertirBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+}
+
 /* ➕ crear equipo */
 async function crearEquipo() {
   const nombre = document.getElementById("nombre").value;
-  const logo = document.getElementById("logo").value;
-  const uniforme = document.getElementById("uniforme").value;
+  const file = document.getElementById("logo").files[0];
   const local = document.getElementById("local").value;
   const visitante = document.getElementById("visitante").value;
 
+  if (!file) {
+    alert("Sube un logo");
+    return;
+  }
+
+  const logo = await convertirBase64(file);
+
   await fetch(API + "/teams", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ nombre, logo, uniforme, local, visitante })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre, logo, local, visitante })
   });
 
   location.reload();
@@ -90,13 +108,25 @@ async function cargarTeams() {
     row.innerHTML = `
       <td><img src="${t.logo}" width="30"></td>
       <td>${t.nombre}</td>
-      <td>${t.uniforme}</td>
       <td>${t.local}</td>
       <td>${t.visitante}</td>
+      <td class="actions">
+        <button onclick="eliminar('${t._id}')">Eliminar</button>
+      </td>
     `;
 
     tabla.appendChild(row);
   });
+}
+
+/* ❌ eliminar */
+async function eliminar(id) {
+  await fetch(API + "/teams", {
+    method: "DELETE",
+    body: JSON.stringify({ id })
+  });
+
+  location.reload();
 }
 
 /* 🔙 volver */
