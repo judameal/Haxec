@@ -17,17 +17,17 @@
 
   <h1 class="admin-title">JUGADORES</h1>
 
-  <!-- 🔙 VOLVER ARRIBA -->
+  <!-- 🔙 VOLVER -->
   <button class="back-btn" onclick="goBack()">Volver</button>
 
-  <!-- 🔵 BOTÓN AÑADIR -->
+  <!-- ➕ AÑADIR -->
   <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
 
   <!-- 📥 FORM -->
   <div id="formJugador" class="form-card" style="display:none;">
 
-    <input id="dorsal" placeholder="Dorsal">
     <input id="nombre" placeholder="Nombre">
+    <input id="dorsal" placeholder="Dorsal">
     <input id="equipo" placeholder="Equipo" oninput="verificarEquipo()">
 
     <!-- 🔍 PREVIEW -->
@@ -37,18 +37,22 @@
 
   </div>
 
-  <!-- 📋 LISTA -->
+  <!-- 📋 TABLA -->
   <div class="admin-card">
     <table id="tablaJugadores">
       <tr>
-        <th>Dorsal</th>
         <th>Nombre</th>
+        <th>Dorsal</th>
         <th>Equipo</th>
       </tr>
     </table>
   </div>
 
 </div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
 
 <script src="js/app.js"></script>
 
@@ -60,13 +64,13 @@ function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 🔽 MOSTRAR FORM */
+/* 🔽 FORM */
 function toggleForm() {
   const form = document.getElementById("formJugador");
   form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-/* 🔍 VERIFICAR EQUIPO */
+/* 🔍 VALIDAR EQUIPO */
 async function verificarEquipo() {
   const input = document.getElementById("equipo").value;
   const preview = document.getElementById("previewEquipo");
@@ -85,7 +89,7 @@ async function verificarEquipo() {
   );
 
   if (encontrado) {
-    equipoValido = encontrado.nombre;
+    equipoValido = encontrado;
 
     preview.innerHTML = `
       <div class="preview-box preview-ok">
@@ -104,12 +108,12 @@ async function verificarEquipo() {
   }
 }
 
-/* ➕ CREAR JUGADOR */
+/* ➕ CREAR */
 async function crearJugador() {
-  const dorsal = document.getElementById("dorsal").value;
   const nombre = document.getElementById("nombre").value;
+  const dorsal = document.getElementById("dorsal").value;
 
-  if (!dorsal || !nombre) {
+  if (!nombre || !dorsal) {
     alert("Completa los campos");
     return;
   }
@@ -117,7 +121,7 @@ async function crearJugador() {
   let equipoFinal = "Sin equipo";
 
   if (equipoValido) {
-    equipoFinal = equipoValido;
+    equipoFinal = equipoValido.nombre;
   }
 
   await fetch("/api/jugadores", {
@@ -126,8 +130,8 @@ async function crearJugador() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      dorsal,
       nombre,
+      dorsal,
       equipo: equipoFinal
     })
   });
@@ -135,20 +139,29 @@ async function crearJugador() {
   location.reload();
 }
 
-/* 📥 CARGAR JUGADORES */
+/* 📥 CARGAR */
 async function cargarJugadores() {
-  const res = await fetch("/api/jugadores");
-  const data = await res.json();
+  const resJug = await fetch("/api/jugadores");
+  const jugadores = await resJug.json();
+
+  const resTeams = await fetch("/api/teams");
+  const teams = await resTeams.json();
 
   const tabla = document.getElementById("tablaJugadores");
 
-  data.forEach(j => {
+  jugadores.forEach(j => {
+    const equipo = teams.find(t =>
+      t.nombre.toLowerCase() === j.equipo.toLowerCase()
+    );
+
+    const logo = equipo ? `<img src="${equipo.logo}" width="30">` : "—";
+
     const row = document.createElement("tr");
 
     row.innerHTML = `
-      <td>${j.dorsal}</td>
       <td>${j.nombre}</td>
-      <td>${j.equipo}</td>
+      <td>#${j.dorsal}</td>
+      <td>${logo}</td>
     `;
 
     tabla.appendChild(row);
