@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Equipos</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="img/logo.png">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <h1 class="admin-title">Equipos</h1>
+
+  <!-- 🔵 BOTÓN -->
+  <button class="add-btn" onclick="toggleForm()">+ Añadir equipo</button>
+
+  <!-- 📥 FORM -->
+  <div id="formTeam" class="form-card" style="display:none;">
+    <input id="nombre" placeholder="Nombre del equipo">
+    <input id="logo" placeholder="URL del logo">
+    <input id="uniforme" placeholder="Código uniforme (Haxball)">
+    <input id="local" placeholder="Color local">
+    <input id="visitante" placeholder="Color visitante">
+
+    <button onclick="crearEquipo()">Guardar</button>
+  </div>
+
+  <!-- 📋 LISTA -->
+  <div class="admin-card">
+    <table id="tablaTeams">
+      <tr>
+        <th>Logo</th>
+        <th>Nombre</th>
+        <th>Uniforme</th>
+        <th>Local</th>
+        <th>Visitante</th>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 🔙 VOLVER -->
+  <button class="back-btn" onclick="goBack()">Volver</button>
+
+</div>
+
+<script>
+const API = "/api";
+
+/* 🔽 mostrar form */
+function toggleForm() {
+  const form = document.getElementById("formTeam");
+  form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+/* ➕ crear equipo */
+async function crearEquipo() {
+  const nombre = document.getElementById("nombre").value;
+  const logo = document.getElementById("logo").value;
+  const uniforme = document.getElementById("uniforme").value;
+  const local = document.getElementById("local").value;
+  const visitante = document.getElementById("visitante").value;
+
+  await fetch(API + "/teams", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ nombre, logo, uniforme, local, visitante })
+  });
+
+  location.reload();
+}
+
+/* 📥 cargar equipos */
+async function cargarTeams() {
+  const res = await fetch(API + "/teams");
+  const data = await res.json();
+
+  const tabla = document.getElementById("tablaTeams");
+
+  data.forEach(t => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td><img src="${t.logo}" width="30"></td>
+      <td>${t.nombre}</td>
+      <td>${t.uniforme}</td>
+      <td>${t.local}</td>
+      <td>${t.visitante}</td>
+    `;
+
+    tabla.appendChild(row);
+  });
+}
+
+/* 🔙 volver */
+function goBack() {
+  window.location.href = "/haxball.html";
+}
+
+cargarTeams();
+</script>
+
+</body>
+</html>
