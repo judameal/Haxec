@@ -592,3 +592,41 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* 🖱️ CLICKABLE TEAM */
+.clickable {
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.clickable:hover {
+  color: #22c55e;
+}
+
+/* 📦 DETALLE EQUIPO */
+.team-detail {
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  animation: fadeIn 0.2s ease;
+}
+
+/* 🖼️ LOGO GRANDE */
+.team-logo-big {
+  width: 70px;
+  margin-bottom: 10px;
+}
+
+/* ✨ ANIMACIÓN */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

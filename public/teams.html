@@ -98,16 +98,21 @@ async function crearEquipo() {
 /* 📥 cargar equipos */
 async function cargarTeams() {
   const res = await fetch(API + "/teams");
-  const data = await res.json();
+  const teams = await res.json();
+
+  const resJug = await fetch("/api/jugadores");
+  const jugadores = await resJug.json();
 
   const tabla = document.getElementById("tablaTeams");
 
-  data.forEach(t => {
+  teams.forEach(t => {
     const row = document.createElement("tr");
 
     row.innerHTML = `
       <td><img src="${t.logo}" width="30"></td>
-      <td>${t.nombre}</td>
+      <td class="clickable" onclick="toggleEquipo('${t.nombre}', '${t._id}')">
+        ${t.nombre}
+      </td>
       <td>${t.local}</td>
       <td>${t.visitante}</td>
       <td class="actions">
@@ -116,9 +121,51 @@ async function cargarTeams() {
     `;
 
     tabla.appendChild(row);
+
+    // 🔽 FILA OCULTA (DETALLE)
+    const detailRow = document.createElement("tr");
+    detailRow.id = "detalle-" + t._id;
+    detailRow.style.display = "none";
+
+    const jugadoresEquipo = jugadores.filter(j =>
+      j.equipo.toLowerCase() === t.nombre.toLowerCase()
+    );
+
+    detailRow.innerHTML = `
+      <td colspan="5">
+        <div class="team-detail">
+
+          <img src="${t.logo}" class="team-logo-big">
+
+          <h2>${t.nombre}</h2>
+
+          <h3>Jugadores:</h3>
+
+          ${
+            jugadoresEquipo.length > 0
+              ? jugadoresEquipo.map(j => `
+                  <p>#${j.dorsal} - ${j.nombre}</p>
+                `).join("")
+              : "<p>Sin jugadores</p>"
+          }
+
+        </div>
+      </td>
+    `;
+
+    tabla.appendChild(detailRow);
   });
 }
 
+function toggleEquipo(nombre, id) {
+  const fila = document.getElementById("detalle-" + id);
+
+  if (fila.style.display === "none") {
+    fila.style.display = "table-row";
+  } else {
+    fila.style.display = "none";
+  }
+}
 /* ❌ eliminar */
 async function eliminar(id) {
   await fetch(API + "/teams", {
