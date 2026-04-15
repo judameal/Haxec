@@ -53,7 +53,6 @@
 <script src="js/app.js"></script>
 
 <script>
-const API = "/api";
 let equipoValido = null;
 
 /* 🔙 VOLVER */
@@ -121,7 +120,7 @@ async function crearJugador() {
     equipoFinal = equipoValido;
   }
 
-  await fetch(API + "/jugadores", {
+  await fetch("/api/jugadores", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -138,7 +137,7 @@ async function crearJugador() {
 
 /* 📥 CARGAR JUGADORES */
 async function cargarJugadores() {
-  const res = await fetch(API + "/jugadores");
+  const res = await fetch("/api/jugadores");
   const data = await res.json();
 
   const tabla = document.getElementById("tablaJugadores");

@@ -11,33 +11,26 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "POST") {
-    let body = "";
+  let body = "";
 
-    await new Promise((resolve) => {
-      req.on("data", chunk => body += chunk);
-      req.on("end", resolve);
-    });
+  await new Promise((resolve) => {
+    req.on("data", chunk => body += chunk);
+    req.on("end", resolve);
+  });
 
-    const { dorsal, nombre, equipo } = JSON.parse(body);
+  const { dorsal, nombre, equipo } = JSON.parse(body);
 
-if (!nombre || !dorsal) {
-  return res.status(400).json({ message: "Faltan datos" });
-}
-
-await jugadores.insertOne({
-  dorsal,
-  nombre,
-  equipo: equipo || "Sin equipo"
-});
-
-    if (!dorsal || !nombre || !equipo) {
-      return res.status(400).json({ message: "Faltan datos" });
-    }
-
-    await jugadores.insertOne({ dorsal, nombre, equipo });
-
-    return res.status(200).json({ message: "Jugador creado" });
+  if (!dorsal || !nombre) {
+    return res.status(400).json({ message: "Faltan datos" });
   }
 
+  await jugadores.insertOne({
+    dorsal,
+    nombre,
+    equipo: equipo || "Sin equipo"
+  });
+
+  return res.status(200).json({ message: "Jugador creado" });
+}
   res.status(405).end();
 }
