@@ -11,24 +11,73 @@
     <img src="img/logo.png">
     <h1>Haxec <span>Esport</span></h1>
   </div>
+
+  <div id="nav" class="nav-buttons"></div>
 </header>
 
-<div class="admin-container">
+<div class="center">
 
-  <h1 class="admin-title">Estadísticas</h1>
+  <div class="main-card">
 
-  <div class="admin-card">
-    <p>⚽ Goleadores</p>
-    <p>1. Player1 - 5 goles</p>
+    <h1 class="main-title">Estadísticas</h1>
+    <p class="main-sub">Selecciona una categoría</p>
 
-    <p>🎯 Asistencias</p>
-    <p>1. Player2 - 3 asistencias</p>
+    <button class="main-btn" onclick="goGoleadores()">GOLEADORES</button>
+    <button class="main-btn" onclick="goAsistencias()">ASISTENCIAS</button>
+    <button class="main-btn" onclick="goVallas()">VALLAS INVICTAS</button>
+    <button class="main-btn" onclick="goMVP()">MVP</button>
+    <button class="main-btn" onclick="goEquipo()">EQUIPO DE LA FECHA</button>
 
-    <p>🧤 Vallas invictas</p>
-    <p>1. Player3 - 2</p>
   </div>
 
 </div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
+<script src="js/app.js"></script>
+
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+const nav = document.getElementById("nav");
+
+if (user && user.role === "admin") {
+  nav.innerHTML = `
+    <button onclick="goAdmin()">Panel de Control</button>
+    <button onclick="logout()">Cerrar sesión</button>
+  `;
+} else {
+  nav.innerHTML = `
+    <button onclick="logout()">Cerrar sesión</button>
+  `;
+}
+
+function goAdmin() {
+  window.location.href = "/dashboard.html";
+}
+
+/* 🔗 REDIRECCIONES */
+function goGoleadores() {
+  window.location.href = "/goleadores.html";
+}
+
+function goAsistencias() {
+  window.location.href = "/asistencias.html";
+}
+
+function goVallas() {
+  window.location.href = "/vallas.html";
+}
+
+function goMVP() {
+  window.location.href = "/mvp.html";
+}
+
+function goEquipo() {
+  window.location.href = "/equipo.html";
+}
+</script>
 
 </body>
 </html>
