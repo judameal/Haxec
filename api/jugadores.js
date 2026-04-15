@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     const data = await jugadores.find().toArray();
     return res.status(200).json(data);
   }
+  
   if (req.method === "PUT") {
   let body = "";
 
@@ -18,15 +19,31 @@ export default async function handler(req, res) {
     req.on("end", resolve);
   });
 
-  const { id, nombre, dorsal } = JSON.parse(body);
+  const { id, nombre, dorsal, equipo } = JSON.parse(body);
 
   await jugadores.updateOne(
     { _id: new ObjectId(id) },
-    { $set: { nombre, dorsal } }
+    { $set: { nombre, dorsal, equipo } }
   );
 
   return res.status(200).json({ message: "Jugador actualizado" });
 }
+
+if (req.method === "DELETE") {
+  let body = "";
+
+  await new Promise(resolve => {
+    req.on("data", chunk => body += chunk);
+    req.on("end", resolve);
+  });
+
+  const { id } = JSON.parse(body);
+
+  await jugadores.deleteOne({ _id: new ObjectId(id) });
+
+  return res.status(200).json({ message: "Jugador eliminado" });
+}
+
   if (req.method === "POST") {
   let body = "";
 

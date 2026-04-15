@@ -164,23 +164,41 @@ async function cargarJugadores() {
       <td>${j.dorsal}</td>
       <td>${logo}</td>
       <td class="actions">
-        <button onclick="editarJugador('${j._id}', '${j.nombre}', '${j.dorsal}')">Editar</button>
+        <button onclick="editarJugador('${j._id}', '${j.nombre}', '${j.dorsal}', '${j.equipo}')">Editar</button>
+        <button onclick="eliminarJugador('${j._id}')">Eliminar</button>
       </td>
     `;
 
     tabla.appendChild(row);
   });
 }
-
 cargarJugadores();
 
-function editarJugador(id, nombreActual, dorsalActual) {
+async function editarJugador(id, nombreActual, dorsalActual, equipoActual) {
   const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
   const nuevoDorsal = prompt("Nuevo dorsal:", dorsalActual);
+  const nuevoEquipoInput = prompt("Nuevo equipo:", equipoActual);
 
   if (!nuevoNombre || !nuevoDorsal) return;
 
-  fetch("/api/jugadores", {
+  let equipoFinal = "Sin equipo";
+
+  if (nuevoEquipoInput) {
+    const res = await fetch("/api/teams");
+    const teams = await res.json();
+
+    const encontrado = teams.find(t =>
+      t.nombre.toLowerCase() === nuevoEquipoInput.toLowerCase()
+    );
+
+    if (encontrado) {
+      equipoFinal = encontrado.nombre;
+    } else {
+      alert("Equipo no existe, se asignará 'Sin equipo'");
+    }
+  }
+
+  await fetch("/api/jugadores", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
@@ -188,9 +206,27 @@ function editarJugador(id, nombreActual, dorsalActual) {
     body: JSON.stringify({
       id,
       nombre: nuevoNombre,
-      dorsal: nuevoDorsal
+      dorsal: nuevoDorsal,
+      equipo: equipoFinal
     })
-  }).then(() => location.reload());
+  });
+
+  location.reload();
+}
+
+async function eliminarJugador(id) {
+  const confirmar = confirm("¿Eliminar jugador?");
+  if (!confirmar) return;
+
+  await fetch("/api/jugadores", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ id })
+  });
+
+  location.reload();
 }
 </script>
 
