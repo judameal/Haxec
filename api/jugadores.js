@@ -1,4 +1,5 @@
 import clientPromise from "../lib/mongodb.js";
+import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -9,7 +10,23 @@ export default async function handler(req, res) {
     const data = await jugadores.find().toArray();
     return res.status(200).json(data);
   }
+  if (req.method === "PUT") {
+  let body = "";
 
+  await new Promise(resolve => {
+    req.on("data", chunk => body += chunk);
+    req.on("end", resolve);
+  });
+
+  const { id, nombre, dorsal } = JSON.parse(body);
+
+  await jugadores.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { nombre, dorsal } }
+  );
+
+  return res.status(200).json({ message: "Jugador actualizado" });
+}
   if (req.method === "POST") {
   let body = "";
 

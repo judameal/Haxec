@@ -44,6 +44,7 @@
         <th>Nombre</th>
         <th>Dorsal</th>
         <th>Equipo</th>
+        <th>Acciones</th>
       </tr>
     </table>
   </div>
@@ -160,8 +161,11 @@ async function cargarJugadores() {
 
     row.innerHTML = `
       <td>${j.nombre}</td>
-      <td>#${j.dorsal}</td>
+      <td>${j.dorsal}</td>
       <td>${logo}</td>
+      <td class="actions">
+        <button onclick="editarJugador('${j._id}', '${j.nombre}', '${j.dorsal}')">Editar</button>
+      </td>
     `;
 
     tabla.appendChild(row);
@@ -169,6 +173,25 @@ async function cargarJugadores() {
 }
 
 cargarJugadores();
+
+function editarJugador(id, nombreActual, dorsalActual) {
+  const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
+  const nuevoDorsal = prompt("Nuevo dorsal:", dorsalActual);
+
+  if (!nuevoNombre || !nuevoDorsal) return;
+
+  fetch("/api/jugadores", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      id,
+      nombre: nuevoNombre,
+      dorsal: nuevoDorsal
+    })
+  }).then(() => location.reload());
+}
 </script>
 
 </body>

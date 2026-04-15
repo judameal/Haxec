@@ -639,3 +639,16 @@ td img {
 td img:hover {
   transform: scale(1.2);
 }
+
+.actions button {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  background: #111;
+  color: white;
+}
