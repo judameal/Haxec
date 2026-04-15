@@ -11,27 +11,45 @@
     <h1>Haxec <span>Esport</span></h1>
   </div>
 
-  <div id="nav" class="nav-buttons"></div>
+  <div class="nav-buttons">
+
+  <div class="dropdown" id="adminMenu" style="display:none;">
+    <button onclick="toggleMenu()">Panel de Control</button>
+
+    <div class="dropdown-content" id="dropdownContent">
+      <p class="dropdown-title">Administrar</p>
+      <button onclick="goUsuarios()">Usuarios</button>
+      <button onclick="goJugadores()">Jugadores</button>
+    </div>
+  </div>
+
+  <button onclick="logout()">Cerrar sesión</button>
+
+</div>
 </header>
     <div id="adminPanelBtn"></div>
 
 <script>
 const user = JSON.parse(localStorage.getItem("user"));
-const nav = document.getElementById("nav");
+const adminMenu = document.getElementById("adminMenu");
 
 if (user && user.role === "admin") {
-  nav.innerHTML = `
-    <button onclick="goAdmin()">Panel de Control</button>
-    <button onclick="logout()">Cerrar sesión</button>
-  `;
-} else {
-  nav.innerHTML = `
-    <button onclick="logout()">Cerrar sesión</button>
-  `;
+  adminMenu.style.display = "block";
 }
 
-function goAdmin() {
+/* 🔽 abrir/cerrar menú */
+function toggleMenu() {
+  const menu = document.getElementById("dropdownContent");
+  menu.classList.toggle("show");
+}
+
+/* 🔗 rutas */
+function goUsuarios() {
   window.location.href = "/dashboard.html";
+}
+
+function goJugadores() {
+  window.location.href = "/jugadores.html";
 }
 </script>
 
