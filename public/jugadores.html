@@ -20,14 +20,18 @@
   <!-- 🔵 BOTÓN AÑADIR -->
   <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
 
-  <!-- 📥 FORMULARIO -->
   <div id="formJugador" class="form-card" style="display:none;">
-    <input id="dorsal" placeholder="Dorsal">
-    <input id="nombre" placeholder="Nombre">
-    <input id="equipo" placeholder="Equipo">
 
-    <button onclick="crearJugador()">Guardar</button>
-  </div>
+  <input id="dorsal" placeholder="Dorsal">
+  <input id="nombre" placeholder="Nombre">
+  <input id="equipo" placeholder="Equipo" oninput="verificarEquipo()">
+
+  <!-- 🔍 PREVIEW -->
+  <div id="previewEquipo" style="margin-top:10px;"></div>
+
+  <button onclick="crearJugador()">Guardar</button>
+
+</div>
 
   <!-- 📋 LISTA -->
   <div class="admin-card">
@@ -43,6 +47,8 @@
 </div>
 
 <button class="back-btn" onclick="goBack()">Volver</button>
+
+
 <script>
     function goBack() {
       window.location.href = "/haxball.html";
@@ -51,6 +57,44 @@
 <script src="js/app.js"></script>
 
 <script>
+let equipoValido = null;
+
+/* 🔍 verificar equipo */
+async function verificarEquipo() {
+  const input = document.getElementById("equipo").value;
+  const preview = document.getElementById("previewEquipo");
+
+  if (!input) {
+    preview.innerHTML = "";
+    equipoValido = null;
+    return;
+  }
+
+  const res = await fetch("/api/teams");
+  const teams = await res.json();
+
+  const encontrado = teams.find(t =>
+    t.nombre.toLowerCase() === input.toLowerCase()
+  );
+
+  if (encontrado) {
+    equipoValido = encontrado.nombre;
+
+    preview.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="${encontrado.logo}" width="30">
+        <span style="color:green;">Equipo válido</span>
+      </div>
+    `;
+  } else {
+    equipoValido = null;
+
+    preview.innerHTML = `
+      <span style="color:red;">Equipo no encontrado</span>
+    `;
+  }
+}
+
 const API = "/api";
 
 /* 🔽 mostrar form */
@@ -63,12 +107,33 @@ function toggleForm() {
 async function crearJugador() {
   const dorsal = document.getElementById("dorsal").value;
   const nombre = document.getElementById("nombre").value;
-  const equipo = document.getElementById("equipo").value;
 
-  await fetch(API + "/jugadores", {
+  let equipoFinal = "Sin equipo";
+
+  if (equipoValido) {
+    equipoFinal = equipoValido;
+  }
+
+  await fetch("/api/jugadores", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dorsal, nombre, equipo })
+    body: JSON.stringify({
+      dorsal,
+      nombre,
+      equipo: equipoFinal
+    })
+  });
+
+  location.reload();
+}
+
+  await fetch("/api/jugadores", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nombre,
+      equipo: equipoFinal
+    })
   });
 
   location.reload();

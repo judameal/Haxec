@@ -512,3 +512,83 @@ footer {
   margin-bottom: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
+
+/* 📥 FORMULARIO JUGADOR */
+.form-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  max-width: 400px;
+}
+
+/* 🧊 INPUTS PRO */
+.form-card input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* ✨ FOCUS INPUT */
+.form-card input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.15);
+}
+
+/* 🔘 BOTÓN GUARDAR */
+.form-card button {
+  width: 100%;
+  margin-top: 12px;
+  background: #111;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.form-card button:hover {
+  background: #333;
+}
+
+/* 🔍 PREVIEW EQUIPO */
+#previewEquipo {
+  margin-top: 10px;
+}
+
+/* 🧾 CAJA PREVIEW */
+.preview-box {
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+}
+
+/* ✅ válido */
+.preview-ok {
+  border-color: #22c55e;
+  color: #166534;
+}
+
+/* ❌ error */
+.preview-error {
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.form-card {
+  margin-left: auto;
+  margin-right: auto;
+}

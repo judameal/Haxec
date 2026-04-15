@@ -20,6 +20,16 @@ export default async function handler(req, res) {
 
     const { dorsal, nombre, equipo } = JSON.parse(body);
 
+if (!nombre || !dorsal) {
+  return res.status(400).json({ message: "Faltan datos" });
+}
+
+await jugadores.insertOne({
+  dorsal,
+  nombre,
+  equipo: equipo || "Sin equipo"
+});
+
     if (!dorsal || !nombre || !equipo) {
       return res.status(400).json({ message: "Faltan datos" });
     }
