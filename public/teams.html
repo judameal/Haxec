@@ -144,7 +144,7 @@ async function cargarTeams() {
           ${
             jugadoresEquipo.length > 0
               ? jugadoresEquipo.map(j => `
-                  <p>#${j.dorsal} - ${j.nombre}</p>
+                  <p>${j.dorsal} - ${j.nombre}</p>
                 `).join("")
               : "<p>Sin jugadores</p>"
           }

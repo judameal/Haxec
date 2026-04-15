@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tabla</title>
+  <title>Tabla de Posiciones</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -15,29 +15,102 @@
 
 <div class="admin-container">
 
-  <h1 class="admin-title">Tabla de Posiciones</h1>
+  <h1 class="admin-title">TABLA DE POSICIONES</h1>
 
+  <button class="back-btn" onclick="goBack()">Volver</button>
+
+  <!-- ⚠️ MENSAJE -->
+  <div id="mensaje"></div>
+
+  <!-- 📋 TABLA -->
   <div class="admin-card">
-    <table>
+    <table id="tabla">
       <tr>
         <th>#</th>
         <th>Equipo</th>
-        <th>Puntos</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Equipo A</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Equipo B</td>
-        <td>7</td>
+        <th>PJ</th>
+        <th>G</th>
+        <th>E</th>
+        <th>P</th>
+        <th>GF</th>
+        <th>GC</th>
+        <th>DG</th>
+        <th>PTS</th>
+        <th>%</th>
       </tr>
     </table>
   </div>
 
 </div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
+<script>
+const API = "/api";
+
+/* 🔙 volver */
+function goBack() {
+  window.location.href = "/haxball.html";
+}
+
+/* 📥 cargar equipos */
+async function cargarTabla() {
+  const res = await fetch(API + "/teams");
+  const equipos = await res.json();
+
+  const tabla = document.getElementById("tabla");
+  const mensaje = document.getElementById("mensaje");
+
+  // ❌ MENOS DE 10
+  if (equipos.length < 10) {
+    mensaje.innerHTML = `
+      <p style="color:red; font-weight:bold;">
+        Se necesitan 10 equipos para iniciar la liga.<br>
+        Actualmente hay ${equipos.length}/10
+      </p>
+    `;
+    return;
+  }
+
+  // ✅ EXACTAMENTE 10 (o más, pero usamos 10)
+  mensaje.innerHTML = `
+    <p style="color:green; font-weight:bold;">
+      Liga lista para iniciar ✅
+    </p>
+  `;
+
+  const equiposLiga = equipos.slice(0, 10);
+
+  // 🔢 crear tabla inicial
+  equiposLiga.forEach((t, index) => {
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td style="display:flex; align-items:center; gap:10px;">
+        <img src="${t.logo}" width="25">
+        ${t.nombre}
+      </td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0%</td>
+    `;
+
+    tabla.appendChild(row);
+  });
+}
+
+cargarTabla();
+</script>
 
 </body>
 </html>
