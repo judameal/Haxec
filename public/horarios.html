@@ -1,28 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Asignar Horario</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-
-<div class="admin-container">
-
-  <h1 class="admin-title">Asignar Partido</h1>
-
-  <button class="back-btn" onclick="goBack()">⬅ Volver</button>
-
-  <div class="form-card">
-
-    <input type="date" id="fecha">
-    <input type="time" id="hora">
-
-    <button onclick="guardarHorario()">Guardar</button>
-
-  </div>
-
-</div>
-
 <script>
 const API = "/api";
 
@@ -33,6 +8,11 @@ function goBack() {
 async function guardarHorario() {
   const fecha = document.getElementById("fecha").value;
   const hora = document.getElementById("hora").value;
+
+  if (!fecha || !hora) {
+    alert("Completa fecha y hora");
+    return;
+  }
 
   const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
@@ -53,6 +33,3 @@ async function guardarHorario() {
   window.location.href = "/partidos.html";
 }
 </script>
-
-</body>
-</html>

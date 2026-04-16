@@ -3,6 +3,36 @@ import clientPromise from "../lib/mongodb.js";
 export default async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db("haxball");
+  const partidos = db.collection("partidos");
+
+  if (req.method === "GET") {
+    const data = await partidos.find().toArray();
+    return res.status(200).json(data);
+  }
+
+  if (req.method === "POST") {
+    const { jornada, partido, fecha, hora } = req.body;
+
+    if (jornada === undefined || partido === undefined) {
+      return res.status(400).json({ message: "Datos incompletos" });
+    }
+
+    await partidos.updateOne(
+      { jornada, partido },
+      {
+        $set: { jornada, partido, fecha, hora }
+      },
+      { upsert: true }
+    );
+
+    return res.status(200).json({ message: "Horario guardado" });
+  }
+
+  res.status(405).end();
+}
+export default async function handler(req, res) {
+  const client = await clientPromise;
+  const db = client.db("haxball");
 
   const partidos = db.collection("partidos");
   const tabla = db.collection("tabla");

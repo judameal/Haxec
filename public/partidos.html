@@ -30,16 +30,14 @@
 <script>
 const API = "/api";
 
-/* 👤 USER */
 const user = JSON.parse(localStorage.getItem("user"));
 const esAdmin = user && user.role === "admin";
 
-/* 🔙 VOLVER */
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 🔥 GENERAR CALENDARIO */
+/* 🔥 CALENDARIO */
 function generarCalendario(equipos) {
   const jornadas = [];
   const lista = [...equipos];
@@ -61,12 +59,9 @@ function generarCalendario(equipos) {
     }
 
     jornadas.push(jornada);
-
-    // 🔁 rotación
     lista.splice(1, 0, lista.pop());
   }
 
-  // 🔁 vuelta
   const vuelta = jornadas.map(jornada =>
     jornada.map(p => ({
       local: p.visitante,
@@ -77,7 +72,7 @@ function generarCalendario(equipos) {
   return [...jornadas, ...vuelta];
 }
 
-/* 📥 CARGAR PARTIDOS */
+/* 📥 CARGAR */
 async function cargarPartidos() {
   const res = await fetch(API + "/teams");
   const equipos = await res.json();
@@ -91,7 +86,6 @@ async function cargarPartidos() {
 
   calendario.forEach((jornada, i) => {
     const div = document.createElement("div");
-
     div.className = "admin-card";
     div.style.marginBottom = "20px";
 
@@ -99,7 +93,6 @@ async function cargarPartidos() {
 
     jornada.forEach((p, indexPartido) => {
 
-      // 🔍 buscar si ya tiene horario
       const info = dataPartidos.find(d =>
         d.jornada === i && d.partido === indexPartido
       );
@@ -113,7 +106,9 @@ async function cargarPartidos() {
 
           <div style="text-align:center;">
             <strong>vs</strong><br>
-            ${info ? `<small>${info.fecha} - ${info.hora}</small>` : `<small style="color:gray;">Sin horario</small>`}
+            ${info 
+              ? `<small>${info.fecha} - ${info.hora}</small>` 
+              : `<small style="color:gray;">Sin horario</small>`}
           </div>
 
           <span>
@@ -122,9 +117,17 @@ async function cargarPartidos() {
 
           ${
             esAdmin ? `
-              <button onclick="abrirOpciones(${i}, ${indexPartido})">
-                Asignar
-              </button>
+              <div style="display:flex; gap:5px;">
+                <button style="font-size:12px; padding:4px 8px;"
+                  onclick="abrirOpciones(${i}, ${indexPartido})">
+                  Asignar
+                </button>
+
+                <button style="font-size:12px; padding:4px 8px;"
+                  onclick="jugar(${i}, ${indexPartido})">
+                  Jugar
+                </button>
+              </div>
             ` : ""
           }
 
@@ -137,7 +140,7 @@ async function cargarPartidos() {
   });
 }
 
-/* 🔗 IR A HORARIOS */
+/* 🔗 IR HORARIOS */
 function abrirOpciones(jornada, partido) {
   localStorage.setItem("partidoSeleccionado", JSON.stringify({
     jornada,
@@ -147,7 +150,16 @@ function abrirOpciones(jornada, partido) {
   window.location.href = "/horarios.html";
 }
 
-/* 🚀 INIT */
+/* 🎮 IR JUGAR */
+function jugar(jornada, partido) {
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({
+    jornada,
+    partido
+  }));
+
+  window.location.href = "/jugarpartido.html";
+}
+
 cargarPartidos();
 </script>
 
