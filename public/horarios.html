@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Asignar Horario</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+  <h1 class="admin-title">Asignar Partido</h1>
+
+  <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+
+  <div class="form-card">
+
+    <input type="date" id="fecha">
+    <input type="time" id="hora">
+
+    <button onclick="guardarHorario()">Guardar</button>
+
+  </div>
+
+</div>
+
+<script>
+const API = "/api";
+
+function goBack() {
+  window.location.href = "/partidos.html";
+}
+
+async function guardarHorario() {
+  const fecha = document.getElementById("fecha").value;
+  const hora = document.getElementById("hora").value;
+
+  const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+
+  await fetch(API + "/partidos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      jornada: partido.jornada,
+      partido: partido.partido,
+      fecha,
+      hora
+    })
+  });
+
+  alert("Horario guardado ✅");
+  window.location.href = "/partidos.html";
+}
+</script>
+
+</body>
+</html>

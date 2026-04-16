@@ -30,6 +30,11 @@
 <script>
 const API = "/api";
 
+/* 👤 USER */
+const user = JSON.parse(localStorage.getItem("user"));
+const esAdmin = user && user.role === "admin";
+
+/* 🔙 VOLVER */
 function goBack() {
   window.location.href = "/haxball.html";
 }
@@ -72,10 +77,13 @@ function generarCalendario(equipos) {
   return [...jornadas, ...vuelta];
 }
 
-/* 📥 cargar equipos */
+/* 📥 CARGAR PARTIDOS */
 async function cargarPartidos() {
   const res = await fetch(API + "/teams");
   const equipos = await res.json();
+
+  const resPartidos = await fetch(API + "/partidos");
+  const dataPartidos = await resPartidos.json();
 
   const container = document.getElementById("partidosContainer");
 
@@ -89,18 +97,37 @@ async function cargarPartidos() {
 
     let html = `<h3>Jornada ${i + 1}</h3>`;
 
-    jornada.forEach(p => {
+    jornada.forEach((p, indexPartido) => {
+
+      // 🔍 buscar si ya tiene horario
+      const info = dataPartidos.find(d =>
+        d.jornada === i && d.partido === indexPartido
+      );
+
       html += `
-        <div style="display:flex; justify-content:space-between; padding:8px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0;">
+
           <span>
             <img src="${p.local.logo}" width="20"> ${p.local.nombre}
           </span>
 
-          <strong>vs</strong>
+          <div style="text-align:center;">
+            <strong>vs</strong><br>
+            ${info ? `<small>${info.fecha} - ${info.hora}</small>` : `<small style="color:gray;">Sin horario</small>`}
+          </div>
 
           <span>
             ${p.visitante.nombre} <img src="${p.visitante.logo}" width="20">
           </span>
+
+          ${
+            esAdmin ? `
+              <button onclick="abrirOpciones(${i}, ${indexPartido})">
+                Asignar
+              </button>
+            ` : ""
+          }
+
         </div>
       `;
     });
@@ -110,6 +137,17 @@ async function cargarPartidos() {
   });
 }
 
+/* 🔗 IR A HORARIOS */
+function abrirOpciones(jornada, partido) {
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({
+    jornada,
+    partido
+  }));
+
+  window.location.href = "/horarios.html";
+}
+
+/* 🚀 INIT */
 cargarPartidos();
 </script>
 
