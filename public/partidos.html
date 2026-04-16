@@ -77,8 +77,21 @@ async function cargarPartidos() {
   const res = await fetch(API + "/teams");
   const equipos = await res.json();
 
+  let dataPartidos = [];
+
+try {
   const resPartidos = await fetch(API + "/partidos");
-  const dataPartidos = await resPartidos.json();
+
+  if (!resPartidos.ok) {
+    throw new Error("Error en API");
+  }
+
+  dataPartidos = await resPartidos.json();
+
+} catch (err) {
+  console.error("Error cargando partidos:", err);
+  dataPartidos = [];
+}
 
   const container = document.getElementById("partidosContainer");
 

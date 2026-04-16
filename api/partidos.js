@@ -1,17 +1,33 @@
 import clientPromise from "../lib/mongodb.js";
+import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db("haxball");
-  const partidos = db.collection("partidos");
 
+  const partidos = db.collection("partidos");
+  const tabla = db.collection("tabla");
+  const jugadores = db.collection("jugadores");
+
+  // 📥 GET → obtener partidos
   if (req.method === "GET") {
     const data = await partidos.find().toArray();
     return res.status(200).json(data);
   }
 
+  // ➕ POST → guardar horario o crear calendario
   if (req.method === "POST") {
-    const { jornada, partido, fecha, hora } = req.body;
+    const body = req.body;
+
+    // 🔥 SI VIENE CALENDARIO COMPLETO
+    if (body.calendario) {
+      await partidos.deleteMany({});
+      await partidos.insertMany(body.calendario);
+      return res.json({ message: "Calendario guardado" });
+    }
+
+    // 🔥 SI ES HORARIO INDIVIDUAL
+    const { jornada, partido, fecha, hora } = body;
 
     if (jornada === undefined || partido === undefined) {
       return res.status(400).json({ message: "Datos incompletos" });
@@ -25,43 +41,17 @@ export default async function handler(req, res) {
       { upsert: true }
     );
 
-    return res.status(200).json({ message: "Horario guardado" });
+    return res.json({ message: "Horario guardado" });
   }
 
-  res.status(405).end();
-}
-export default async function handler(req, res) {
-  const client = await clientPromise;
-  const db = client.db("haxball");
-
-  const partidos = db.collection("partidos");
-  const tabla = db.collection("tabla");
-  const jugadores = db.collection("jugadores");
-
-  // 📥 GET
-  if (req.method === "GET") {
-    const data = await partidos.find().toArray();
-    return res.json(data);
-  }
-
-  // ➕ CREAR CALENDARIO
-  if (req.method === "POST") {
-    const { calendario } = req.body;
-
-    await partidos.deleteMany({});
-    await partidos.insertMany(calendario);
-
-    return res.json({ message: "Calendario guardado" });
-  }
-
-  // ⚽ JUGAR PARTIDO
+  // ⚽ PUT → jugar partido
   if (req.method === "PUT") {
     const { id, resultado, eventos, mvp, notas } = req.body;
 
-    const partido = await partidos.findOne({ _id: id });
+    const partido = await partidos.findOne({ _id: new ObjectId(id) });
 
     await partidos.updateOne(
-      { _id: id },
+      { _id: new ObjectId(id) },
       {
         $set: {
           jugado: true,
@@ -73,18 +63,45 @@ export default async function handler(req, res) {
       }
     );
 
-    // 🔥 ACTUALIZAR TABLA
-    await actualizarTabla(db, partido, resultado);
+    // 🔥 actualizar tabla
+    await actualizarTabla(tabla, partido, resultado);
+async function actualizarTabla(tabla, partido, resultado) {
+  const { local, visitante } = partido;
+  const { local: gl, visitante: gv } = resultado;
 
-    // 🔥 ACTUALIZAR JUGADORES
-    await actualizarJugadores(db, eventos, mvp);
+  const update = async (nombre, gf, gc, pts, g, e, p) => {
+    await tabla.updateOne(
+      { equipo: nombre },
+      {
+        $inc: {
+          PJ: 1,
+          GF: gf,
+          GC: gc,
+          DG: gf - gc,
+          PTS: pts,
+          G: g,
+          E: e,
+          P: p
+        }
+      },
+      { upsert: true }
+    );
+  };
 
-    return res.json({ message: "Partido actualizado" });
+  if (gl > gv) {
+    await update(local.nombre, gl, gv, 3, 1, 0, 0);
+    await update(visitante.nombre, gv, gl, 0, 0, 0, 1);
+  } else if (gl < gv) {
+    await update(local.nombre, gl, gv, 0, 0, 0, 1);
+    await update(visitante.nombre, gv, gl, 3, 1, 0, 0);
+  } else {
+    await update(local.nombre, gl, gv, 1, 0, 1, 0);
+    await update(visitante.nombre, gv, gl, 1, 0, 1, 0);
   }
 }
-async function actualizarJugadores(db, eventos, mvp) {
-  const jugadores = db.collection("jugadores");
-
+    // 🔥 actualizar stats jugadores
+    await actualizarJugadores(jugadores, eventos, mvp);
+    async function actualizarJugadores(jugadores, eventos, mvp) {
   for (let e of eventos) {
     if (e.tipo === "gol") {
       await jugadores.updateOne(
@@ -122,39 +139,8 @@ async function actualizarJugadores(db, eventos, mvp) {
     );
   }
 }
-
-async function actualizarTabla(db, partido, resultado) {
-  const tabla = db.collection("tabla");
-
-  const { local, visitante } = partido;
-  const { local: gl, visitante: gv } = resultado;
-
-  const updateEquipo = async (nombre, gf, gc, puntos, gana, empata, pierde) => {
-    await tabla.updateOne(
-      { equipo: nombre },
-      {
-        $inc: {
-          PJ: 1,
-          GF: gf,
-          GC: gc,
-          DG: gf - gc,
-          PTS: puntos,
-          G: gana,
-          E: empata,
-          P: pierde
-        }
-      }
-    );
-  };
-
-  if (gl > gv) {
-    await updateEquipo(local.nombre, gl, gv, 3, 1, 0, 0);
-    await updateEquipo(visitante.nombre, gv, gl, 0, 0, 0, 1);
-  } else if (gl < gv) {
-    await updateEquipo(local.nombre, gl, gv, 0, 0, 0, 1);
-    await updateEquipo(visitante.nombre, gv, gl, 3, 1, 0, 0);
-  } else {
-    await updateEquipo(local.nombre, gl, gv, 1, 0, 1, 0);
-    await updateEquipo(visitante.nombre, gv, gl, 1, 0, 1, 0);
+    return res.json({ message: "Partido jugado" });
   }
+
+  res.status(405).end();
 }
