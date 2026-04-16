@@ -2,17 +2,232 @@
 <html>
 <head>
   <title>Jugar Partido</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<h1>Jugar Partido</h1>
+<header>
+  <div class="logo">
+    <img src="img/logo.png">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
 
-<button onclick="volver()">Volver</button>
+<div class="admin-container">
+
+  <h1 class="admin-title">JUGAR PARTIDO</h1>
+
+  <button class="back-btn" onclick="volver()">⬅ Volver</button>
+
+  <!-- INFO PARTIDO -->
+  <div id="infoPartido" class="admin-card"></div>
+
+  <!-- RESULTADO -->
+  <div class="form-card">
+    <h3>Resultado</h3>
+    <input type="number" id="golesLocal" placeholder="Goles local">
+    <input type="number" id="golesVisitante" placeholder="Goles visitante">
+  </div>
+
+  <!-- EVENTOS -->
+  <div class="form-card">
+    <h3>Eventos</h3>
+
+    <select id="tipoEvento">
+      <option value="gol">Gol</option>
+      <option value="amarilla">Amarilla</option>
+      <option value="roja">Roja</option>
+    </select>
+
+    <select id="jugadorEvento"></select>
+
+    <input id="asistencia" placeholder="Asistencia (solo gol)">
+    <input id="minuto" placeholder="Minuto">
+
+    <button onclick="agregarEvento()">Agregar evento</button>
+
+    <div id="listaEventos"></div>
+  </div>
+
+  <!-- MVP -->
+  <div class="form-card">
+    <h3>MVP</h3>
+    <select id="mvp"></select>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="form-card">
+    <h3>Notas</h3>
+    <textarea id="notas" placeholder="Notas del partido"></textarea>
+  </div>
+
+  <button class="add-btn" onclick="guardarPartido()">Guardar Partido</button>
+
+</div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
 
 <script>
+const API = "/api";
+
+let partidoData = null;
+let jugadores = [];
+let eventos = [];
+
+/* 🔙 */
 function volver() {
   window.location.href = "/partidos.html";
 }
+
+/* 🔥 generar calendario */
+function generarCalendario(equipos) {
+  const jornadas = [];
+  const lista = [...equipos];
+
+  if (lista.length % 2 !== 0) lista.push(null);
+
+  const n = lista.length;
+
+  for (let i = 0; i < n - 1; i++) {
+    const jornada = [];
+
+    for (let j = 0; j < n / 2; j++) {
+      const local = lista[j];
+      const visitante = lista[n - 1 - j];
+
+      if (local && visitante) {
+        jornada.push({ local, visitante });
+      }
+    }
+
+    jornadas.push(jornada);
+    lista.splice(1, 0, lista.pop());
+  }
+
+  const vuelta = jornadas.map(j =>
+    j.map(p => ({
+      local: p.visitante,
+      visitante: p.local
+    }))
+  );
+
+  return [...jornadas, ...vuelta];
+}
+
+/* 📥 cargar datos */
+async function cargar() {
+  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+
+  const resTeams = await fetch(API + "/teams");
+  const equipos = await resTeams.json();
+
+  const resJug = await fetch(API + "/jugadores");
+  const allJugadores = await resJug.json();
+
+  const calendario = generarCalendario(equipos);
+  const match = calendario[sel.jornada][sel.partido];
+
+  partidoData = match;
+
+  document.getElementById("infoPartido").innerHTML = `
+    <h3>
+      <img src="${match.local.logo}" width="25"> ${match.local.nombre}
+      vs
+      ${match.visitante.nombre} <img src="${match.visitante.logo}" width="25">
+    </h3>
+  `;
+
+  // 🎯 filtrar jugadores de ambos equipos
+  jugadores = allJugadores.filter(j =>
+    j.equipo === match.local.nombre ||
+    j.equipo === match.visitante.nombre
+  );
+
+  const select = document.getElementById("jugadorEvento");
+  const mvp = document.getElementById("mvp");
+
+  jugadores.forEach(j => {
+    select.innerHTML += `<option value="${j.nombre}">${j.nombre}</option>`;
+    mvp.innerHTML += `<option value="${j.nombre}">${j.nombre}</option>`;
+  });
+}
+
+/* ➕ agregar evento */
+function agregarEvento() {
+  const tipo = document.getElementById("tipoEvento").value;
+  const jugador = document.getElementById("jugadorEvento").value;
+  const asistencia = document.getElementById("asistencia").value;
+  const minuto = document.getElementById("minuto").value;
+
+  const evento = { tipo, jugador, asistencia, minuto };
+  eventos.push(evento);
+
+  renderEventos();
+}
+
+/* 📋 mostrar eventos */
+function renderEventos() {
+  const lista = document.getElementById("listaEventos");
+  lista.innerHTML = "";
+
+  eventos.forEach(e => {
+    lista.innerHTML += `
+      <div>
+        ${e.tipo} - ${e.jugador} (${e.minuto}')
+        ${e.asistencia ? `→ ${e.asistencia}` : ""}
+      </div>
+    `;
+  });
+}
+
+/* 💾 guardar partido */
+async function guardarPartido() {
+  const golesLocal = parseInt(document.getElementById("golesLocal").value) || 0;
+  const golesVisitante = parseInt(document.getElementById("golesVisitante").value) || 0;
+
+  const mvp = document.getElementById("mvp").value;
+  const notas = document.getElementById("notas").value;
+
+  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+
+  // 🔍 obtener ID del partido
+  const res = await fetch(API + "/partidos");
+  const data = await res.json();
+
+  const partido = data.find(p =>
+    p.jornada === sel.jornada &&
+    p.partido === sel.partido
+  );
+
+  if (!partido) {
+    alert("Primero asigna horario");
+    return;
+  }
+
+  await fetch(API + "/partidos", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      id: partido._id,
+      resultado: {
+        local: golesLocal,
+        visitante: golesVisitante
+      },
+      eventos,
+      mvp,
+      notas
+    })
+  });
+
+  alert("Partido guardado ⚽");
+  window.location.href = "/partidos.html";
+}
+
+cargar();
 </script>
 
 </body>
