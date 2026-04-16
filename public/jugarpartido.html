@@ -19,49 +19,50 @@
 
   <button class="back-btn" onclick="volver()">⬅ Volver</button>
 
-  <!-- INFO PARTIDO -->
+  <!-- 🏟 INFO -->
   <div id="infoPartido" class="admin-card"></div>
 
-  <!-- RESULTADO -->
+  <!-- ⚽ RESULTADO -->
   <div class="form-card">
     <h3>Resultado</h3>
     <input type="number" id="golesLocal" placeholder="Goles local">
     <input type="number" id="golesVisitante" placeholder="Goles visitante">
   </div>
 
-  <!-- EVENTOS -->
-  <div class="form-card">
-    <h3>Eventos</h3>
+  <!-- 👥 EQUIPOS -->
+  <div class="teams-container">
 
-    <select id="tipoEvento">
-      <option value="gol">Gol</option>
-      <option value="amarilla">Amarilla</option>
-      <option value="roja">Roja</option>
-    </select>
+    <div class="team-box">
+      <h3 id="nombreLocal"></h3>
+      <div id="jugadoresLocal"></div>
+    </div>
 
-    <select id="jugadorEvento"></select>
+    <div class="team-box">
+      <h3 id="nombreVisitante"></h3>
+      <div id="jugadoresVisitante"></div>
+    </div>
 
-    <input id="asistencia" placeholder="Asistencia (solo gol)">
-    <input id="minuto" placeholder="Minuto">
-
-    <button onclick="agregarEvento()">Agregar evento</button>
-
-    <div id="listaEventos"></div>
   </div>
 
-  <!-- MVP -->
+  <!-- 📋 EVENTOS -->
+  <div class="form-card">
+    <h3>Eventos del partido</h3>
+    <div id="eventos"></div>
+  </div>
+
+  <!-- ⭐ MVP -->
   <div class="form-card">
     <h3>MVP</h3>
     <select id="mvp"></select>
   </div>
 
-  <!-- NOTAS -->
+  <!-- 📝 NOTAS -->
   <div class="form-card">
     <h3>Notas</h3>
-    <textarea id="notas" placeholder="Notas del partido"></textarea>
+    <textarea id="notas"></textarea>
   </div>
 
-  <button class="add-btn" onclick="guardarPartido()">Guardar Partido</button>
+  <button class="add-btn" onclick="guardar()">Guardar Partido</button>
 
 </div>
 
@@ -72,8 +73,7 @@
 <script>
 const API = "/api";
 
-let partidoData = null;
-let jugadores = [];
+let match = null;
 let eventos = [];
 
 /* 🔙 */
@@ -81,7 +81,7 @@ function volver() {
   window.location.href = "/partidos.html";
 }
 
-/* 🔥 generar calendario */
+/* 🔥 calendario */
 function generarCalendario(equipos) {
   const jornadas = [];
   const lista = [...equipos];
@@ -116,20 +116,15 @@ function generarCalendario(equipos) {
   return [...jornadas, ...vuelta];
 }
 
-/* 📥 cargar datos */
+/* 📥 cargar */
 async function cargar() {
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  const resTeams = await fetch(API + "/teams");
-  const equipos = await resTeams.json();
-
-  const resJug = await fetch(API + "/jugadores");
-  const allJugadores = await resJug.json();
+  const equipos = await (await fetch(API + "/teams")).json();
+  const jugadores = await (await fetch(API + "/jugadores")).json();
 
   const calendario = generarCalendario(equipos);
-  const match = calendario[sel.jornada][sel.partido];
-
-  partidoData = match;
+  match = calendario[sel.jornada][sel.partido];
 
   document.getElementById("infoPartido").innerHTML = `
     <h3>
@@ -139,62 +134,82 @@ async function cargar() {
     </h3>
   `;
 
-  // 🎯 filtrar jugadores de ambos equipos
-  jugadores = allJugadores.filter(j =>
-    j.equipo === match.local.nombre ||
-    j.equipo === match.visitante.nombre
-  );
+  document.getElementById("nombreLocal").innerText = match.local.nombre;
+  document.getElementById("nombreVisitante").innerText = match.visitante.nombre;
 
-  const select = document.getElementById("jugadorEvento");
+  const jugLocal = jugadores.filter(j => j.equipo === match.local.nombre);
+  const jugVisit = jugadores.filter(j => j.equipo === match.visitante.nombre);
+
+  renderJugadores(jugLocal, "jugadoresLocal", "local");
+  renderJugadores(jugVisit, "jugadoresVisitante", "visitante");
+
   const mvp = document.getElementById("mvp");
-
   jugadores.forEach(j => {
-    select.innerHTML += `<option value="${j.nombre}">${j.nombre}</option>`;
     mvp.innerHTML += `<option value="${j.nombre}">${j.nombre}</option>`;
   });
 }
 
-/* ➕ agregar evento */
-function agregarEvento() {
-  const tipo = document.getElementById("tipoEvento").value;
-  const jugador = document.getElementById("jugadorEvento").value;
-  const asistencia = document.getElementById("asistencia").value;
-  const minuto = document.getElementById("minuto").value;
+/* 👤 mostrar jugadores */
+function renderJugadores(lista, id, equipo) {
+  const cont = document.getElementById(id);
 
-  const evento = { tipo, jugador, asistencia, minuto };
-  eventos.push(evento);
+  lista.forEach(j => {
+    const div = document.createElement("div");
+    div.className = "jugador-item";
+    div.innerText = j.nombre;
+
+    div.onclick = () => accionJugador(j.nombre, equipo);
+
+    cont.appendChild(div);
+  });
+}
+
+/* ⚡ acción */
+function accionJugador(nombre, equipo) {
+  const tipo = prompt("Acción: gol / asistencia / amarilla / roja");
+
+  if (!tipo) return;
+
+  const minuto = prompt("Minuto:");
+  if (!minuto) return;
+
+  eventos.push({
+    jugador: nombre,
+    tipo,
+    minuto: parseInt(minuto),
+    equipo
+  });
 
   renderEventos();
 }
 
-/* 📋 mostrar eventos */
+/* 📋 render */
 function renderEventos() {
-  const lista = document.getElementById("listaEventos");
-  lista.innerHTML = "";
+  const cont = document.getElementById("eventos");
+
+  eventos.sort((a,b) => a.minuto - b.minuto);
+
+  cont.innerHTML = "";
 
   eventos.forEach(e => {
-    lista.innerHTML += `
+    cont.innerHTML += `
       <div>
-        ${e.tipo} - ${e.jugador} (${e.minuto}')
-        ${e.asistencia ? `→ ${e.asistencia}` : ""}
+        ${e.minuto}' - ${e.jugador} (${e.tipo})
       </div>
     `;
   });
 }
 
-/* 💾 guardar partido */
-async function guardarPartido() {
+/* 💾 guardar */
+async function guardar() {
   const golesLocal = parseInt(document.getElementById("golesLocal").value) || 0;
   const golesVisitante = parseInt(document.getElementById("golesVisitante").value) || 0;
-
   const mvp = document.getElementById("mvp").value;
   const notas = document.getElementById("notas").value;
 
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  // 🔍 obtener ID del partido
-  const res = await fetch(API + "/partidos");
-  const data = await res.json();
+  const data = await (await fetch(API + "/partidos")).json();
 
   const partido = data.find(p =>
     p.jornada === sel.jornada &&
