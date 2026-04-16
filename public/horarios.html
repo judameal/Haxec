@@ -1,10 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Asignar Horario</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="img/logo.png">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <h1 class="admin-title">ASIGNAR HORARIO</h1>
+
+  <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+
+  <div class="form-card">
+
+    <p id="infoPartido" style="margin-bottom:10px;"></p>
+
+    <input type="date" id="fecha">
+    <input type="time" id="hora">
+
+    <button onclick="guardarHorario()">Guardar</button>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
 <script>
 const API = "/api";
 
+/* 🔙 VOLVER */
 function goBack() {
   window.location.href = "/partidos.html";
 }
 
+/* 📥 MOSTRAR INFO DEL PARTIDO */
+async function cargarInfo() {
+  const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+
+  if (!partido) {
+    alert("No hay partido seleccionado");
+    goBack();
+    return;
+  }
+
+  const resTeams = await fetch(API + "/teams");
+  const equipos = await resTeams.json();
+
+  // 🔥 generar calendario igual que en partidos.html
+  function generarCalendario(equipos) {
+    const jornadas = [];
+    const lista = [...equipos];
+
+    if (lista.length % 2 !== 0) lista.push(null);
+
+    const n = lista.length;
+
+    for (let i = 0; i < n - 1; i++) {
+      const jornada = [];
+
+      for (let j = 0; j < n / 2; j++) {
+        const local = lista[j];
+        const visitante = lista[n - 1 - j];
+
+        if (local && visitante) {
+          jornada.push({ local, visitante });
+        }
+      }
+
+      jornadas.push(jornada);
+      lista.splice(1, 0, lista.pop());
+    }
+
+    const vuelta = jornadas.map(j =>
+      j.map(p => ({
+        local: p.visitante,
+        visitante: p.local
+      }))
+    );
+
+    return [...jornadas, ...vuelta];
+  }
+
+  const calendario = generarCalendario(equipos);
+
+  const match = calendario[partido.jornada][partido.partido];
+
+  document.getElementById("infoPartido").innerHTML = `
+    <strong>
+      <img src="${match.local.logo}" width="20"> ${match.local.nombre}
+      vs
+      ${match.visitante.nombre} <img src="${match.visitante.logo}" width="20">
+    </strong>
+  `;
+
+  // 🔥 cargar si ya tenía horario
+  const resPartidos = await fetch(API + "/partidos");
+  const data = await resPartidos.json();
+
+  const existente = data.find(p =>
+    p.jornada === partido.jornada &&
+    p.partido === partido.partido
+  );
+
+  if (existente) {
+    document.getElementById("fecha").value = existente.fecha || "";
+    document.getElementById("hora").value = existente.hora || "";
+  }
+}
+
+/* 💾 GUARDAR */
 async function guardarHorario() {
   const fecha = document.getElementById("fecha").value;
   const hora = document.getElementById("hora").value;
@@ -16,20 +131,31 @@ async function guardarHorario() {
 
   const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  await fetch(API + "/partidos", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      jornada: partido.jornada,
-      partido: partido.partido,
-      fecha,
-      hora
-    })
-  });
+  try {
+    await fetch(API + "/partidos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        jornada: partido.jornada,
+        partido: partido.partido,
+        fecha,
+        hora
+      })
+    });
 
-  alert("Horario guardado ✅");
-  window.location.href = "/partidos.html";
+    alert("Horario guardado ✅");
+    window.location.href = "/partidos.html";
+
+  } catch (err) {
+    console.error(err);
+    alert("Error al guardar");
+  }
 }
+
+cargarInfo();
 </script>
+
+</body>
+</html>
