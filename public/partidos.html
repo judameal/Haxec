@@ -15,15 +15,103 @@
 
 <div class="admin-container">
 
-  <h1 class="admin-title">Partidos</h1>
+  <h1 class="admin-title">PARTIDOS</h1>
 
-  <div class="admin-card">
-    <p>Jornada 1</p>
-    <p>Equipo A vs Equipo B</p>
-    <p>Equipo C vs Equipo D</p>
-  </div>
+  <button class="back-btn" onclick="goBack()">Volver</button>
+
+  <div id="partidosContainer"></div>
 
 </div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
+<script>
+const API = "/api";
+
+function goBack() {
+  window.location.href = "/haxball.html";
+}
+
+/* 🔥 GENERAR CALENDARIO */
+function generarCalendario(equipos) {
+  const jornadas = [];
+  const lista = [...equipos];
+
+  if (lista.length % 2 !== 0) lista.push(null);
+
+  const n = lista.length;
+
+  for (let i = 0; i < n - 1; i++) {
+    const jornada = [];
+
+    for (let j = 0; j < n / 2; j++) {
+      const local = lista[j];
+      const visitante = lista[n - 1 - j];
+
+      if (local && visitante) {
+        jornada.push({ local, visitante });
+      }
+    }
+
+    jornadas.push(jornada);
+
+    // 🔁 rotación
+    lista.splice(1, 0, lista.pop());
+  }
+
+  // 🔁 vuelta
+  const vuelta = jornadas.map(jornada =>
+    jornada.map(p => ({
+      local: p.visitante,
+      visitante: p.local
+    }))
+  );
+
+  return [...jornadas, ...vuelta];
+}
+
+/* 📥 cargar equipos */
+async function cargarPartidos() {
+  const res = await fetch(API + "/teams");
+  const equipos = await res.json();
+
+  const container = document.getElementById("partidosContainer");
+
+  const calendario = generarCalendario(equipos);
+
+  calendario.forEach((jornada, i) => {
+    const div = document.createElement("div");
+
+    div.className = "admin-card";
+    div.style.marginBottom = "20px";
+
+    let html = `<h3>Jornada ${i + 1}</h3>`;
+
+    jornada.forEach(p => {
+      html += `
+        <div style="display:flex; justify-content:space-between; padding:8px 0;">
+          <span>
+            <img src="${p.local.logo}" width="20"> ${p.local.nombre}
+          </span>
+
+          <strong>vs</strong>
+
+          <span>
+            ${p.visitante.nombre} <img src="${p.visitante.logo}" width="20">
+          </span>
+        </div>
+      `;
+    });
+
+    div.innerHTML = html;
+    container.appendChild(div);
+  });
+}
+
+cargarPartidos();
+</script>
 
 </body>
 </html>

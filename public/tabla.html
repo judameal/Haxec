@@ -50,42 +50,17 @@
 <script>
 const API = "/api";
 
-/* 🔙 volver */
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 📥 cargar equipos */
 async function cargarTabla() {
   const res = await fetch(API + "/teams");
   const equipos = await res.json();
 
   const tabla = document.getElementById("tabla");
-  const mensaje = document.getElementById("mensaje");
 
-  // ❌ MENOS DE 10
-  if (equipos.length < 10) {
-    mensaje.innerHTML = `
-      <p style="color:red; font-weight:bold;">
-        Se necesitan 10 equipos para iniciar la liga.<br>
-        Actualmente hay ${equipos.length}/10
-      </p>
-    `;
-    return;
-  }
-
-  // ✅ EXACTAMENTE 10 (o más, pero usamos 10)
-  mensaje.innerHTML = `
-    <p style="color:green; font-weight:bold;">
-      Liga lista para iniciar ✅
-    </p>
-  `;
-
-  const equiposLiga = equipos.slice(0, 10);
-
-  // 🔢 crear tabla inicial
-  equiposLiga.forEach((t, index) => {
-
+  equipos.forEach((t, index) => {
     const row = document.createElement("tr");
 
     row.innerHTML = `
