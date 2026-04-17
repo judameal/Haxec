@@ -9,42 +9,34 @@ export default async function handler(req, res) {
   const tabla = db.collection("tabla");
   const jugadores = db.collection("jugadores");
 
-  // 📥 GET → obtener partidos
+  // 📥 GET
   if (req.method === "GET") {
     const data = await partidos.find().toArray();
     return res.status(200).json(data);
   }
 
-  // ➕ POST → guardar horario o crear calendario
+  // ➕ POST (horarios o calendario)
   if (req.method === "POST") {
     const body = req.body;
 
-    // 🔥 SI VIENE CALENDARIO COMPLETO
     if (body.calendario) {
       await partidos.deleteMany({});
       await partidos.insertMany(body.calendario);
       return res.json({ message: "Calendario guardado" });
     }
 
-    // 🔥 SI ES HORARIO INDIVIDUAL
     const { jornada, partido, fecha, hora } = body;
-
-    if (jornada === undefined || partido === undefined) {
-      return res.status(400).json({ message: "Datos incompletos" });
-    }
 
     await partidos.updateOne(
       { jornada, partido },
-      {
-        $set: { jornada, partido, fecha, hora }
-      },
+      { $set: { jornada, partido, fecha, hora } },
       { upsert: true }
     );
 
     return res.json({ message: "Horario guardado" });
   }
 
-  // ⚽ PUT → jugar partido
+  // ⚽ JUGAR PARTIDO
   if (req.method === "PUT") {
     const { id, resultado, eventos, mvp, notas } = req.body;
 
@@ -63,8 +55,16 @@ export default async function handler(req, res) {
       }
     );
 
-    // 🔥 actualizar tabla
     await actualizarTabla(tabla, partido, resultado);
+    await actualizarJugadores(jugadores, eventos, mvp);
+
+    return res.json({ message: "Partido jugado" });
+  }
+
+  res.status(405).end();
+}
+
+/* 🔥 TABLA */
 async function actualizarTabla(tabla, partido, resultado) {
   const { local, visitante } = partido;
   const { local: gl, visitante: gv } = resultado;
@@ -99,9 +99,9 @@ async function actualizarTabla(tabla, partido, resultado) {
     await update(visitante.nombre, gv, gl, 1, 0, 1, 0);
   }
 }
-    // 🔥 actualizar stats jugadores
-    await actualizarJugadores(jugadores, eventos, mvp);
-    async function actualizarJugadores(jugadores, eventos, mvp) {
+
+/* 👤 JUGADORES */
+async function actualizarJugadores(jugadores, eventos, mvp) {
   for (let e of eventos) {
     if (e.tipo === "gol") {
       await jugadores.updateOne(
@@ -138,9 +138,4 @@ async function actualizarTabla(tabla, partido, resultado) {
       { $inc: { mvp: 1 } }
     );
   }
-}
-    return res.json({ message: "Partido jugado" });
-  }
-
-  res.status(405).end();
 }
