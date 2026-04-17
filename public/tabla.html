@@ -19,10 +19,6 @@
 
   <button class="back-btn" onclick="goBack()">Volver</button>
 
-  <!-- ⚠️ MENSAJE -->
-  <div id="mensaje"></div>
-
-  <!-- 📋 TABLA -->
   <div class="admin-card">
     <table id="tabla">
       <tr>
@@ -50,34 +46,55 @@
 <script>
 const API = "/api";
 
+/* 🔙 */
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
+/* 📥 cargar tabla REAL */
 async function cargarTabla() {
-  const res = await fetch(API + "/teams");
-  const equipos = await res.json();
+
+  const resTabla = await fetch(API + "/tabla");
+  const data = await resTabla.json();
+
+  const resTeams = await fetch(API + "/teams");
+  const equipos = await resTeams.json();
 
   const tabla = document.getElementById("tabla");
 
-  equipos.forEach((t, index) => {
+  // 🔥 ordenar por puntos y DG
+  data.sort((a,b) =>
+    b.PTS - a.PTS || b.DG - a.DG
+  );
+
+  data.forEach((t, index) => {
+
+    const equipo = equipos.find(e =>
+      e.nombre.toLowerCase() === t.equipo.toLowerCase()
+    );
+
+    const logo = equipo ? `<img src="${equipo.logo}" width="25">` : "";
+
+    const porcentaje = t.PJ > 0
+      ? ((t.PTS / (t.PJ * 3)) * 100).toFixed(0)
+      : 0;
+
     const row = document.createElement("tr");
 
     row.innerHTML = `
       <td>${index + 1}</td>
       <td style="display:flex; align-items:center; gap:10px;">
-        <img src="${t.logo}" width="25">
-        ${t.nombre}
+        ${logo} ${t.equipo}
       </td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0%</td>
+      <td>${t.PJ || 0}</td>
+      <td>${t.G || 0}</td>
+      <td>${t.E || 0}</td>
+      <td>${t.P || 0}</td>
+      <td>${t.GF || 0}</td>
+      <td>${t.GC || 0}</td>
+      <td>${t.DG || 0}</td>
+      <td><strong>${t.PTS || 0}</strong></td>
+      <td>${porcentaje}%</td>
     `;
 
     tabla.appendChild(row);

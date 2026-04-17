@@ -9,4 +9,6 @@ export default async function handler(req, res) {
     const data = await tabla.find().toArray();
     return res.json(data);
   }
+
+  res.status(405).end();
 }
