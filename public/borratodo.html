@@ -1,0 +1,62 @@
+<!-- 🔥 BOTÓN RESET (poner debajo del título por ejemplo) -->
+<div id="adminActions"></div>
+
+<style>
+/* 🔥 BOTÓN RESET */
+.reset-btn {
+  background: linear-gradient(135deg, #ff3b3b, #ff6b6b);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+  margin-bottom: 15px;
+}
+
+.reset-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #cc2f2f, #ff4d4d);
+}
+</style>
+
+<script>
+const API = "/api";
+
+/* 👤 USER */
+const user = JSON.parse(localStorage.getItem("user"));
+const esAdmin = user && user.role === "admin";
+
+/* 🔥 MOSTRAR BOTÓN SOLO ADMIN */
+if (esAdmin) {
+  document.getElementById("adminActions").innerHTML = `
+    <button class="reset-btn" onclick="resetearTodo()">
+      🔄 Reiniciar Liga
+    </button>
+  `;
+}
+
+/* 💣 RESET TOTAL */
+async function resetearTodo() {
+  const confirmacion = confirm("⚠️ Esto borrará TODO (tabla, partidos, stats). ¿Seguro?");
+
+  if (!confirmacion) return;
+
+  try {
+    const res = await fetch(API + "/reset", {
+      method: "POST"
+    });
+
+    const data = await res.json();
+
+    alert(data.message || "Liga reiniciada");
+
+    location.reload();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error al reiniciar");
+  }
+}
+</script>
