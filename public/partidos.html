@@ -1,25 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Partidos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partidos — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="img/logo.png">
+    <img src="img/logo.png" alt="Logo">
     <h1>Haxec <span>Esport</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <h1 class="admin-title">PARTIDOS</h1>
+  <h1 class="admin-title">Partidos</h1>
 
-  <button class="back-btn" onclick="goBack()">Volver</button>
+  <button class="back-btn" onclick="goBack()">← Volver</button>
 
-  <div id="partidosContainer"></div>
+  <div id="partidosContainer">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      Cargando partidos...
+    </div>
+  </div>
 
 </div>
 
@@ -29,151 +36,145 @@
 
 <script>
 const API = "/api";
-
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const esAdmin = user && user.role === "admin";
 
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 🔥 CALENDARIO */
+/* ── GENERADOR DE CALENDARIO ─────────────────────────────── */
 function generarCalendario(equipos) {
-  const jornadas = [];
   const lista = [...equipos];
-
   if (lista.length % 2 !== 0) lista.push(null);
-
   const n = lista.length;
+  const jornadas = [];
 
   for (let i = 0; i < n - 1; i++) {
     const jornada = [];
-
     for (let j = 0; j < n / 2; j++) {
       const local = lista[j];
       const visitante = lista[n - 1 - j];
-
-      if (local && visitante) {
-        jornada.push({ local, visitante });
-      }
+      if (local && visitante) jornada.push({ local, visitante });
     }
-
     jornadas.push(jornada);
     lista.splice(1, 0, lista.pop());
   }
 
-  const vuelta = jornadas.map(jornada =>
-    jornada.map(p => ({
-      local: p.visitante,
-      visitante: p.local
-    }))
+  const vuelta = jornadas.map(j =>
+    j.map(p => ({ local: p.visitante, visitante: p.local }))
   );
 
   return [...jornadas, ...vuelta];
 }
 
-/* 📥 CARGAR */
-async function cargarPartidos() {
-  const res = await fetch(API + "/teams");
-  const equipos = await res.json();
-
-  let dataPartidos = [];
-
-try {
-  const resPartidos = await fetch(API + "/partidos");
-
-  if (!resPartidos.ok) {
-    throw new Error("Error en API");
-  }
-
-  dataPartidos = await resPartidos.json();
-
-} catch (err) {
-  console.error("Error cargando partidos:", err);
-  dataPartidos = [];
+/* ── ICONOS EVENTOS ──────────────────────────────────────── */
+function iconEvento(tipo) {
+  const map = { gol: '⚽', asistencia: '🅰️', amarilla: '🟨', roja: '🟥' };
+  return map[tipo] || '•';
 }
 
+/* ── RENDER ──────────────────────────────────────────────── */
+async function cargarPartidos() {
   const container = document.getElementById("partidosContainer");
 
-  const calendario = generarCalendario(equipos);
+  try {
+    const [equipos, dataPartidos] = await Promise.all([
+      fetch(API + "/teams").then(r => r.json()),
+      fetch(API + "/partidos").then(r => r.ok ? r.json() : []).catch(() => [])
+    ]);
 
-  calendario.forEach((jornada, i) => {
-    const div = document.createElement("div");
-    div.className = "admin-card";
-    div.style.marginBottom = "20px";
+    const calendario = generarCalendario(equipos);
+    container.innerHTML = "";
 
-    let html = `<h3>Jornada ${i + 1}</h3>`;
+    calendario.forEach((jornada, i) => {
+      const block = document.createElement("div");
+      block.className = "jornada-block";
+      block.style.animationDelay = `${i * 0.04}s`;
 
-    jornada.forEach((p, indexPartido) => {
-
-      const info = dataPartidos.find(d =>
-        d.jornada === i && d.partido === indexPartido
-      );
-
-      html += `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0;">
-
-          <span>
-            <img src="${p.local.logo}" width="20"> ${p.local.nombre}
-          </span>
-
-          <div style="text-align:center;">
-            <strong>vs</strong><br>
-            ${info
-  ? info.jugado
-    ? `<strong>${info.resultado?.local ?? 0} - ${info.resultado?.visitante ?? 0}</strong>`
-    : `<small>${info.fecha} - ${info.hora}</small>`
-  : `<small style="color:gray;">Sin horario</small>`
-}
-}
-          </div>
-
-          <span>
-            ${p.visitante.nombre} <img src="${p.visitante.logo}" width="20">
-          </span>
-
-          ${
-            esAdmin ? `
-              <div style="display:flex; gap:5px;">
-                <button style="font-size:12px; padding:4px 8px;"
-                  onclick="abrirOpciones(${i}, ${indexPartido})">
-                  Asignar
-                </button>
-
-                <button style="font-size:12px; padding:4px 8px;"
-                  onclick="jugar(${i}, ${indexPartido})">
-                  Jugar
-                </button>
-              </div>
-            ` : ""
-          }
-
+      let html = `
+        <div class="jornada-header">
+          <h3>⚽ Jornada ${i + 1}</h3>
         </div>
       `;
+
+      jornada.forEach((p, idx) => {
+        const info = dataPartidos.find(d =>
+          d.jornada === i && d.partido === idx
+        );
+
+        const jugado = info && info.jugado;
+
+        let centroHTML = "";
+        if (jugado) {
+          centroHTML = `
+            <div class="score-badge">
+              ${info.resultado?.local ?? 0} – ${info.resultado?.visitante ?? 0}
+            </div>
+          `;
+        } else if (info && info.fecha) {
+          centroHTML = `
+            <div class="score-badge" style="font-size:.85rem; letter-spacing:1px; color:var(--muted);">vs</div>
+            <div class="match-meta">${info.fecha} · ${info.hora}</div>
+          `;
+        } else {
+          centroHTML = `
+            <div class="score-badge" style="font-size:.85rem; color:var(--muted);">vs</div>
+            <div class="match-meta" style="color:var(--border);">Sin horario</div>
+          `;
+        }
+
+        html += `
+          <div class="partido-row">
+            <div class="team-side">
+              <img src="${p.local.logo}" alt="${p.local.nombre}">
+              ${p.local.nombre}
+            </div>
+
+            <div class="match-center">
+              ${centroHTML}
+            </div>
+
+            <div class="team-side right">
+              ${p.visitante.nombre}
+              <img src="${p.visitante.logo}" alt="${p.visitante.nombre}">
+            </div>
+
+            ${esAdmin ? `
+              <div class="match-actions">
+                <button class="btn-assign" onclick="abrirOpciones(${i}, ${idx})">
+                  📅 Asignar horario
+                </button>
+                <button class="btn-play" onclick="jugar(${i}, ${idx})">
+                  ▶ Jugar
+                </button>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      });
+
+      block.innerHTML = html;
+      container.appendChild(block);
     });
 
-    div.innerHTML = html;
-    container.appendChild(div);
-  });
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `
+      <div class="loading-state">
+        ⚠️ Error al cargar los partidos. Recarga la página.
+      </div>
+    `;
+  }
 }
 
-/* 🔗 IR HORARIOS */
 function abrirOpciones(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({
-    jornada,
-    partido
-  }));
-
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada, partido }));
   window.location.href = "/horarios.html";
 }
 
-/* 🎮 IR JUGAR */
 function jugar(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({
-    jornada,
-    partido
-  }));
-
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada, partido }));
   window.location.href = "/jugarpartido.html";
 }
 

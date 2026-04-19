@@ -1,68 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Jugar Partido</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jugar Partido — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="img/logo.png">
+    <img src="img/logo.png" alt="Logo">
     <h1>Haxec <span>Esport</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <h1 class="admin-title">JUGAR PARTIDO</h1>
+  <h1 class="admin-title">Jugar Partido</h1>
+  <button class="back-btn" onclick="volver()">← Volver</button>
 
-  <button class="back-btn" onclick="volver()">⬅ Volver</button>
+  <!-- INFO PARTIDO -->
+  <div id="infoPartido" class="match-header-card">
+    <div class="spinner"></div>
+  </div>
 
-  <!-- 🏟 INFO -->
-  <div id="infoPartido" class="admin-card"></div>
-
-  <!-- ⚽ RESULTADO -->
+  <!-- RESULTADO -->
   <div class="form-card">
     <h3>Resultado</h3>
-    <input type="number" id="golesLocal" placeholder="Goles local">
-    <input type="number" id="golesVisitante" placeholder="Goles visitante">
+    <div class="score-inputs">
+      <input type="number" id="golesLocal" placeholder="0" min="0" value="0">
+      <div class="score-sep">–</div>
+      <input type="number" id="golesVisitante" placeholder="0" min="0" value="0">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;margin-top:6px;">
+      <div id="labelLocal" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
+      <div></div>
+      <div id="labelVisitante" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
+    </div>
   </div>
 
-  <!-- 👥 EQUIPOS -->
+  <!-- EQUIPOS -->
   <div class="teams-container">
-
     <div class="team-box">
-      <h3 id="nombreLocal"></h3>
+      <h3 id="nombreLocal">Local</h3>
       <div id="jugadoresLocal"></div>
     </div>
-
     <div class="team-box">
-      <h3 id="nombreVisitante"></h3>
+      <h3 id="nombreVisitante">Visitante</h3>
       <div id="jugadoresVisitante"></div>
     </div>
-
   </div>
 
-  <!-- 📋 EVENTOS -->
+  <!-- EVENTOS -->
   <div class="form-card">
-    <h3>Eventos del partido</h3>
-    <div id="eventos"></div>
+    <h3>Eventos del Partido</h3>
+    <div id="eventos">
+      <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">
+        Haz clic en un jugador para registrar un evento
+      </div>
+    </div>
   </div>
 
-  <!-- ⭐ MVP -->
+  <!-- MVP -->
   <div class="form-card">
-    <h3>MVP</h3>
-    <select id="mvp"></select>
+    <h3>MVP del Partido</h3>
+    <select id="mvp"><option value="">— Seleccionar MVP —</option></select>
   </div>
 
-  <!-- 📝 NOTAS -->
+  <!-- NOTAS -->
   <div class="form-card">
     <h3>Notas</h3>
-    <textarea id="notas"></textarea>
+    <textarea id="notas" placeholder="Observaciones del partido..."></textarea>
   </div>
 
-  <button class="add-btn" onclick="guardar()">Guardar Partido</button>
+  <button class="add-btn" onclick="guardar()">⚽ Guardar Partido</button>
 
 </div>
 
@@ -70,72 +82,106 @@
   <p>© 2026 Haxec Esport — Hecho por Judameal</p>
 </footer>
 
+<!-- MODAL EVENTOS -->
+<div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="cerrarModalSiOverlay(event)">
+  <div class="modal-box">
+    <h3 id="modalTitulo">Registrar evento</h3>
+
+    <!-- PASO 1: elegir acción -->
+    <div id="pasoAccion">
+      <div class="action-grid">
+        <button class="action-btn" onclick="selAccion('gol')">
+          <span class="icon">⚽</span> Gol
+        </button>
+        <button class="action-btn" onclick="selAccion('asistencia')">
+          <span class="icon">🅰️</span> Asistencia
+        </button>
+        <button class="action-btn" onclick="selAccion('amarilla')">
+          <span class="icon">🟨</span> Amarilla
+        </button>
+        <button class="action-btn" onclick="selAccion('roja')">
+          <span class="icon">🟥</span> Roja
+        </button>
+      </div>
+      <button class="modal-cancel" onclick="cerrarModal()" style="width:100%;">Cancelar</button>
+    </div>
+
+    <!-- PASO 2: minuto -->
+    <div id="pasoMinuto" style="display:none;">
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:14px;">
+        Acción: <strong id="accionLabel" style="color:var(--text);"></strong>
+      </p>
+      <input type="number" id="minutoInput" class="modal-input" placeholder="Minuto (ej: 35)" min="1" max="120">
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="volverPaso1()">← Volver</button>
+        <button class="modal-confirm" onclick="confirmarEvento()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = "/api";
-
 let match = null;
 let eventos = [];
+let eventoActual = { jugador: null, equipo: null, tipo: null };
 
-/* 🔙 */
+const ICONOS = { gol: '⚽', asistencia: '🅰️', amarilla: '🟨', roja: '🟥' };
+
+/* ── VOLVER ──────────────────────────────────────────────── */
 function volver() {
   window.location.href = "/partidos.html";
 }
 
-/* 🔥 calendario */
+/* ── CALENDAR ────────────────────────────────────────────── */
 function generarCalendario(equipos) {
-  const jornadas = [];
   const lista = [...equipos];
-
   if (lista.length % 2 !== 0) lista.push(null);
-
   const n = lista.length;
-
+  const jornadas = [];
   for (let i = 0; i < n - 1; i++) {
     const jornada = [];
-
     for (let j = 0; j < n / 2; j++) {
-      const local = lista[j];
-      const visitante = lista[n - 1 - j];
-
-      if (local && visitante) {
-        jornada.push({ local, visitante });
-      }
+      const local = lista[j], visitante = lista[n - 1 - j];
+      if (local && visitante) jornada.push({ local, visitante });
     }
-
     jornadas.push(jornada);
     lista.splice(1, 0, lista.pop());
   }
-
   const vuelta = jornadas.map(j =>
-    j.map(p => ({
-      local: p.visitante,
-      visitante: p.local
-    }))
+    j.map(p => ({ local: p.visitante, visitante: p.local }))
   );
-
   return [...jornadas, ...vuelta];
 }
 
-/* 📥 cargar */
+/* ── CARGAR ──────────────────────────────────────────────── */
 async function cargar() {
-  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado") || "null");
+  if (!sel) { volver(); return; }
 
-  const equipos = await (await fetch(API + "/teams")).json();
-  const jugadores = await (await fetch(API + "/jugadores")).json();
+  const [equipos, jugadores] = await Promise.all([
+    fetch(API + "/teams").then(r => r.json()),
+    fetch(API + "/jugadores").then(r => r.json())
+  ]);
 
   const calendario = generarCalendario(equipos);
   match = calendario[sel.jornada][sel.partido];
 
+  // Info partido
   document.getElementById("infoPartido").innerHTML = `
     <h3>
-      <img src="${match.local.logo}" width="25"> ${match.local.nombre}
-      vs
-      ${match.visitante.nombre} <img src="${match.visitante.logo}" width="25">
+      <img src="${match.local.logo}" alt="${match.local.nombre}">
+      ${match.local.nombre}
+      <span style="color:var(--muted);font-size:1.2rem;margin:0 4px;">vs</span>
+      ${match.visitante.nombre}
+      <img src="${match.visitante.logo}" alt="${match.visitante.nombre}">
     </h3>
   `;
 
   document.getElementById("nombreLocal").innerText = match.local.nombre;
   document.getElementById("nombreVisitante").innerText = match.visitante.nombre;
+  document.getElementById("labelLocal").innerText = match.local.nombre;
+  document.getElementById("labelVisitante").innerText = match.visitante.nombre;
 
   const jugLocal = jugadores.filter(j => j.equipo === match.local.nombre);
   const jugVisit = jugadores.filter(j => j.equipo === match.visitante.nombre);
@@ -143,105 +189,156 @@ async function cargar() {
   renderJugadores(jugLocal, "jugadoresLocal", "local");
   renderJugadores(jugVisit, "jugadoresVisitante", "visitante");
 
-  const mvp = document.getElementById("mvp");
+  const mvpSel = document.getElementById("mvp");
   jugadores.forEach(j => {
-    mvp.innerHTML += `<option value="${j.nombre}">${j.nombre}</option>`;
+    mvpSel.innerHTML += `<option value="${j.nombre}">${j.nombre} (${j.equipo})</option>`;
   });
 }
 
-/* 👤 mostrar jugadores */
+/* ── JUGADORES ───────────────────────────────────────────── */
 function renderJugadores(lista, id, equipo) {
   const cont = document.getElementById(id);
-
+  cont.innerHTML = "";
+  if (!lista.length) {
+    cont.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">Sin jugadores</div>`;
+    return;
+  }
   lista.forEach(j => {
     const div = document.createElement("div");
     div.className = "jugador-item";
-    div.innerText = j.nombre;
-
-    div.onclick = () => accionJugador(j.nombre, equipo);
-
+    div.innerHTML = `<span>${j.nombre}</span>`;
+    div.onclick = () => abrirModal(j.nombre, equipo);
     cont.appendChild(div);
   });
 }
 
-/* ⚡ acción */
-function accionJugador(nombre, equipo) {
-  const tipo = prompt("Acción: gol / asistencia / amarilla / roja");
-
-  if (!tipo) return;
-
-  const minuto = prompt("Minuto:");
-  if (!minuto) return;
-
-  eventos.push({
-    jugador: nombre,
-    tipo,
-    minuto: parseInt(minuto),
-    equipo
-  });
-
-  renderEventos();
+/* ── MODAL ───────────────────────────────────────────────── */
+function abrirModal(jugador, equipo) {
+  eventoActual = { jugador, equipo, tipo: null };
+  document.getElementById("modalTitulo").textContent = `🎮 ${jugador}`;
+  document.getElementById("pasoAccion").style.display = "block";
+  document.getElementById("pasoMinuto").style.display = "none";
+  document.getElementById("minutoInput").value = "";
+  document.getElementById("modalOverlay").style.display = "flex";
 }
 
-/* 📋 render */
+function cerrarModal() {
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+function cerrarModalSiOverlay(e) {
+  if (e.target === document.getElementById("modalOverlay")) cerrarModal();
+}
+
+function selAccion(tipo) {
+  eventoActual.tipo = tipo;
+  document.getElementById("accionLabel").innerHTML = `${ICONOS[tipo]} ${tipo}`;
+  document.getElementById("pasoAccion").style.display = "none";
+  document.getElementById("pasoMinuto").style.display = "block";
+  document.getElementById("minutoInput").focus();
+}
+
+function volverPaso1() {
+  document.getElementById("pasoAccion").style.display = "block";
+  document.getElementById("pasoMinuto").style.display = "none";
+}
+
+function confirmarEvento() {
+  const minuto = parseInt(document.getElementById("minutoInput").value);
+  if (!minuto || minuto < 1) {
+    document.getElementById("minutoInput").focus();
+    return;
+  }
+  eventos.push({
+    jugador: eventoActual.jugador,
+    tipo: eventoActual.tipo,
+    minuto,
+    equipo: eventoActual.equipo
+  });
+  cerrarModal();
+  renderEventos();
+  showToast(`${ICONOS[eventoActual.tipo]} ${eventoActual.jugador} — min. ${minuto}`);
+}
+
+/* ── EVENTOS ─────────────────────────────────────────────── */
 function renderEventos() {
   const cont = document.getElementById("eventos");
-
-  eventos.sort((a,b) => a.minuto - b.minuto);
-
-  cont.innerHTML = "";
-
-  eventos.forEach(e => {
-    cont.innerHTML += `
-      <div>
-        ${e.minuto}' - ${e.jugador} (${e.tipo})
-      </div>
-    `;
-  });
+  const sorted = [...eventos].sort((a, b) => a.minuto - b.minuto);
+  if (!sorted.length) {
+    cont.innerHTML = `<div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">Haz clic en un jugador para registrar un evento</div>`;
+    return;
+  }
+  cont.innerHTML = sorted.map(e => `
+    <div class="evento-item">
+      <span class="evento-minuto">${e.minuto}'</span>
+      <span class="evento-icon">${ICONOS[e.tipo] || '•'}</span>
+      <span class="evento-nombre">${e.jugador}</span>
+      <span class="evento-tipo">${e.tipo}</span>
+    </div>
+  `).join("");
 }
 
-/* 💾 guardar */
+/* ── GUARDAR ─────────────────────────────────────────────── */
 async function guardar() {
-  const golesLocal = parseInt(document.getElementById("golesLocal").value) || 0;
+  const golesLocal     = parseInt(document.getElementById("golesLocal").value)     || 0;
   const golesVisitante = parseInt(document.getElementById("golesVisitante").value) || 0;
-  const mvp = document.getElementById("mvp").value;
+  const mvp   = document.getElementById("mvp").value;
   const notas = document.getElementById("notas").value;
 
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  const data = await (await fetch("/api/partidos")).json();
+  let data = [];
+  try {
+    const r = await fetch("/api/partidos");
+    if (r.ok) data = await r.json();
+  } catch (_) {}
 
   const partido = data.find(p =>
-    p.jornada === sel.jornada &&
-    p.partido === sel.partido
+    p.jornada === sel.jornada && p.partido === sel.partido
   );
 
   if (!partido) {
-    alert("Primero asigna horario");
+    showToast("⚠️ Primero asigna un horario al partido", true);
     return;
   }
 
-  await fetch("/api/partidos", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      id: partido._id,
-      local: partido.local,
-      visitante: partido.visitante,
-      resultado: {
-        local: golesLocal,
-        visitante: golesVisitante
-      },
-      eventos,
-      mvp,
-      notas
-    })
-  });
+  const btn = document.querySelector(".add-btn");
+  btn.disabled = true;
+  btn.textContent = "Guardando...";
 
-  alert("Partido guardado ⚽");
-  window.location.href = "/partidos.html";
+  try {
+    const res = await fetch("/api/partidos", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: partido._id,
+        local:     partido.local,
+        visitante: partido.visitante,
+        resultado: { local: golesLocal, visitante: golesVisitante },
+        eventos,
+        mvp,
+        notas
+      })
+    });
+
+    if (!res.ok) throw new Error();
+    showToast("✅ Partido guardado correctamente");
+    setTimeout(() => window.location.href = "/partidos.html", 1400);
+  } catch (_) {
+    showToast("❌ Error al guardar el partido", true);
+    btn.disabled = false;
+    btn.textContent = "⚽ Guardar Partido";
+  }
+}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+function showToast(msg, isError = false) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  if (isError) t.style.borderColor = "var(--red)";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
 }
 
 cargar();

@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Tabla de Posiciones</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla de Posiciones — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="img/logo.png">
+    <img src="img/logo.png" alt="Logo">
     <h1>Haxec <span>Esport</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <h1 class="admin-title">TABLA DE POSICIONES</h1>
+  <h1 class="admin-title">Tabla de Posiciones</h1>
 
-  <button class="back-btn" onclick="goBack()">Volver</button>
+  <button class="back-btn" onclick="goBack()">← Volver</button>
 
-  <div class="admin-card">
-    <table id="tabla">
-      <tr>
-        <th>#</th>
-        <th>Equipo</th>
-        <th>PJ</th>
-        <th>G</th>
-        <th>E</th>
-        <th>P</th>
-        <th>GF</th>
-        <th>GC</th>
-        <th>DG</th>
-        <th>PTS</th>
-        <th>%</th>
-      </tr>
-    </table>
+  <div class="admin-card" style="padding:0;">
+    <div class="tabla-wrapper">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:left;padding-left:16px;">Equipo</th>
+            <th>PJ</th>
+            <th>G</th>
+            <th>E</th>
+            <th>P</th>
+            <th>GF</th>
+            <th>GC</th>
+            <th>DG</th>
+            <th>PTS</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody">
+          <tr>
+            <td colspan="11">
+              <div class="loading-state">
+                <div class="spinner"></div>
+                Cargando tabla...
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
 </div>
@@ -46,88 +62,106 @@
 <script>
 const API = "/api";
 
-/* 🔙 */
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 📥 cargar tabla REAL */
 async function cargarTabla() {
+  const tbody = document.getElementById("tablaBody");
 
-  const tablaHTML = document.getElementById("tabla");
+  try {
+    // Traer tabla
+    let resTabla = await fetch(API + "/tabla");
+    let data = await resTabla.json();
 
-  // 🔥 traer datos tabla
-  let resTabla = await fetch(API + "/tabla");
-  let data = await resTabla.json();
+    // Si vacía → inicializar y recargar
+    if (!data.length) {
+      await fetch(API + "/tabla", { method: "POST" });
+      resTabla = await fetch(API + "/tabla");
+      data = await resTabla.json();
+    }
 
-  // 🔥 si no hay tabla → crearla
-  if (!data.length) {
-    await fetch(API + "/tabla", { method: "POST" });
+    // Traer equipos para logos
+    const equipos = await fetch(API + "/teams").then(r => r.json());
 
-    // volver a pedir datos
-    resTabla = await fetch(API + "/tabla");
-    data = await resTabla.json();
-  }
-
-  // 🔥 traer equipos (para logos)
-  const resTeams = await fetch(API + "/teams");
-  const equipos = await resTeams.json();
-
-  // 🔥 ordenar
-  data.sort((a,b) =>
-    b.PTS - a.PTS || b.DG - a.DG
-  );
-
-  // 🔥 limpiar tabla (por si recarga)
-  tablaHTML.innerHTML = `
-    <tr>
-      <th>#</th>
-      <th>Equipo</th>
-      <th>PJ</th>
-      <th>G</th>
-      <th>E</th>
-      <th>P</th>
-      <th>GF</th>
-      <th>GC</th>
-      <th>DG</th>
-      <th>PTS</th>
-      <th>%</th>
-    </tr>
-  `;
-
-  // 🔥 render
-  data.forEach((t, index) => {
-
-    const equipo = equipos.find(e =>
-      e.nombre.toLowerCase() === t.equipo.toLowerCase()
+    // Ordenar: puntos → diferencia de goles → GF
+    data.sort((a, b) =>
+      (b.PTS - a.PTS) || (b.DG - a.DG) || (b.GF - a.GF)
     );
 
-    const logo = equipo ? `<img src="${equipo.logo}" width="25">` : "";
+    tbody.innerHTML = "";
 
-    const porcentaje = t.PJ > 0
-      ? ((t.PTS / (t.PJ * 3)) * 100).toFixed(0)
-      : 0;
+    if (!data.length) {
+      tbody.innerHTML = `
+        <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">
+          Sin datos aún
+        </td></tr>
+      `;
+      return;
+    }
 
-    const row = document.createElement("tr");
+    data.forEach((t, index) => {
+      const equipo = equipos.find(e =>
+        e.nombre.toLowerCase() === t.equipo.toLowerCase()
+      );
+      const logo = equipo
+        ? `<img src="${equipo.logo}" alt="${t.equipo}" onerror="this.style.display='none'">`
+        : "";
 
-    row.innerHTML = `
-      <td>${index + 1}</td>
-      <td style="display:flex; align-items:center; gap:10px;">
-        ${logo} ${t.equipo}
-      </td>
-      <td>${t.PJ || 0}</td>
-      <td>${t.G || 0}</td>
-      <td>${t.E || 0}</td>
-      <td>${t.P || 0}</td>
-      <td>${t.GF || 0}</td>
-      <td>${t.GC || 0}</td>
-      <td>${t.DG || 0}</td>
-      <td><strong>${t.PTS || 0}</strong></td>
-      <td>${porcentaje}%</td>
+      const pj = t.PJ || 0;
+      const pts = t.PTS || 0;
+      const pct = pj > 0 ? Math.round((pts / (pj * 3)) * 100) : 0;
+
+      // Color posición
+      let posColor = "var(--muted)";
+      if (index === 0) posColor = "var(--yellow)";
+      else if (index === 1) posColor = "var(--accent)";
+      else if (index === 2) posColor = "var(--green)";
+
+      const tr = document.createElement("tr");
+      tr.style.animation = `fadeUp .3s ease ${index * 0.05}s both`;
+
+      tr.innerHTML = `
+        <td style="color:${posColor};font-family:var(--font-head);font-size:1.1rem;font-weight:900;">
+          ${index + 1}
+        </td>
+        <td>
+          <div class="equipo-cell">
+            ${logo}
+            <span style="font-weight:700;">${t.equipo}</span>
+          </div>
+        </td>
+        <td>${pj}</td>
+        <td style="color:var(--green);font-weight:700;">${t.G || 0}</td>
+        <td>${t.E || 0}</td>
+        <td style="color:var(--red);font-weight:700;">${t.P || 0}</td>
+        <td>${t.GF || 0}</td>
+        <td>${t.GC || 0}</td>
+        <td style="color:${(t.DG || 0) >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
+          ${(t.DG || 0) >= 0 ? '+' : ''}${t.DG || 0}
+        </td>
+        <td>
+          <span class="pts-badge">${pts}</span>
+        </td>
+        <td>
+          <div class="pct-bar-cell">
+            <div class="pct-bar" style="width:${pct * 0.5}px; max-width:50px;"></div>
+            <span class="pct-text">${pct}%</span>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `
+      <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">
+        ⚠️ Error al cargar la tabla
+      </td></tr>
     `;
-
-    tablaHTML.appendChild(row);
-  });
+  }
 }
 
 cargarTabla();
