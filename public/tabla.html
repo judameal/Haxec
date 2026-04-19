@@ -46,6 +46,11 @@
 <script>
 const API = "/api";
 
+if (!data.length) {
+  await fetch(API + "/tabla", { method: "POST" });
+  location.reload();
+}
+
 /* 🔙 */
 function goBack() {
   window.location.href = "/haxball.html";
