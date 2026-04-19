@@ -3,21 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goleadores — Haxec Esport</title>
+  <title>Asistencias — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    .stats-table { width:100%; border-collapse:collapse; margin-top:16px; }
+    .stats-table { width:100%; border-collapse:collapse; margin-top:16px; table-layout:fixed; }
+    .stats-table col.col-rank { width:48px; }
+    .stats-table col.col-stat { width:100px; }
     .stats-table thead tr { background:var(--accent,#f0a500); color:#111; }
-    .stats-table th, .stats-table td { padding:12px 16px; text-align:left; font-size:.9rem; }
+    .stats-table th { padding:12px 16px; text-align:left; font-size:.85rem; font-weight:700; }
+    .stats-table td { padding:11px 16px; font-size:.9rem; vertical-align:middle; }
     .stats-table tbody tr { border-bottom:1px solid rgba(255,255,255,.07); transition:background .15s; }
     .stats-table tbody tr:hover { background:rgba(255,255,255,.05); }
-    .rank-num { font-weight:900; font-size:1.1rem; color:var(--accent,#f0a500); width:36px; }
+    .col-rank { text-align:center; }
+    .col-stat { text-align:center; }
+    .rank-num { font-weight:900; font-size:1rem; color:var(--accent,#f0a500); }
     .rank-num.gold   { color:#FFD700; }
     .rank-num.silver { color:#C0C0C0; }
     .rank-num.bronze { color:#CD7F32; }
-    .stat-badge { display:inline-block; background:var(--accent,#f0a500); color:#111; font-weight:800; border-radius:6px; padding:2px 10px; font-size:.95rem; }
-    .team-tag { font-size:.78rem; color:var(--muted,#888); margin-left:4px; }
-    .empty-msg { text-align:center; color:var(--muted,#888); padding:40px 0; }
+    .player-name { font-weight:600; color:var(--text,#eee); }
+    .team-tag { font-size:.78rem; color:var(--muted,#888); display:block; margin-top:2px; }
+    .stat-badge {
+      display:inline-block;
+      background:var(--accent,#f0a500);
+      color:#111;
+      font-weight:800;
+      border-radius:6px;
+      padding:3px 12px;
+      font-size:.9rem;
+      min-width:28px;
+      text-align:center;
+    }
+    .empty-msg     { text-align:center; color:var(--muted,#888); padding:40px 0; }
     .page-subtitle { color:var(--muted,#888); margin-bottom:24px; font-size:.95rem; }
   </style>
 </head>
@@ -32,8 +48,8 @@
 
 <div class="admin-container">
   <button class="back-btn" onclick="history.back()">← Volver</button>
-  <h1 class="admin-title">⚽ Goleadores</h1>
-  <p class="page-subtitle">Clasificación de máximos goleadores de la temporada</p>
+  <h1 class="admin-title">🅰️ Asistencias</h1>
+  <p class="page-subtitle">Clasificación de máximos asistidores de la temporada</p>
 
   <div class="form-card">
     <div id="contenido"><div class="spinner"></div></div>
@@ -44,43 +60,58 @@
 
 <script>
 async function cargar() {
-  const jugadores = await fetch("/api/jugadores").then(r => r.json());
-  const goleadores = jugadores
-    .filter(j => (j.goles || 0) > 0)
-    .sort((a, b) => (b.goles || 0) - (a.goles || 0));
+  var jugadores = await fetch("/api/jugadores").then(function(r) { return r.json(); });
+  var asistidores = jugadores
+    .filter(function(j) { return (j.asistencias || 0) > 0; })
+    .sort(function(a, b) { return (b.asistencias || 0) - (a.asistencias || 0); });
 
-  const cont = document.getElementById("contenido");
-  if (!goleadores.length) {
-    cont.innerHTML = `<p class="empty-msg">Aún no hay goles registrados.</p>`;
+  var cont = document.getElementById("contenido");
+
+  if (!asistidores.length) {
+    cont.innerHTML = '<p class="empty-msg">Aún no hay asistencias registradas.</p>';
     return;
   }
 
-  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
-  const rankIcon  = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
+  function rankClass(i) {
+    if (i === 0) return "gold";
+    if (i === 1) return "silver";
+    if (i === 2) return "bronze";
+    return "";
+  }
+  function rankIcon(i) {
+    if (i === 0) return "🥇";
+    if (i === 1) return "🥈";
+    if (i === 2) return "🥉";
+    return String(i + 1);
+  }
 
-  cont.innerHTML = `
-    <table class="stats-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Jugador</th>
-          <th>Equipo</th>
-          <th>Goles</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${goleadores.map((j, i) => `
-          <tr>
-            <td class="rank-num ${rankClass(i)}">${rankIcon(i)}</td>
-            <td>${j.nombre}</td>
-            <td class="team-tag">${j.equipo || "—"}</td>
-            <td><span class="stat-badge">${j.goles || 0}</span></td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+  var filas = "";
+  for (var i = 0; i < asistidores.length; i++) {
+    var j           = asistidores[i];
+    var asistencias = j.asistencias || 0;
+    var nombre      = j.nombre || "—";
+    var equipo      = j.equipo || "—";
+
+    filas += "<tr>";
+    filas += "<td class='col-rank'><span class='rank-num " + rankClass(i) + "'>" + rankIcon(i) + "</span></td>";
+    filas += "<td><span class='player-name'>" + nombre + "</span><span class='team-tag'>" + equipo + "</span></td>";
+    filas += "<td class='col-stat'><span class='stat-badge'>" + asistencias + "</span></td>";
+    filas += "</tr>";
+  }
+
+  var html = "<table class='stats-table'>";
+  html += "<colgroup><col class='col-rank'><col><col class='col-stat'></colgroup>";
+  html += "<thead><tr>";
+  html += "<th class='col-rank'>#</th>";
+  html += "<th>Jugador</th>";
+  html += "<th class='col-stat'>Asistencias</th>";
+  html += "</tr></thead>";
+  html += "<tbody>" + filas + "</tbody>";
+  html += "</table>";
+
+  cont.innerHTML = html;
 }
+
 cargar();
 </script>
 </body>

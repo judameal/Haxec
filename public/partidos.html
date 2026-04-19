@@ -6,214 +6,237 @@
   <title>Partidos — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* ── MODAL INFORME ───────────────────────────────────── */
+    /* ── OVERLAY ─────────────────────────────────────────── */
     #informeOverlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.72);
+      background: rgba(0,0,0,.80);
       z-index: 9999;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      backdrop-filter: blur(3px);
+      backdrop-filter: blur(4px);
     }
     #informeOverlay.visible { display: flex; }
 
+    /* ── CARTA ───────────────────────────────────────────── */
     .informe-card {
-      background: var(--card-bg, #1a1a2e);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
+      background: #ffffff;
+      border-radius: 18px;
       width: 100%;
       max-width: 560px;
-      max-height: 90vh;
+      max-height: 92vh;
       overflow-y: auto;
       padding: 0;
+      box-shadow: 0 24px 60px rgba(0,0,0,.45);
       animation: slideUp .22s ease;
+      color: #111;
     }
     @keyframes slideUp {
-      from { transform: translateY(24px); opacity: 0; }
+      from { transform: translateY(28px); opacity: 0; }
       to   { transform: translateY(0);    opacity: 1; }
     }
 
-    /* Cabecera del informe */
+    /* ── HEADER ──────────────────────────────────────────── */
     .informe-header {
-      background: linear-gradient(135deg, rgba(240,165,0,.18), rgba(240,165,0,.06));
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px 16px 0 0;
-      padding: 22px 24px 18px;
+      background: #111111;
+      border-radius: 18px 18px 0 0;
+      padding: 24px 24px 20px;
       text-align: center;
       position: relative;
     }
+
     .informe-close {
       position: absolute;
       top: 14px; right: 16px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.18);
-      color: var(--muted,#888);
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      color: #fff;
       border-radius: 50%;
       width: 30px; height: 30px;
-      font-size: 1rem;
+      font-size: .9rem;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background .15s;
     }
-    .informe-close:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .informe-close:hover { background: rgba(255,255,255,.22); }
 
     .informe-jornada {
-      font-size: .72rem;
-      letter-spacing: 2px;
+      font-size: .68rem;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--accent,#f0a500);
-      font-weight: 700;
-      margin-bottom: 14px;
+      color: #22c55e;
+      font-weight: 800;
+      margin-bottom: 16px;
     }
 
     .informe-teams {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .informe-team { text-align: center; }
     .informe-team img {
-      width: 54px; height: 54px;
+      width: 56px; height: 56px;
       object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.6));
     }
     .informe-team-name {
-      font-size: .82rem;
-      font-weight: 700;
-      letter-spacing: .5px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .8px;
       text-transform: uppercase;
-      color: var(--text,#eee);
+      color: #ffffff;
     }
-    .informe-score-box {
-      text-align: center;
-    }
+
+    .informe-score-box { text-align: center; }
     .informe-score {
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 900;
-      color: #fff;
-      letter-spacing: 2px;
+      color: #ffffff;
+      letter-spacing: 3px;
       line-height: 1;
     }
-    .informe-score-sep { color: var(--muted,#666); font-size: 1.6rem; margin: 0 4px; }
-    .informe-fecha {
-      font-size: .72rem;
-      color: var(--muted,#888);
-      margin-top: 4px;
+    .informe-score-sep {
+      color: #22c55e;
+      font-size: 1.8rem;
+      margin: 0 2px;
+    }
+    .informe-resultado-label {
+      display: inline-block;
+      margin-top: 8px;
+      background: #22c55e;
+      color: #000;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+    }
+    .informe-fecha-label {
+      font-size: .7rem;
+      color: rgba(255,255,255,.45);
+      margin-top: 6px;
     }
 
-    /* Body del informe */
-    .informe-body { padding: 20px 24px; }
+    /* ── BODY ────────────────────────────────────────────── */
+    .informe-body { padding: 22px 24px 24px; background: #ffffff; border-radius: 0 0 18px 18px; }
 
-    .informe-section { margin-bottom: 20px; }
+    .informe-section { margin-bottom: 22px; }
     .informe-section-title {
-      font-size: .7rem;
-      letter-spacing: 2px;
+      font-size: .65rem;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: var(--accent,#f0a500);
-      font-weight: 700;
+      color: #22c55e;
+      font-weight: 800;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .informe-section-title::after {
       content: "";
       flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,.07);
+      height: 1.5px;
+      background: #111;
+      opacity: .08;
     }
 
-    /* Timeline eventos */
-    .timeline { display: flex; flex-direction: column; gap: 6px; }
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 38px 26px 1fr;
+    /* MVP */
+    .mvp-card {
+      background: #111;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: .85rem;
-      padding: 6px 10px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.05);
+      gap: 14px;
     }
-    .timeline-min {
-      font-size: .75rem;
-      font-weight: 700;
-      color: var(--accent,#f0a500);
-      text-align: right;
-    }
-    .timeline-icon { font-size: .95rem; text-align: center; }
-    .timeline-info { color: var(--text,#ddd); }
-    .timeline-sub { font-size: .72rem; color: var(--muted,#888); }
+    .mvp-crown { font-size: 1.6rem; }
+    .mvp-label { font-size: .65rem; color: #22c55e; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+    .mvp-nombre { font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-top: 2px; }
 
-    /* Stats grid */
-    .stats-duo {
+    /* Valla */
+    .valla-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #f0fdf4;
+      border: 1.5px solid #22c55e;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: #15803d;
+      width: 100%;
+    }
+
+    /* Stats */
+    .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
     .stat-item {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
+      background: #f8f8f8;
+      border: 1.5px solid #ebebeb;
       border-radius: 10px;
       padding: 10px 14px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .stat-icon { font-size: 1.2rem; }
-    .stat-label { font-size: .7rem; color: var(--muted,#888); text-transform: uppercase; letter-spacing: 1px; }
-    .stat-val { font-size: 1.05rem; font-weight: 700; color: var(--text,#eee); }
+    .stat-icon { font-size: 1.1rem; }
+    .stat-label { font-size: .65rem; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .stat-val { font-size: 1rem; font-weight: 800; color: #111; margin-top: 1px; }
 
-    /* MVP card */
-    .mvp-card {
-      background: linear-gradient(135deg, rgba(240,165,0,.14), rgba(240,165,0,.05));
-      border: 1px solid rgba(240,165,0,.25);
-      border-radius: 10px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .mvp-crown { font-size: 1.6rem; }
-    .mvp-nombre { font-size: 1rem; font-weight: 700; color: var(--accent,#f0a500); }
-    .mvp-label { font-size: .7rem; color: var(--muted,#888); text-transform: uppercase; letter-spacing: 1px; }
-
-    /* Valla invicta */
-    .valla-badge {
-      display: inline-flex;
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 5px; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 40px 24px 1fr;
       align-items: center;
       gap: 8px;
-      background: rgba(0,180,120,.12);
-      border: 1px solid rgba(0,180,120,.25);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: .9rem;
-      font-weight: 700;
-      color: #00cc88;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: #f8f8f8;
+      border: 1px solid #ebebeb;
     }
+    .timeline-item:hover { background: #f0fdf4; border-color: #bbf7d0; }
+    .timeline-min {
+      font-size: .72rem;
+      font-weight: 800;
+      color: #15803d;
+      text-align: right;
+    }
+    .timeline-icon { font-size: .9rem; text-align: center; }
+    .timeline-nombre { font-size: .85rem; font-weight: 700; color: #111; }
+    .timeline-sub { font-size: .7rem; color: #888; margin-top: 1px; }
 
     /* Notas */
     .notas-box {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 10px;
+      background: #f8f8f8;
+      border-left: 3px solid #22c55e;
+      border-radius: 0 8px 8px 0;
       padding: 12px 16px;
       font-size: .85rem;
-      color: var(--muted,#aaa);
+      color: #444;
       line-height: 1.6;
       font-style: italic;
     }
 
     /* Sin datos */
-    .informe-empty { color: var(--muted,#666); font-size: .82rem; text-align: center; padding: 10px 0; }
+    .informe-empty {
+      text-align: center;
+      color: #aaa;
+      font-size: .85rem;
+      padding: 14px 0;
+    }
 
-    /* Botón ver informe */
+    /* ── BOTÓN INFORME ───────────────────────────────────── */
     .btn-informe {
       background: none;
       border: 1px solid rgba(255,255,255,.15);
@@ -231,11 +254,11 @@
       border-color: rgba(255,255,255,.3);
     }
     .btn-informe.jugado {
-      border-color: rgba(240,165,0,.4);
-      color: var(--accent,#f0a500);
+      border-color: #22c55e;
+      color: #22c55e;
     }
     .btn-informe.jugado:hover {
-      background: rgba(240,165,0,.1);
+      background: rgba(34,197,94,.12);
     }
   </style>
 </head>
@@ -250,7 +273,6 @@
 </header>
 
 <div class="admin-container">
-
   <h1 class="admin-title">Partidos</h1>
   <button class="back-btn" onclick="goBack()">← Volver</button>
 
@@ -260,337 +282,267 @@
       Cargando partidos...
     </div>
   </div>
-
 </div>
 
 <footer>
   <p>© 2026 Haxec Esport — Hecho por Judameal</p>
 </footer>
 
-<!-- ── MODAL INFORME ────────────────────────────────────── -->
+<!-- ── MODAL ──────────────────────────────────────────────── -->
 <div id="informeOverlay" onclick="cerrarInformeOverlay(event)">
-  <div class="informe-card" id="informeCard">
-    <!-- contenido dinámico -->
-  </div>
+  <div class="informe-card" id="informeCard"></div>
 </div>
 
 <script>
 const API = "/api";
-const user   = JSON.parse(localStorage.getItem("user") || "null");
+const user    = JSON.parse(localStorage.getItem("user") || "null");
 const esAdmin = user && user.role === "admin";
-
-const ICONOS = { gol:'⚽', asistencia:'🅰️', amarilla:'🟨', roja:'🟥' };
+const ICONOS  = { gol:"⚽", asistencia:"🅰️", amarilla:"🟨", roja:"🟥" };
 
 function goBack() { window.location.href = "/haxball.html"; }
 
 /* ── CALENDARIO ──────────────────────────────────────────── */
 function generarCalendario(equipos) {
-  const lista = [...equipos];
+  var lista = equipos.slice();
   if (lista.length % 2 !== 0) lista.push(null);
-  const n = lista.length;
-  const jornadas = [];
-  for (let i = 0; i < n - 1; i++) {
-    const jornada = [];
-    for (let j = 0; j < n / 2; j++) {
-      const local = lista[j], visitante = lista[n - 1 - j];
-      if (local && visitante) jornada.push({ local, visitante });
+  var n = lista.length;
+  var jornadas = [];
+  for (var i = 0; i < n - 1; i++) {
+    var jornada = [];
+    for (var j = 0; j < n / 2; j++) {
+      var local = lista[j], visitante = lista[n - 1 - j];
+      if (local && visitante) jornada.push({ local: local, visitante: visitante });
     }
     jornadas.push(jornada);
     lista.splice(1, 0, lista.pop());
   }
-  const vuelta = jornadas.map(j => j.map(p => ({ local: p.visitante, visitante: p.local })));
-  return [...jornadas, ...vuelta];
+  var vuelta = jornadas.map(function(j) {
+    return j.map(function(p) { return { local: p.visitante, visitante: p.local }; });
+  });
+  return jornadas.concat(vuelta);
 }
 
 /* ── RENDER PARTIDOS ─────────────────────────────────────── */
 async function cargarPartidos() {
-  const container = document.getElementById("partidosContainer");
+  var container = document.getElementById("partidosContainer");
   try {
-    const [equipos, dataPartidos] = await Promise.all([
-      fetch(API + "/teams").then(r => r.json()),
-      fetch(API + "/partidos").then(r => r.ok ? r.json() : []).catch(() => [])
+    var res = await Promise.all([
+      fetch(API + "/teams").then(function(r) { return r.json(); }),
+      fetch(API + "/partidos").then(function(r) { return r.ok ? r.json() : []; }).catch(function() { return []; })
     ]);
+    var equipos      = res[0];
+    var dataPartidos = res[1];
+    var calendario   = generarCalendario(equipos);
 
-    const calendario = generarCalendario(equipos);
     container.innerHTML = "";
 
-    calendario.forEach((jornada, i) => {
-      const block = document.createElement("div");
+    calendario.forEach(function(jornada, i) {
+      var block = document.createElement("div");
       block.className = "jornada-block";
-      block.style.animationDelay = `${i * 0.04}s`;
+      block.style.animationDelay = (i * 0.04) + "s";
 
-      let html = `<div class="jornada-header"><h3>⚽ Jornada ${i + 1}</h3></div>`;
+      var html = "<div class='jornada-header'><h3>⚽ Jornada " + (i + 1) + "</h3></div>";
 
-      jornada.forEach((p, idx) => {
-        const info = dataPartidos.find(d => d.jornada === i && d.partido === idx);
-        const jugado = info && info.jugado;
+      jornada.forEach(function(p, idx) {
+        var info   = dataPartidos.find(function(d) { return d.jornada === i && d.partido === idx; });
+        var jugado = info && info.jugado;
 
-        let centroHTML = "";
+        var centroHTML = "";
         if (jugado) {
-          centroHTML = `
-            <div class="score-badge">
-              ${info.resultado?.local ?? 0} – ${info.resultado?.visitante ?? 0}
-            </div>`;
+          centroHTML = "<div class='score-badge'>" + (info.resultado && info.resultado.local !== undefined ? info.resultado.local : 0) + " – " + (info.resultado && info.resultado.visitante !== undefined ? info.resultado.visitante : 0) + "</div>";
         } else if (info && info.fecha) {
-          centroHTML = `
-            <div class="score-badge" style="font-size:.85rem;letter-spacing:1px;color:var(--muted);">vs</div>
-            <div class="match-meta">${info.fecha} · ${info.hora}</div>`;
+          centroHTML = "<div class='score-badge' style='font-size:.85rem;letter-spacing:1px;color:var(--muted);'>vs</div><div class='match-meta'>" + info.fecha + " · " + info.hora + "</div>";
         } else {
-          centroHTML = `
-            <div class="score-badge" style="font-size:.85rem;color:var(--muted);">vs</div>
-            <div class="match-meta" style="color:var(--border);">Sin horario</div>`;
+          centroHTML = "<div class='score-badge' style='font-size:.85rem;color:var(--muted);'>vs</div><div class='match-meta' style='color:var(--border);'>Sin horario</div>";
         }
 
-        // Botón informe — siempre visible, distinto si ya jugado
-        const btnInforme = `
-          <button class="btn-informe ${jugado ? 'jugado' : ''}"
-            onclick="abrirInforme(event, ${i}, ${idx})"
-            title="${jugado ? 'Ver informe del partido' : 'Partido aún no jugado'}">
-            ${jugado ? '📋 Informe' : '📋 Sin datos'}
-          </button>
-        `;
+        var btnInforme = "<button class='btn-informe " + (jugado ? "jugado" : "") + "' onclick='abrirInforme(event," + i + "," + idx + ")' title='" + (jugado ? "Ver informe" : "Sin datos aún") + "'>" + (jugado ? "📋 Informe" : "📋 Sin datos") + "</button>";
 
-        html += `
-          <div class="partido-row">
-            <div class="team-side">
-              <img src="${p.local.logo}" alt="${p.local.nombre}">
-              ${p.local.nombre}
-            </div>
-            <div class="match-center">
-              ${centroHTML}
-            </div>
-            <div class="team-side right">
-              ${p.visitante.nombre}
-              <img src="${p.visitante.logo}" alt="${p.visitante.nombre}">
-            </div>
-            <div class="match-actions" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
-              ${btnInforme}
-              ${esAdmin ? `
-                <button class="btn-assign" onclick="abrirOpciones(${i},${idx})">📅 Horario</button>
-                <button class="btn-play"   onclick="jugar(${i},${idx})">▶ Jugar</button>
-              ` : ""}
-            </div>
-          </div>
-        `;
+        var adminBtns = esAdmin
+          ? "<button class='btn-assign' onclick='abrirOpciones(" + i + "," + idx + ")'>📅 Horario</button><button class='btn-play' onclick='jugar(" + i + "," + idx + ")'>▶ Jugar</button>"
+          : "";
+
+        html += "<div class='partido-row'>";
+        html += "<div class='team-side'><img src='" + p.local.logo + "' alt='" + p.local.nombre + "'>" + p.local.nombre + "</div>";
+        html += "<div class='match-center'>" + centroHTML + "</div>";
+        html += "<div class='team-side right'>" + p.visitante.nombre + "<img src='" + p.visitante.logo + "' alt='" + p.visitante.nombre + "'></div>";
+        html += "<div class='match-actions' style='display:flex;gap:6px;flex-wrap:wrap;justify-content:center;'>" + btnInforme + adminBtns + "</div>";
+        html += "</div>";
       });
 
       block.innerHTML = html;
       container.appendChild(block);
     });
 
-    // Guardar datos para el modal
-    window._calendario    = calendario;
-    window._dataPartidos  = dataPartidos;
+    window._calendario   = calendario;
+    window._dataPartidos = dataPartidos;
 
   } catch (err) {
     console.error(err);
-    container.innerHTML = `<div class="loading-state">⚠️ Error al cargar los partidos.</div>`;
+    container.innerHTML = "<div class='loading-state'>⚠️ Error al cargar los partidos.</div>";
   }
 }
 
-/* ── INFORME MODAL ───────────────────────────────────────── */
+/* ── MODAL INFORME ───────────────────────────────────────── */
 function abrirInforme(event, jornadaIdx, partidoIdx) {
   event.stopPropagation();
 
-  const calendario   = window._calendario   || [];
-  const dataPartidos = window._dataPartidos || [];
+  var calendario   = window._calendario   || [];
+  var dataPartidos = window._dataPartidos || [];
+  var pCal  = calendario[jornadaIdx] && calendario[jornadaIdx][partidoIdx];
+  var info  = dataPartidos.find(function(d) { return d.jornada === jornadaIdx && d.partido === partidoIdx; });
+  var local     = pCal && pCal.local;
+  var visitante = pCal && pCal.visitante;
+  var jugado    = info && info.jugado;
+  var card = document.getElementById("informeCard");
 
-  const pCalendario = calendario[jornadaIdx]?.[partidoIdx];
-  const info = dataPartidos.find(d => d.jornada === jornadaIdx && d.partido === partidoIdx);
-
-  const local     = pCalendario?.local;
-  const visitante = pCalendario?.visitante;
-  const jugado    = info && info.jugado;
-
-  const card = document.getElementById("informeCard");
-
+  // ── Partido no jugado ────────────────────────────────────
   if (!jugado) {
-    card.innerHTML = `
-      <div class="informe-header">
-        <button class="informe-close" onclick="cerrarInforme()">✕</button>
-        <div class="informe-jornada">Jornada ${jornadaIdx + 1} · Partido ${partidoIdx + 1}</div>
-        <div class="informe-teams">
-          <div class="informe-team">
-            <img src="${local?.logo || ''}" alt="${local?.nombre || ''}">
-            <div class="informe-team-name">${local?.nombre || '—'}</div>
-          </div>
-          <div class="informe-score-box">
-            <div style="font-size:1.1rem;color:var(--muted,#888);font-weight:700;">VS</div>
-            ${info?.fecha ? `<div class="informe-fecha">${info.fecha} · ${info.hora}</div>` : '<div class="informe-fecha">Sin horario</div>'}
-          </div>
-          <div class="informe-team">
-            <img src="${visitante?.logo || ''}" alt="${visitante?.nombre || ''}">
-            <div class="informe-team-name">${visitante?.nombre || '—'}</div>
-          </div>
-        </div>
-      </div>
-      <div class="informe-body">
-        <p class="informe-empty">Este partido aún no ha sido jugado. El informe estará disponible después del encuentro.</p>
-      </div>
-    `;
+    var fechaStr = (info && info.fecha) ? info.fecha + (info.hora ? " · " + info.hora : "") : "Sin horario";
+    card.innerHTML =
+      "<div class='informe-header'>" +
+        "<button class='informe-close' onclick='cerrarInforme()'>✕</button>" +
+        "<div class='informe-jornada'>Jornada " + (jornadaIdx + 1) + " · Partido " + (partidoIdx + 1) + "</div>" +
+        "<div class='informe-teams'>" +
+          "<div class='informe-team'><img src='" + (local && local.logo || "") + "' alt=''><div class='informe-team-name'>" + (local && local.nombre || "—") + "</div></div>" +
+          "<div class='informe-score-box'><div style='font-size:1.2rem;color:#22c55e;font-weight:900;'>VS</div><div class='informe-fecha-label'>" + fechaStr + "</div></div>" +
+          "<div class='informe-team'><img src='" + (visitante && visitante.logo || "") + "' alt=''><div class='informe-team-name'>" + (visitante && visitante.nombre || "—") + "</div></div>" +
+        "</div>" +
+      "</div>" +
+      "<div class='informe-body'><p class='informe-empty'>Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>";
     mostrarOverlay();
     return;
   }
 
-  const eventos   = info.eventos || [];
-  const resultado = info.resultado || { local: 0, visitante: 0 };
-  const gl = Number(resultado.local ?? 0);
-  const gv = Number(resultado.visitante ?? 0);
+  // ── Partido jugado ───────────────────────────────────────
+  var eventos  = info.eventos || [];
+  var resultado = info.resultado || { local: 0, visitante: 0 };
+  var gl = Number(resultado.local !== undefined ? resultado.local : 0);
+  var gv = Number(resultado.visitante !== undefined ? resultado.visitante : 0);
 
-  // Calcular estadísticas por equipo desde eventos
-  const contar = (equipo, tipo) =>
-    eventos.filter(e => e.equipo === equipo && e.tipo === tipo).length;
+  function contar(equipo, tipo) {
+    return eventos.filter(function(e) { return e.equipo === equipo && e.tipo === tipo; }).length;
+  }
 
-  const gLocal  = { goles: gl, asistencias: contar("local","asistencia"), amarillas: contar("local","amarilla"), rojas: contar("local","roja") };
-  const gVisit  = { goles: gv, asistencias: contar("visitante","asistencia"), amarillas: contar("visitante","amarilla"), rojas: contar("visitante","roja") };
+  var statsLocal = { goles: gl, asistencias: contar("local","asistencia"), amarillas: contar("local","amarilla"), rojas: contar("local","roja") };
+  var statsVisit = { goles: gv, asistencias: contar("visitante","asistencia"), amarillas: contar("visitante","amarilla"), rojas: contar("visitante","roja") };
+
+  var vallaLocal     = gv === 0;
+  var vallaVisitante = gl === 0;
+  var localNombre     = local && local.nombre || "Local";
+  var visitanteNombre = visitante && visitante.nombre || "Visitante";
+
+  var resultadoLabel = gl > gv ? "Victoria " + localNombre : gv > gl ? "Victoria " + visitanteNombre : "Empate";
+  var eventosSorted  = eventos.slice().sort(function(a, b) { return a.minuto - b.minuto; });
+
+  // Construir HTML por partes
+  var html = "";
+
+  // Header
+  html += "<div class='informe-header'>";
+  html += "<button class='informe-close' onclick='cerrarInforme()'>✕</button>";
+  html += "<div class='informe-jornada'>Jornada " + (jornadaIdx + 1) + " · Partido " + (partidoIdx + 1) + "</div>";
+  html += "<div class='informe-teams'>";
+  html += "<div class='informe-team'><img src='" + (local && local.logo || "") + "' alt=''><div class='informe-team-name'>" + localNombre + "</div></div>";
+  html += "<div class='informe-score-box'>";
+  html += "<div class='informe-score'><span>" + gl + "</span><span class='informe-score-sep'>–</span><span>" + gv + "</span></div>";
+  html += "<div class='informe-resultado-label'>" + resultadoLabel + "</div>";
+  if (info.fecha) html += "<div class='informe-fecha-label'>" + info.fecha + (info.hora ? " · " + info.hora : "") + "</div>";
+  html += "</div>";
+  html += "<div class='informe-team'><img src='" + (visitante && visitante.logo || "") + "' alt=''><div class='informe-team-name'>" + visitanteNombre + "</div></div>";
+  html += "</div></div>";
+
+  // Body
+  html += "<div class='informe-body'>";
+
+  // MVP
+  if (info.mvp) {
+    html += "<div class='informe-section'>";
+    html += "<div class='informe-section-title'>👑 MVP del partido</div>";
+    html += "<div class='mvp-card'><div class='mvp-crown'>👑</div><div><div class='mvp-label'>Jugador más valioso</div><div class='mvp-nombre'>" + info.mvp + "</div></div></div>";
+    html += "</div>";
+  }
 
   // Valla invicta
-  const vallaLocal     = gv === 0;
-  const vallaVisitante = gl === 0;
-  const vallasTexto = [
-    vallaLocal     ? `🧤 ${local?.nombre} (arco a 0)`     : null,
-    vallaVisitante ? `🧤 ${visitante?.nombre} (arco a 0)` : null,
-  ].filter(Boolean);
+  if (vallaLocal || vallaVisitante) {
+    html += "<div class='informe-section'>";
+    html += "<div class='informe-section-title'>🧤 Valla invicta</div>";
+    html += "<div style='display:flex;flex-direction:column;gap:6px;'>";
+    if (vallaLocal)     html += "<div class='valla-badge'>🧤 " + localNombre + " — arco a 0</div>";
+    if (vallaVisitante) html += "<div class='valla-badge'>🧤 " + visitanteNombre + " — arco a 0</div>";
+    html += "</div></div>";
+  }
 
-  // Resultado textual
-  let resultadoLabel = "";
-  if (gl > gv) resultadoLabel = `Victoria ${local?.nombre}`;
-  else if (gv > gl) resultadoLabel = `Victoria ${visitante?.nombre}`;
-  else resultadoLabel = "Empate";
+  // Estadísticas
+  html += "<div class='informe-section'>";
+  html += "<div class='informe-section-title'>📊 Estadísticas</div>";
+  html += "<div class='stats-grid'>";
+  html += buildStat("⚽", "Goles", statsLocal.goles, statsVisit.goles);
+  html += buildStat("🅰️", "Asistencias", statsLocal.asistencias, statsVisit.asistencias);
+  html += buildStat("🟨", "Amarillas", statsLocal.amarillas, statsVisit.amarillas);
+  html += buildStat("🟥", "Rojas", statsLocal.rojas, statsVisit.rojas);
+  html += "</div></div>";
 
-  // Timeline ordenada
-  const eventosSorted = [...eventos].sort((a,b) => a.minuto - b.minuto);
+  // Cronología
+  html += "<div class='informe-section'>";
+  html += "<div class='informe-section-title'>📋 Cronología</div>";
+  if (eventosSorted.length) {
+    html += "<div class='timeline'>";
+    for (var i = 0; i < eventosSorted.length; i++) {
+      var e = eventosSorted[i];
+      var equipoNombre = e.equipo === "local" ? localNombre : visitanteNombre;
+      html += "<div class='timeline-item'>";
+      html += "<div class='timeline-min'>" + e.minuto + "'</div>";
+      html += "<div class='timeline-icon'>" + (ICONOS[e.tipo] || "•") + "</div>";
+      html += "<div><div class='timeline-nombre'>" + e.jugador + "</div><div class='timeline-sub'>" + equipoNombre + " · " + e.tipo + "</div></div>";
+      html += "</div>";
+    }
+    html += "</div>";
+  } else {
+    html += "<p class='informe-empty'>Sin eventos registrados.</p>";
+  }
+  html += "</div>";
 
-  card.innerHTML = `
-    <div class="informe-header">
-      <button class="informe-close" onclick="cerrarInforme()">✕</button>
-      <div class="informe-jornada">Jornada ${jornadaIdx + 1} · Partido ${partidoIdx + 1}</div>
-      <div class="informe-teams">
-        <div class="informe-team">
-          <img src="${local?.logo || ''}" alt="${local?.nombre || ''}">
-          <div class="informe-team-name">${local?.nombre || '—'}</div>
-        </div>
-        <div class="informe-score-box">
-          <div class="informe-score">
-            <span>${gl}</span>
-            <span class="informe-score-sep">–</span>
-            <span>${gv}</span>
-          </div>
-          <div class="informe-fecha" style="margin-top:6px;color:var(--accent,#f0a500);font-weight:700;font-size:.75rem;">${resultadoLabel}</div>
-          ${info.fecha ? `<div class="informe-fecha">${info.fecha}${info.hora ? ' · ' + info.hora : ''}</div>` : ''}
-        </div>
-        <div class="informe-team">
-          <img src="${visitante?.logo || ''}" alt="${visitante?.nombre || ''}">
-          <div class="informe-team-name">${visitante?.nombre || '—'}</div>
-        </div>
-      </div>
-    </div>
+  // Notas
+  if (info.notas) {
+    html += "<div class='informe-section'>";
+    html += "<div class='informe-section-title'>📝 Notas</div>";
+    html += "<div class='notas-box'>" + info.notas + "</div>";
+    html += "</div>";
+  }
 
-    <div class="informe-body">
-
-      ${info.mvp ? `
-        <div class="informe-section">
-          <div class="informe-section-title">👑 MVP del partido</div>
-          <div class="mvp-card">
-            <div class="mvp-crown">👑</div>
-            <div>
-              <div class="mvp-label">Jugador más valioso</div>
-              <div class="mvp-nombre">${info.mvp}</div>
-            </div>
-          </div>
-        </div>
-      ` : ""}
-
-      ${vallasTexto.length ? `
-        <div class="informe-section">
-          <div class="informe-section-title">🧤 Valla invicta</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            ${vallasTexto.map(v => `<div class="valla-badge">${v}</div>`).join("")}
-          </div>
-        </div>
-      ` : ""}
-
-      <div class="informe-section">
-        <div class="informe-section-title">📊 Estadísticas</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          ${statFila("⚽", "Goles", gLocal.goles, gVisit.goles)}
-          ${statFila("🅰️", "Asistencias", gLocal.asistencias, gVisit.asistencias)}
-          ${statFila("🟨", "Amarillas", gLocal.amarillas, gVisit.amarillas)}
-          ${statFila("🟥", "Rojas", gLocal.rojas, gVisit.rojas)}
-        </div>
-      </div>
-
-      <div class="informe-section">
-        <div class="informe-section-title">📋 Cronología</div>
-        ${eventosSorted.length ? `
-          <div class="timeline">
-            ${eventosSorted.map(e => `
-              <div class="timeline-item">
-                <div class="timeline-min">${e.minuto}'</div>
-                <div class="timeline-icon">${ICONOS[e.tipo] || '•'}</div>
-                <div class="timeline-info">
-                  <div>${e.jugador}</div>
-                  <div class="timeline-sub">${e.equipo === "local" ? local?.nombre : visitante?.nombre} · ${e.tipo}</div>
-                </div>
-              </div>
-            `).join("")}
-          </div>
-        ` : '<p class="informe-empty">Sin eventos registrados.</p>'}
-      </div>
-
-      ${info.notas ? `
-        <div class="informe-section">
-          <div class="informe-section-title">📝 Notas</div>
-          <div class="notas-box">${info.notas}</div>
-        </div>
-      ` : ""}
-
-    </div>
-  `;
-
+  html += "</div>"; // cierra informe-body
+  card.innerHTML = html;
   mostrarOverlay();
 }
 
-function statFila(icono, label, vLocal, vVisit) {
-  return `
-    <div class="stat-item">
-      <div class="stat-icon">${icono}</div>
-      <div>
-        <div class="stat-label">${label}</div>
-        <div class="stat-val">${vLocal} – ${vVisit}</div>
-      </div>
-    </div>
-  `;
+function buildStat(icono, label, vLocal, vVisit) {
+  return "<div class='stat-item'><div class='stat-icon'>" + icono + "</div><div><div class='stat-label'>" + label + "</div><div class='stat-val'>" + vLocal + " – " + vVisit + "</div></div></div>";
 }
 
 function mostrarOverlay() {
-  const overlay = document.getElementById("informeOverlay");
-  overlay.classList.add("visible");
+  document.getElementById("informeOverlay").classList.add("visible");
   document.body.style.overflow = "hidden";
 }
-
 function cerrarInforme() {
   document.getElementById("informeOverlay").classList.remove("visible");
   document.body.style.overflow = "";
 }
-
 function cerrarInformeOverlay(e) {
   if (e.target === document.getElementById("informeOverlay")) cerrarInforme();
 }
 
-/* ── ADMIN ACTIONS ───────────────────────────────────────── */
+/* ── ADMIN ───────────────────────────────────────────────── */
 function abrirOpciones(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada, partido }));
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada: jornada, partido: partido }));
   window.location.href = "/horarios.html";
 }
-
 function jugar(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada, partido }));
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada: jornada, partido: partido }));
   window.location.href = "/jugarpartido.html";
 }
 
 cargarPartidos();
 </script>
-
 </body>
 </html>
