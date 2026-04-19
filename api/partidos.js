@@ -84,8 +84,13 @@ export default async function handler(req, res) {
       const equipoLocal     = local     || partido.local;
       const equipoVisitante = visitante || partido.visitante;
 
-      if (!equipoLocal || !equipoVisitante) {
-        return res.status(400).json({ message: "Faltan datos del equipo" });
+      // Validar que tengan nombre (mínimo necesario para la tabla)
+      if (!equipoLocal?.nombre || !equipoVisitante?.nombre) {
+        return res.status(400).json({
+          message: "Faltan datos del equipo (nombre requerido)",
+          local: equipoLocal,
+          visitante: equipoVisitante
+        });
       }
 
       // Guardar resultado

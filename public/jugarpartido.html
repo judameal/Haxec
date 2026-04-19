@@ -287,18 +287,9 @@ async function guardar() {
 
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  let data = [];
-  try {
-    const r = await fetch("/api/partidos");
-    if (r.ok) data = await r.json();
-  } catch (_) {}
-
-  const partido = data.find(p =>
-    p.jornada === sel.jornada && p.partido === sel.partido
-  );
-
-  if (!partido) {
-    showToast("⚠️ Primero asigna un horario al partido", true);
+  // match siempre tiene local/visitante correctos desde el calendario
+  if (!match) {
+    showToast("⚠️ Error: partido no cargado", true);
     return;
   }
 
@@ -307,25 +298,86 @@ async function guardar() {
   btn.textContent = "Guardando...";
 
   try {
-    const res = await fetch("/api/partidos", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: partido._id,
-        local:     partido.local,
-        visitante: partido.visitante,
-        resultado: { local: golesLocal, visitante: golesVisitante },
-        eventos,
-        mvp,
-        notas
-      })
-    });
+    // Buscar si existe registro en BD (necesitamos el _id)
+    let data = [];
+    try {
+      const r = await fetch("/api/partidos");
+      if (r.ok) data = await r.json();
+    } catch (_) {}
 
-    if (!res.ok) throw new Error();
+    const partidoBD = data.find(p =>
+      p.jornada === sel.jornada && p.partido === sel.partido
+    );
+
+    let res;
+
+    if (partidoBD) {
+      // Ya existe → PUT con _id
+      res = await fetch("/api/partidos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id:        partidoBD._id,
+          // Siempre usamos match (del calendario) para tener logo + nombre seguros
+          local:     { nombre: match.local.nombre,     logo: match.local.logo },
+          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo },
+          resultado: { local: golesLocal, visitante: golesVisitante },
+          eventos,
+          mvp,
+          notas
+        })
+      });
+    } else {
+      // No existe horario → creamos el registro y luego lo jugamos
+      // Primero POST para crear
+      await fetch("/api/partidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jornada:   sel.jornada,
+          partido:   sel.partido,
+          fecha:     "",
+          hora:      "",
+          local:     { nombre: match.local.nombre,     logo: match.local.logo },
+          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo }
+        })
+      });
+
+      // Volver a buscar para obtener el _id recién creado
+      const r2 = await fetch("/api/partidos");
+      const data2 = await r2.json();
+      const nuevo = data2.find(p =>
+        p.jornada === sel.jornada && p.partido === sel.partido
+      );
+
+      if (!nuevo) throw new Error("No se pudo crear el registro");
+
+      res = await fetch("/api/partidos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id:        nuevo._id,
+          local:     { nombre: match.local.nombre,     logo: match.local.logo },
+          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo },
+          resultado: { local: golesLocal, visitante: golesVisitante },
+          eventos,
+          mvp,
+          notas
+        })
+      });
+    }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || res.status);
+    }
+
     showToast("✅ Partido guardado correctamente");
     setTimeout(() => window.location.href = "/partidos.html", 1400);
-  } catch (_) {
-    showToast("❌ Error al guardar el partido", true);
+
+  } catch (e) {
+    console.error("Error guardando partido:", e);
+    showToast(`❌ Error: ${e.message}`, true);
     btn.disabled = false;
     btn.textContent = "⚽ Guardar Partido";
   }
