@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valla Invicta — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .stats-table { width:100%; border-collapse:collapse; margin-top:16px; }
+    .stats-table thead tr { background:var(--accent,#f0a500); color:#111; }
+    .stats-table th, .stats-table td { padding:12px 16px; text-align:left; font-size:.9rem; }
+    .stats-table tbody tr { border-bottom:1px solid rgba(255,255,255,.07); transition:background .15s; }
+    .stats-table tbody tr:hover { background:rgba(255,255,255,.05); }
+    .rank-num { font-weight:900; font-size:1.1rem; color:var(--accent,#f0a500); width:36px; }
+    .rank-num.gold   { color:#FFD700; }
+    .rank-num.silver { color:#C0C0C0; }
+    .rank-num.bronze { color:#CD7F32; }
+    .stat-badge { display:inline-block; background:var(--accent,#f0a500); color:#111; font-weight:800; border-radius:6px; padding:2px 10px; font-size:.95rem; }
+    .stat-sub { font-size:.78rem; color:var(--muted,#888); margin-left:6px; }
+    .team-logo { width:26px; height:26px; object-fit:contain; border-radius:4px; margin-right:8px; vertical-align:middle; }
+    .empty-msg { text-align:center; color:var(--muted,#888); padding:40px 0; }
+    .page-subtitle { color:var(--muted,#888); margin-bottom:24px; font-size:.95rem; }
+    .info-note { background:rgba(255,255,255,.05); border-left:3px solid var(--accent,#f0a500); padding:10px 14px; border-radius:6px; font-size:.85rem; color:var(--muted,#aaa); margin-bottom:18px; }
+  </style>
+</head>
+<body>
+<div class="hex-mid"></div>
+<header>
+  <div class="logo">
+    <img src="img/logo.png" alt="Logo">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+  <button class="back-btn" onclick="history.back()">← Volver</button>
+  <h1 class="admin-title">🧤 Valla Invicta</h1>
+  <p class="page-subtitle">Equipos con más partidos sin recibir gol en la temporada</p>
+
+  <div class="form-card">
+    <div class="info-note">🛡️ Se cuenta cada partido jugado en el que el equipo <strong>no recibió ningún gol</strong> (arco a 0).</div>
+    <div id="contenido"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<footer><p>© 2026 Haxec Esport — Hecho por Judameal</p></footer>
+
+<script>
+async function cargar() {
+  const partidos = await fetch("/api/partidos").then(r => r.json());
+
+  // Contar vallas invictas por equipo
+  const vallas = {}; // { equipoNombre: { vallas, logo } }
+
+  for (const p of partidos) {
+    if (!p.jugado || !p.resultado || !p.local || !p.visitante) continue;
+
+    const gl = Number(p.resultado.local     ?? 0);
+    const gv = Number(p.resultado.visitante ?? 0);
+
+    const nombreLocal     = p.local.nombre;
+    const nombreVisitante = p.visitante.nombre;
+    const logoLocal       = p.local.logo     || "";
+    const logoVisitante   = p.visitante.logo  || "";
+
+    // Inicializar si no existen
+    if (!vallas[nombreLocal])     vallas[nombreLocal]     = { vallas: 0, pj: 0, logo: logoLocal };
+    if (!vallas[nombreVisitante]) vallas[nombreVisitante] = { vallas: 0, pj: 0, logo: logoVisitante };
+
+    vallas[nombreLocal].pj++;
+    vallas[nombreVisitante].pj++;
+
+    // Arco a 0: el local no recibió gol del visitante
+    if (gv === 0) vallas[nombreLocal].vallas++;
+    // Arco a 0: el visitante no recibió gol del local
+    if (gl === 0) vallas[nombreVisitante].vallas++;
+  }
+
+  // Convertir a array y ordenar
+  const ranking = Object.entries(vallas)
+    .map(([nombre, d]) => ({ nombre, ...d }))
+    .filter(e => e.vallas > 0)
+    .sort((a, b) => b.vallas - a.vallas || a.nombre.localeCompare(b.nombre));
+
+  const cont = document.getElementById("contenido");
+
+  if (!ranking.length) {
+    cont.innerHTML = `<p class="empty-msg">Aún no hay partidos jugados con arco a 0.</p>`;
+    return;
+  }
+
+  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
+  const rankIcon  = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
+
+  cont.innerHTML = `
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Equipo</th>
+          <th>PJ</th>
+          <th>🧤 Vallas</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${ranking.map((e, i) => `
+          <tr>
+            <td class="rank-num ${rankClass(i)}">${rankIcon(i)}</td>
+            <td>
+              ${e.logo ? `<img src="${e.logo}" alt="${e.nombre}" class="team-logo">` : ""}
+              ${e.nombre}
+            </td>
+            <td class="stat-sub">${e.pj}</td>
+            <td><span class="stat-badge">🧤 ${e.vallas}</span></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+cargar();
+</script>
+</body>
+</html>

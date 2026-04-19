@@ -3,23 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MVP — Haxec Esport</title>
+  <title>Amarillas — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
     .stats-table { width:100%; border-collapse:collapse; margin-top:16px; }
-    .stats-table thead tr { background:var(--accent,#f0a500); color:#111; }
+    .stats-table thead tr { background:#c8a000; color:#111; }
     .stats-table th, .stats-table td { padding:12px 16px; text-align:left; font-size:.9rem; }
     .stats-table tbody tr { border-bottom:1px solid rgba(255,255,255,.07); transition:background .15s; }
     .stats-table tbody tr:hover { background:rgba(255,255,255,.05); }
-    .rank-num { font-weight:900; font-size:1.1rem; color:var(--accent,#f0a500); width:36px; }
-    .rank-num.gold   { color:#FFD700; }
-    .rank-num.silver { color:#C0C0C0; }
-    .rank-num.bronze { color:#CD7F32; }
-    .stat-badge { display:inline-block; background:var(--accent,#f0a500); color:#111; font-weight:800; border-radius:6px; padding:2px 10px; font-size:.95rem; }
+    .rank-num { font-weight:900; font-size:1.1rem; color:var(--muted,#888); width:36px; }
+    .stat-badge { display:inline-block; background:#F5C518; color:#111; font-weight:800; border-radius:6px; padding:2px 10px; font-size:.95rem; }
     .team-tag { font-size:.78rem; color:var(--muted,#888); }
     .empty-msg { text-align:center; color:var(--muted,#888); padding:40px 0; }
     .page-subtitle { color:var(--muted,#888); margin-bottom:24px; font-size:.95rem; }
-    .crown { font-size:1.4rem; vertical-align:middle; }
+    .warn-note { background:rgba(245,197,24,.1); border-left:3px solid #F5C518; padding:10px 14px; border-radius:6px; font-size:.85rem; color:var(--muted,#aaa); margin-bottom:18px; }
   </style>
 </head>
 <body>
@@ -33,10 +30,11 @@
 
 <div class="admin-container">
   <button class="back-btn" onclick="history.back()">← Volver</button>
-  <h1 class="admin-title">👑 MVP</h1>
-  <p class="page-subtitle">Jugadores más valiosos de la temporada</p>
+  <h1 class="admin-title">🟨 Tarjetas Amarillas</h1>
+  <p class="page-subtitle">Jugadores con más amonestaciones en la temporada</p>
 
   <div class="form-card">
+    <div class="warn-note">⚠️ Más tarjetas = más sanciones. Este ranking es de mayor a menor.</div>
     <div id="contenido"><div class="spinner"></div></div>
   </div>
 </div>
@@ -46,18 +44,15 @@
 <script>
 async function cargar() {
   const jugadores = await fetch("/api/jugadores").then(r => r.json());
-  const mvps = jugadores
-    .filter(j => (j.mvp || 0) > 0)
-    .sort((a, b) => (b.mvp || 0) - (a.mvp || 0));
+  const amonestados = jugadores
+    .filter(j => (j.amarillas || 0) > 0)
+    .sort((a, b) => (b.amarillas || 0) - (a.amarillas || 0));
 
   const cont = document.getElementById("contenido");
-  if (!mvps.length) {
-    cont.innerHTML = `<p class="empty-msg">Aún no hay MVPs registrados.</p>`;
+  if (!amonestados.length) {
+    cont.innerHTML = `<p class="empty-msg">Sin tarjetas amarillas registradas. ¡Juego limpio!</p>`;
     return;
   }
-
-  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
-  const rankIcon  = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
 
   cont.innerHTML = `
     <table class="stats-table">
@@ -66,16 +61,16 @@ async function cargar() {
           <th>#</th>
           <th>Jugador</th>
           <th>Equipo</th>
-          <th>MVPs</th>
+          <th>🟨 Amarillas</th>
         </tr>
       </thead>
       <tbody>
-        ${mvps.map((j, i) => `
+        ${amonestados.map((j, i) => `
           <tr>
-            <td class="rank-num ${rankClass(i)}">${rankIcon(i)}</td>
+            <td class="rank-num">${i + 1}</td>
             <td>${j.nombre}</td>
             <td class="team-tag">${j.equipo || "—"}</td>
-            <td><span class="stat-badge">👑 ${j.mvp || 0}</span></td>
+            <td><span class="stat-badge">${j.amarillas || 0}</span></td>
           </tr>
         `).join("")}
       </tbody>

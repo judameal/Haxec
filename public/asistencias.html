@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goleadores — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .stats-table { width:100%; border-collapse:collapse; margin-top:16px; }
+    .stats-table thead tr { background:var(--accent,#f0a500); color:#111; }
+    .stats-table th, .stats-table td { padding:12px 16px; text-align:left; font-size:.9rem; }
+    .stats-table tbody tr { border-bottom:1px solid rgba(255,255,255,.07); transition:background .15s; }
+    .stats-table tbody tr:hover { background:rgba(255,255,255,.05); }
+    .rank-num { font-weight:900; font-size:1.1rem; color:var(--accent,#f0a500); width:36px; }
+    .rank-num.gold   { color:#FFD700; }
+    .rank-num.silver { color:#C0C0C0; }
+    .rank-num.bronze { color:#CD7F32; }
+    .stat-badge { display:inline-block; background:var(--accent,#f0a500); color:#111; font-weight:800; border-radius:6px; padding:2px 10px; font-size:.95rem; }
+    .team-tag { font-size:.78rem; color:var(--muted,#888); margin-left:4px; }
+    .empty-msg { text-align:center; color:var(--muted,#888); padding:40px 0; }
+    .page-subtitle { color:var(--muted,#888); margin-bottom:24px; font-size:.95rem; }
+  </style>
+</head>
+<body>
+<div class="hex-mid"></div>
+<header>
+  <div class="logo">
+    <img src="img/logo.png" alt="Logo">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+  <button class="back-btn" onclick="history.back()">← Volver</button>
+  <h1 class="admin-title">⚽ Goleadores</h1>
+  <p class="page-subtitle">Clasificación de máximos goleadores de la temporada</p>
+
+  <div class="form-card">
+    <div id="contenido"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<footer><p>© 2026 Haxec Esport — Hecho por Judameal</p></footer>
+
+<script>
+async function cargar() {
+  const jugadores = await fetch("/api/jugadores").then(r => r.json());
+  const goleadores = jugadores
+    .filter(j => (j.goles || 0) > 0)
+    .sort((a, b) => (b.goles || 0) - (a.goles || 0));
+
+  const cont = document.getElementById("contenido");
+  if (!goleadores.length) {
+    cont.innerHTML = `<p class="empty-msg">Aún no hay goles registrados.</p>`;
+    return;
+  }
+
+  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
+  const rankIcon  = i => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
+
+  cont.innerHTML = `
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Jugador</th>
+          <th>Equipo</th>
+          <th>Goles</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${goleadores.map((j, i) => `
+          <tr>
+            <td class="rank-num ${rankClass(i)}">${rankIcon(i)}</td>
+            <td>${j.nombre}</td>
+            <td class="team-tag">${j.equipo || "—"}</td>
+            <td><span class="stat-badge">${j.goles || 0}</span></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+cargar();
+</script>
+</body>
+</html>
