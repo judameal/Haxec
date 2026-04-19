@@ -5,6 +5,239 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Partidos — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── MODAL INFORME ───────────────────────────────────── */
+    #informeOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(3px);
+    }
+    #informeOverlay.visible { display: flex; }
+
+    .informe-card {
+      background: var(--card-bg, #1a1a2e);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 0;
+      animation: slideUp .22s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(24px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* Cabecera del informe */
+    .informe-header {
+      background: linear-gradient(135deg, rgba(240,165,0,.18), rgba(240,165,0,.06));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px 16px 0 0;
+      padding: 22px 24px 18px;
+      text-align: center;
+      position: relative;
+    }
+    .informe-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none;
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--muted,#888);
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .informe-close:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+    .informe-jornada {
+      font-size: .72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent,#f0a500);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .informe-teams {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+    .informe-team { text-align: center; }
+    .informe-team img {
+      width: 54px; height: 54px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
+      margin-bottom: 6px;
+    }
+    .informe-team-name {
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--text,#eee);
+    }
+    .informe-score-box {
+      text-align: center;
+    }
+    .informe-score {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .informe-score-sep { color: var(--muted,#666); font-size: 1.6rem; margin: 0 4px; }
+    .informe-fecha {
+      font-size: .72rem;
+      color: var(--muted,#888);
+      margin-top: 4px;
+    }
+
+    /* Body del informe */
+    .informe-body { padding: 20px 24px; }
+
+    .informe-section { margin-bottom: 20px; }
+    .informe-section-title {
+      font-size: .7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent,#f0a500);
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .informe-section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.07);
+    }
+
+    /* Timeline eventos */
+    .timeline { display: flex; flex-direction: column; gap: 6px; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 38px 26px 1fr;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.05);
+    }
+    .timeline-min {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--accent,#f0a500);
+      text-align: right;
+    }
+    .timeline-icon { font-size: .95rem; text-align: center; }
+    .timeline-info { color: var(--text,#ddd); }
+    .timeline-sub { font-size: .72rem; color: var(--muted,#888); }
+
+    /* Stats grid */
+    .stats-duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stat-item {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stat-icon { font-size: 1.2rem; }
+    .stat-label { font-size: .7rem; color: var(--muted,#888); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-val { font-size: 1.05rem; font-weight: 700; color: var(--text,#eee); }
+
+    /* MVP card */
+    .mvp-card {
+      background: linear-gradient(135deg, rgba(240,165,0,.14), rgba(240,165,0,.05));
+      border: 1px solid rgba(240,165,0,.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mvp-crown { font-size: 1.6rem; }
+    .mvp-nombre { font-size: 1rem; font-weight: 700; color: var(--accent,#f0a500); }
+    .mvp-label { font-size: .7rem; color: var(--muted,#888); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Valla invicta */
+    .valla-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,180,120,.12);
+      border: 1px solid rgba(0,180,120,.25);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: .9rem;
+      font-weight: 700;
+      color: #00cc88;
+    }
+
+    /* Notas */
+    .notas-box {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: .85rem;
+      color: var(--muted,#aaa);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Sin datos */
+    .informe-empty { color: var(--muted,#666); font-size: .82rem; text-align: center; padding: 10px 0; }
+
+    /* Botón ver informe */
+    .btn-informe {
+      background: none;
+      border: 1px solid rgba(255,255,255,.15);
+      color: var(--muted,#aaa);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: .78rem;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .btn-informe:hover {
+      background: rgba(255,255,255,.08);
+      color: var(--text,#eee);
+      border-color: rgba(255,255,255,.3);
+    }
+    .btn-informe.jugado {
+      border-color: rgba(240,165,0,.4);
+      color: var(--accent,#f0a500);
+    }
+    .btn-informe.jugado:hover {
+      background: rgba(240,165,0,.1);
+    }
+  </style>
 </head>
 <body>
 <div class="hex-mid"></div>
@@ -19,7 +252,6 @@
 <div class="admin-container">
 
   <h1 class="admin-title">Partidos</h1>
-
   <button class="back-btn" onclick="goBack()">← Volver</button>
 
   <div id="partidosContainer">
@@ -35,50 +267,44 @@
   <p>© 2026 Haxec Esport — Hecho por Judameal</p>
 </footer>
 
+<!-- ── MODAL INFORME ────────────────────────────────────── -->
+<div id="informeOverlay" onclick="cerrarInformeOverlay(event)">
+  <div class="informe-card" id="informeCard">
+    <!-- contenido dinámico -->
+  </div>
+</div>
+
 <script>
 const API = "/api";
-const user = JSON.parse(localStorage.getItem("user") || "null");
+const user   = JSON.parse(localStorage.getItem("user") || "null");
 const esAdmin = user && user.role === "admin";
 
-function goBack() {
-  window.location.href = "/haxball.html";
-}
+const ICONOS = { gol:'⚽', asistencia:'🅰️', amarilla:'🟨', roja:'🟥' };
 
-/* ── GENERADOR DE CALENDARIO ─────────────────────────────── */
+function goBack() { window.location.href = "/haxball.html"; }
+
+/* ── CALENDARIO ──────────────────────────────────────────── */
 function generarCalendario(equipos) {
   const lista = [...equipos];
   if (lista.length % 2 !== 0) lista.push(null);
   const n = lista.length;
   const jornadas = [];
-
   for (let i = 0; i < n - 1; i++) {
     const jornada = [];
     for (let j = 0; j < n / 2; j++) {
-      const local = lista[j];
-      const visitante = lista[n - 1 - j];
+      const local = lista[j], visitante = lista[n - 1 - j];
       if (local && visitante) jornada.push({ local, visitante });
     }
     jornadas.push(jornada);
     lista.splice(1, 0, lista.pop());
   }
-
-  const vuelta = jornadas.map(j =>
-    j.map(p => ({ local: p.visitante, visitante: p.local }))
-  );
-
+  const vuelta = jornadas.map(j => j.map(p => ({ local: p.visitante, visitante: p.local })));
   return [...jornadas, ...vuelta];
 }
 
-/* ── ICONOS EVENTOS ──────────────────────────────────────── */
-function iconEvento(tipo) {
-  const map = { gol: '⚽', asistencia: '🅰️', amarilla: '🟨', roja: '🟥' };
-  return map[tipo] || '•';
-}
-
-/* ── RENDER ──────────────────────────────────────────────── */
+/* ── RENDER PARTIDOS ─────────────────────────────────────── */
 async function cargarPartidos() {
   const container = document.getElementById("partidosContainer");
-
   try {
     const [equipos, dataPartidos] = await Promise.all([
       fetch(API + "/teams").then(r => r.json()),
@@ -93,17 +319,10 @@ async function cargarPartidos() {
       block.className = "jornada-block";
       block.style.animationDelay = `${i * 0.04}s`;
 
-      let html = `
-        <div class="jornada-header">
-          <h3>⚽ Jornada ${i + 1}</h3>
-        </div>
-      `;
+      let html = `<div class="jornada-header"><h3>⚽ Jornada ${i + 1}</h3></div>`;
 
       jornada.forEach((p, idx) => {
-        const info = dataPartidos.find(d =>
-          d.jornada === i && d.partido === idx
-        );
-
+        const info = dataPartidos.find(d => d.jornada === i && d.partido === idx);
         const jugado = info && info.jugado;
 
         let centroHTML = "";
@@ -111,19 +330,25 @@ async function cargarPartidos() {
           centroHTML = `
             <div class="score-badge">
               ${info.resultado?.local ?? 0} – ${info.resultado?.visitante ?? 0}
-            </div>
-          `;
+            </div>`;
         } else if (info && info.fecha) {
           centroHTML = `
-            <div class="score-badge" style="font-size:.85rem; letter-spacing:1px; color:var(--muted);">vs</div>
-            <div class="match-meta">${info.fecha} · ${info.hora}</div>
-          `;
+            <div class="score-badge" style="font-size:.85rem;letter-spacing:1px;color:var(--muted);">vs</div>
+            <div class="match-meta">${info.fecha} · ${info.hora}</div>`;
         } else {
           centroHTML = `
-            <div class="score-badge" style="font-size:.85rem; color:var(--muted);">vs</div>
-            <div class="match-meta" style="color:var(--border);">Sin horario</div>
-          `;
+            <div class="score-badge" style="font-size:.85rem;color:var(--muted);">vs</div>
+            <div class="match-meta" style="color:var(--border);">Sin horario</div>`;
         }
+
+        // Botón informe — siempre visible, distinto si ya jugado
+        const btnInforme = `
+          <button class="btn-informe ${jugado ? 'jugado' : ''}"
+            onclick="abrirInforme(event, ${i}, ${idx})"
+            title="${jugado ? 'Ver informe del partido' : 'Partido aún no jugado'}">
+            ${jugado ? '📋 Informe' : '📋 Sin datos'}
+          </button>
+        `;
 
         html += `
           <div class="partido-row">
@@ -131,26 +356,20 @@ async function cargarPartidos() {
               <img src="${p.local.logo}" alt="${p.local.nombre}">
               ${p.local.nombre}
             </div>
-
             <div class="match-center">
               ${centroHTML}
             </div>
-
             <div class="team-side right">
               ${p.visitante.nombre}
               <img src="${p.visitante.logo}" alt="${p.visitante.nombre}">
             </div>
-
-            ${esAdmin ? `
-              <div class="match-actions">
-                <button class="btn-assign" onclick="abrirOpciones(${i}, ${idx})">
-                  📅 Asignar horario
-                </button>
-                <button class="btn-play" onclick="jugar(${i}, ${idx})">
-                  ▶ Jugar
-                </button>
-              </div>
-            ` : ""}
+            <div class="match-actions" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+              ${btnInforme}
+              ${esAdmin ? `
+                <button class="btn-assign" onclick="abrirOpciones(${i},${idx})">📅 Horario</button>
+                <button class="btn-play"   onclick="jugar(${i},${idx})">▶ Jugar</button>
+              ` : ""}
+            </div>
           </div>
         `;
       });
@@ -159,16 +378,207 @@ async function cargarPartidos() {
       container.appendChild(block);
     });
 
+    // Guardar datos para el modal
+    window._calendario    = calendario;
+    window._dataPartidos  = dataPartidos;
+
   } catch (err) {
     console.error(err);
-    container.innerHTML = `
-      <div class="loading-state">
-        ⚠️ Error al cargar los partidos. Recarga la página.
-      </div>
-    `;
+    container.innerHTML = `<div class="loading-state">⚠️ Error al cargar los partidos.</div>`;
   }
 }
 
+/* ── INFORME MODAL ───────────────────────────────────────── */
+function abrirInforme(event, jornadaIdx, partidoIdx) {
+  event.stopPropagation();
+
+  const calendario   = window._calendario   || [];
+  const dataPartidos = window._dataPartidos || [];
+
+  const pCalendario = calendario[jornadaIdx]?.[partidoIdx];
+  const info = dataPartidos.find(d => d.jornada === jornadaIdx && d.partido === partidoIdx);
+
+  const local     = pCalendario?.local;
+  const visitante = pCalendario?.visitante;
+  const jugado    = info && info.jugado;
+
+  const card = document.getElementById("informeCard");
+
+  if (!jugado) {
+    card.innerHTML = `
+      <div class="informe-header">
+        <button class="informe-close" onclick="cerrarInforme()">✕</button>
+        <div class="informe-jornada">Jornada ${jornadaIdx + 1} · Partido ${partidoIdx + 1}</div>
+        <div class="informe-teams">
+          <div class="informe-team">
+            <img src="${local?.logo || ''}" alt="${local?.nombre || ''}">
+            <div class="informe-team-name">${local?.nombre || '—'}</div>
+          </div>
+          <div class="informe-score-box">
+            <div style="font-size:1.1rem;color:var(--muted,#888);font-weight:700;">VS</div>
+            ${info?.fecha ? `<div class="informe-fecha">${info.fecha} · ${info.hora}</div>` : '<div class="informe-fecha">Sin horario</div>'}
+          </div>
+          <div class="informe-team">
+            <img src="${visitante?.logo || ''}" alt="${visitante?.nombre || ''}">
+            <div class="informe-team-name">${visitante?.nombre || '—'}</div>
+          </div>
+        </div>
+      </div>
+      <div class="informe-body">
+        <p class="informe-empty">Este partido aún no ha sido jugado. El informe estará disponible después del encuentro.</p>
+      </div>
+    `;
+    mostrarOverlay();
+    return;
+  }
+
+  const eventos   = info.eventos || [];
+  const resultado = info.resultado || { local: 0, visitante: 0 };
+  const gl = Number(resultado.local ?? 0);
+  const gv = Number(resultado.visitante ?? 0);
+
+  // Calcular estadísticas por equipo desde eventos
+  const contar = (equipo, tipo) =>
+    eventos.filter(e => e.equipo === equipo && e.tipo === tipo).length;
+
+  const gLocal  = { goles: gl, asistencias: contar("local","asistencia"), amarillas: contar("local","amarilla"), rojas: contar("local","roja") };
+  const gVisit  = { goles: gv, asistencias: contar("visitante","asistencia"), amarillas: contar("visitante","amarilla"), rojas: contar("visitante","roja") };
+
+  // Valla invicta
+  const vallaLocal     = gv === 0;
+  const vallaVisitante = gl === 0;
+  const vallasTexto = [
+    vallaLocal     ? `🧤 ${local?.nombre} (arco a 0)`     : null,
+    vallaVisitante ? `🧤 ${visitante?.nombre} (arco a 0)` : null,
+  ].filter(Boolean);
+
+  // Resultado textual
+  let resultadoLabel = "";
+  if (gl > gv) resultadoLabel = `Victoria ${local?.nombre}`;
+  else if (gv > gl) resultadoLabel = `Victoria ${visitante?.nombre}`;
+  else resultadoLabel = "Empate";
+
+  // Timeline ordenada
+  const eventosSorted = [...eventos].sort((a,b) => a.minuto - b.minuto);
+
+  card.innerHTML = `
+    <div class="informe-header">
+      <button class="informe-close" onclick="cerrarInforme()">✕</button>
+      <div class="informe-jornada">Jornada ${jornadaIdx + 1} · Partido ${partidoIdx + 1}</div>
+      <div class="informe-teams">
+        <div class="informe-team">
+          <img src="${local?.logo || ''}" alt="${local?.nombre || ''}">
+          <div class="informe-team-name">${local?.nombre || '—'}</div>
+        </div>
+        <div class="informe-score-box">
+          <div class="informe-score">
+            <span>${gl}</span>
+            <span class="informe-score-sep">–</span>
+            <span>${gv}</span>
+          </div>
+          <div class="informe-fecha" style="margin-top:6px;color:var(--accent,#f0a500);font-weight:700;font-size:.75rem;">${resultadoLabel}</div>
+          ${info.fecha ? `<div class="informe-fecha">${info.fecha}${info.hora ? ' · ' + info.hora : ''}</div>` : ''}
+        </div>
+        <div class="informe-team">
+          <img src="${visitante?.logo || ''}" alt="${visitante?.nombre || ''}">
+          <div class="informe-team-name">${visitante?.nombre || '—'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="informe-body">
+
+      ${info.mvp ? `
+        <div class="informe-section">
+          <div class="informe-section-title">👑 MVP del partido</div>
+          <div class="mvp-card">
+            <div class="mvp-crown">👑</div>
+            <div>
+              <div class="mvp-label">Jugador más valioso</div>
+              <div class="mvp-nombre">${info.mvp}</div>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+
+      ${vallasTexto.length ? `
+        <div class="informe-section">
+          <div class="informe-section-title">🧤 Valla invicta</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            ${vallasTexto.map(v => `<div class="valla-badge">${v}</div>`).join("")}
+          </div>
+        </div>
+      ` : ""}
+
+      <div class="informe-section">
+        <div class="informe-section-title">📊 Estadísticas</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          ${statFila("⚽", "Goles", gLocal.goles, gVisit.goles)}
+          ${statFila("🅰️", "Asistencias", gLocal.asistencias, gVisit.asistencias)}
+          ${statFila("🟨", "Amarillas", gLocal.amarillas, gVisit.amarillas)}
+          ${statFila("🟥", "Rojas", gLocal.rojas, gVisit.rojas)}
+        </div>
+      </div>
+
+      <div class="informe-section">
+        <div class="informe-section-title">📋 Cronología</div>
+        ${eventosSorted.length ? `
+          <div class="timeline">
+            ${eventosSorted.map(e => `
+              <div class="timeline-item">
+                <div class="timeline-min">${e.minuto}'</div>
+                <div class="timeline-icon">${ICONOS[e.tipo] || '•'}</div>
+                <div class="timeline-info">
+                  <div>${e.jugador}</div>
+                  <div class="timeline-sub">${e.equipo === "local" ? local?.nombre : visitante?.nombre} · ${e.tipo}</div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        ` : '<p class="informe-empty">Sin eventos registrados.</p>'}
+      </div>
+
+      ${info.notas ? `
+        <div class="informe-section">
+          <div class="informe-section-title">📝 Notas</div>
+          <div class="notas-box">${info.notas}</div>
+        </div>
+      ` : ""}
+
+    </div>
+  `;
+
+  mostrarOverlay();
+}
+
+function statFila(icono, label, vLocal, vVisit) {
+  return `
+    <div class="stat-item">
+      <div class="stat-icon">${icono}</div>
+      <div>
+        <div class="stat-label">${label}</div>
+        <div class="stat-val">${vLocal} – ${vVisit}</div>
+      </div>
+    </div>
+  `;
+}
+
+function mostrarOverlay() {
+  const overlay = document.getElementById("informeOverlay");
+  overlay.classList.add("visible");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarInforme() {
+  document.getElementById("informeOverlay").classList.remove("visible");
+  document.body.style.overflow = "";
+}
+
+function cerrarInformeOverlay(e) {
+  if (e.target === document.getElementById("informeOverlay")) cerrarInforme();
+}
+
+/* ── ADMIN ACTIONS ───────────────────────────────────────── */
 function abrirOpciones(jornada, partido) {
   localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada, partido }));
   window.location.href = "/horarios.html";
