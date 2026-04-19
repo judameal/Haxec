@@ -2,72 +2,100 @@ import clientPromise from "../lib/mongodb.js";
 import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
-  const client = await clientPromise;
-  const db = client.db("haxball");
+  try {
+    const client = await clientPromise;
+    const db = client.db("haxball");
 
-  const partidos = db.collection("partidos");
-  const tabla = db.collection("tabla");
-  const jugadores = db.collection("jugadores");
+    const partidos = db.collection("partidos");
+    const tabla = db.collection("tabla");
+    const jugadores = db.collection("jugadores");
 
-  // 📥 GET
-  if (req.method === "GET") {
-    const data = await partidos.find().toArray();
-    return res.status(200).json(data);
-  }
-
-  // ➕ POST (horarios o calendario)
-  if (req.method === "POST") {
-    const body = req.body;
-
-    if (body.calendario) {
-      await partidos.deleteMany({});
-      await partidos.insertMany(body.calendario);
-      return res.json({ message: "Calendario guardado" });
+    if (req.method === "GET") {
+      const data = await partidos.find().toArray();
+      return res.status(200).json(data);
     }
 
-    const { jornada, partido, fecha, hora } = body;
+    if (req.method === "POST") {
+      const body = req.body;
 
-    await partidos.updateOne(
-      { jornada, partido },
-      { $set: { jornada, partido, fecha, hora } },
-      { upsert: true }
-    );
-
-    return res.json({ message: "Horario guardado" });
-  }
-
-  // ⚽ JUGAR PARTIDO
-  if (req.method === "PUT") {
-    const { id, resultado, eventos, mvp, notas } = req.body;
-
-    const partido = await partidos.findOne({ _id: new ObjectId(id) });
-
-    await partidos.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          jugado: true,
-          resultado,
-          eventos,
-          mvp,
-          notas
-        }
+      if (body.calendario) {
+        await partidos.deleteMany({});
+        await partidos.insertMany(body.calendario);
+        return res.status(200).json({ message: "Calendario guardado" });
       }
-    );
 
-    await actualizarTabla(tabla, partido, resultado);
-    await actualizarJugadores(jugadores, eventos, mvp);
+      const { jornada, partido, fecha, hora, local, visitante } = body;
 
-    return res.json({ message: "Partido jugado" });
+      if (jornada === undefined || partido === undefined) {
+        return res.status(400).json({ message: "Datos incompletos" });
+      }
+
+      await partidos.updateOne(
+        { jornada, partido },
+        {
+          $set: {
+            jornada,
+            partido,
+            fecha,
+            hora,
+            local,
+            visitante,
+            jugado: false
+          }
+        },
+        { upsert: true }
+      );
+
+      return res.status(200).json({ message: "Horario guardado" });
+    }
+
+    if (req.method === "PUT") {
+      const { id, resultado, eventos = [], mvp, notas, local, visitante } = req.body;
+
+      const partido = await partidos.findOne({ _id: new ObjectId(id) });
+
+      if (!partido) {
+        return res.status(404).json({ message: "Partido no encontrado" });
+      }
+
+      const equipoLocal = local || partido.local;
+      const equipoVisitante = visitante || partido.visitante;
+
+      if (!equipoLocal || !equipoVisitante) {
+        return res.status(400).json({ message: "Faltan datos del partido" });
+      }
+
+      await partidos.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            jugado: true,
+            local: equipoLocal,
+            visitante: equipoVisitante,
+            resultado,
+            eventos,
+            mvp,
+            notas
+          }
+        }
+      );
+
+      await actualizarTabla(tabla, equipoLocal, equipoVisitante, resultado);
+      await actualizarJugadores(jugadores, eventos, mvp);
+
+      return res.status(200).json({ message: "Partido jugado" });
+    }
+
+    return res.status(405).json({ message: "Método no permitido" });
+  } catch (error) {
+    console.error("ERROR /api/partidos:", error);
+    return res.status(500).json({ message: "Error interno del servidor" });
   }
-
-  res.status(405).end();
 }
 
-/* 🔥 TABLA */
-async function actualizarTabla(tabla, partido, resultado) {
-  const { local, visitante } = partido;
-  const { local: gl, visitante: gv } = resultado;
+async function actualizarTabla(tabla, local, visitante, resultado) {
+  const gl = Number(resultado?.local ?? 0);
+  const gv = Number(resultado?.visitante ?? 0);
 
   const update = async (nombre, gf, gc, pts, g, e, p) => {
     await tabla.updateOne(
@@ -75,13 +103,13 @@ async function actualizarTabla(tabla, partido, resultado) {
       {
         $inc: {
           PJ: 1,
+          G: g,
+          E: e,
+          P: p,
           GF: gf,
           GC: gc,
           DG: gf - gc,
-          PTS: pts,
-          G: g,
-          E: e,
-          P: p
+          PTS: pts
         }
       },
       { upsert: true }
@@ -100,9 +128,8 @@ async function actualizarTabla(tabla, partido, resultado) {
   }
 }
 
-/* 👤 JUGADORES */
 async function actualizarJugadores(jugadores, eventos, mvp) {
-  for (let e of eventos) {
+  for (const e of eventos) {
     if (e.tipo === "gol") {
       await jugadores.updateOne(
         { nombre: e.jugador },

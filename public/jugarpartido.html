@@ -209,7 +209,7 @@ async function guardar() {
 
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  const data = await (await fetch(API + "/partidos")).json();
+  const data = await (await fetch("/api/partidos")).json();
 
   const partido = data.find(p =>
     p.jornada === sel.jornada &&
@@ -221,13 +221,15 @@ async function guardar() {
     return;
   }
 
-  await fetch(API + "/partidos", {
+  await fetch("/api/partidos", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
       id: partido._id,
+      local: partido.local,
+      visitante: partido.visitante,
       resultado: {
         local: golesLocal,
         visitante: golesVisitante

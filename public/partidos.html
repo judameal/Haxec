@@ -119,11 +119,12 @@ try {
 
           <div style="text-align:center;">
             <strong>vs</strong><br>
-            ${info?.resultado
-  ? `<strong>${info.resultado.local} - ${info.resultado.visitante}</strong>`
-  : info
-    ? `<small>${info.fecha} - ${info.hora}</small>`
-    : `<small style="color:gray;">Sin horario</small>`
+            ${info
+  ? info.jugado
+    ? `<strong>${info.resultado?.local ?? 0} - ${info.resultado?.visitante ?? 0}</strong>`
+    : `<small>${info.fecha} - ${info.hora}</small>`
+  : `<small style="color:gray;">Sin horario</small>`
+}
 }
           </div>
 
