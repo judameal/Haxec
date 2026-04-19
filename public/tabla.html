@@ -46,11 +46,6 @@
 <script>
 const API = "/api";
 
-if (!data.length) {
-  await fetch(API + "/tabla", { method: "POST" });
-  location.reload();
-}
-
 /* 🔙 */
 function goBack() {
   window.location.href = "/haxball.html";
@@ -59,19 +54,48 @@ function goBack() {
 /* 📥 cargar tabla REAL */
 async function cargarTabla() {
 
-  const resTabla = await fetch(API + "/tabla");
-  const data = await resTabla.json();
+  const tablaHTML = document.getElementById("tabla");
 
+  // 🔥 traer datos tabla
+  let resTabla = await fetch(API + "/tabla");
+  let data = await resTabla.json();
+
+  // 🔥 si no hay tabla → crearla
+  if (!data.length) {
+    await fetch(API + "/tabla", { method: "POST" });
+
+    // volver a pedir datos
+    resTabla = await fetch(API + "/tabla");
+    data = await resTabla.json();
+  }
+
+  // 🔥 traer equipos (para logos)
   const resTeams = await fetch(API + "/teams");
   const equipos = await resTeams.json();
 
-  const tabla = document.getElementById("tabla");
-
-  // 🔥 ordenar por puntos y DG
+  // 🔥 ordenar
   data.sort((a,b) =>
     b.PTS - a.PTS || b.DG - a.DG
   );
 
+  // 🔥 limpiar tabla (por si recarga)
+  tablaHTML.innerHTML = `
+    <tr>
+      <th>#</th>
+      <th>Equipo</th>
+      <th>PJ</th>
+      <th>G</th>
+      <th>E</th>
+      <th>P</th>
+      <th>GF</th>
+      <th>GC</th>
+      <th>DG</th>
+      <th>PTS</th>
+      <th>%</th>
+    </tr>
+  `;
+
+  // 🔥 render
   data.forEach((t, index) => {
 
     const equipo = equipos.find(e =>
@@ -102,7 +126,7 @@ async function cargarTabla() {
       <td>${porcentaje}%</td>
     `;
 
-    tabla.appendChild(row);
+    tablaHTML.appendChild(row);
   });
 }
 
