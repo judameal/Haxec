@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Equipos — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .ap-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    /* ── GRID DE EQUIPOS ── */
+    .equipos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .equipo-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .equipo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0,0,0,.10);
+    }
+
+    /* ── CABECERA DE CARD ── */
+    .equipo-card-header {
+      background: var(--black);
+      padding: 18px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .equipo-card-header img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255,255,255,.06);
+      padding: 4px;
+    }
+
+    .equipo-card-header .info h2 {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .colores-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      padding: 2px 9px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.7);
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.25);
+      flex-shrink: 0;
+    }
+
+    /* ── JUGADORES ── */
+    .equipo-card-body {
+      padding: 14px 18px 18px;
+    }
+
+    .jugadores-label {
+      font-family: var(--font-head);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jugadores-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    .player-row:last-child { margin-bottom: 0; }
+    .player-row:hover { background: var(--surface3); }
+
+    .player-dorsal {
+      background: var(--black);
+      color: var(--accent);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .player-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sin-jugadores {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      padding: 8px 0 4px;
+      text-align: center;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 70px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      opacity: .4;
+    }
+
+    .empty-state p {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── LOADING ── */
+    #loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="img/logo.png" alt="Haxec">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <div class="ap-title-row">
+    <h1 class="admin-title">Equipos</h1>
+    <button class="back-btn" onclick="window.location.href='/haxball.html'">⬅ Volver</button>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="equiposGrid" class="equipos-grid" style="display:none;"></div>
+
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <div class="empty-icon">🏟️</div>
+    <p>No hay equipos registrados</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+async function cargarVista() {
+  const [resTeams, resJug] = await Promise.all([
+    fetch("/api/teams"),
+    fetch("/api/jugadores")
+  ]);
+
+  const teams    = await resTeams.json();
+  const jugadores = await resJug.json();
+
+  document.getElementById("loading").style.display = "none";
+
+  if (!teams.length) {
+    document.getElementById("emptyState").style.display = "block";
+    return;
+  }
+
+  const grid = document.getElementById("equiposGrid");
+  grid.style.display = "grid";
+
+  teams.forEach(t => {
+    const miembros = jugadores.filter(j =>
+      j.equipo.toLowerCase() === t.nombre.toLowerCase()
+    );
+
+    const localPill = t.local
+      ? `<span class="color-pill">
+           <span class="color-dot" style="background:${t.local};"></span>
+           Local
+         </span>`
+      : "";
+
+    const visitantePill = t.visitante
+      ? `<span class="color-pill">
+           <span class="color-dot" style="background:${t.visitante};"></span>
+           Visitante
+         </span>`
+      : "";
+
+    const jugadoresHTML = miembros.length > 0
+      ? miembros
+          .sort((a, b) => Number(a.dorsal) - Number(b.dorsal))
+          .map(j => `
+            <div class="player-row">
+              <span class="player-dorsal">${j.dorsal}</span>
+              <span class="player-name">${j.nombre}</span>
+            </div>`)
+          .join("")
+      : `<p class="sin-jugadores">Sin jugadores</p>`;
+
+    const card = document.createElement("div");
+    card.className = "equipo-card";
+    card.innerHTML = `
+      <div class="equipo-card-header">
+        <img src="${t.logo}" alt="${t.nombre}">
+        <div class="info">
+          <h2>${t.nombre}</h2>
+          <div class="colores-row">
+            ${localPill}
+            ${visitantePill}
+          </div>
+        </div>
+      </div>
+      <div class="equipo-card-body">
+        <div class="jugadores-label">
+          Jugadores · ${miembros.length}
+        </div>
+        ${jugadoresHTML}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+cargarVista();
+</script>
+
+</body>
+</html>
