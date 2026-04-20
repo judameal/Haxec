@@ -3,49 +3,108 @@
 <head>
   <title>Jugadores</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .ap-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .dorsal-badge {
+      display: inline-block;
+      background: var(--black);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .sin-equipo {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+    .form-card label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+      margin-top: 4px;
+    }
+    .form-save-btn {
+      width: 100%;
+      background: var(--black);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 9px;
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all .2s;
+    }
+    .form-save-btn:hover {
+      background: var(--accent);
+      color: var(--black);
+    }
+  </style>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="img/logo.png">
+    <img src="img/logo.png" alt="Haxec">
     <h1>Haxec <span>Esport</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <h1 class="admin-title">JUGADORES</h1>
-
-  <!-- 🔙 VOLVER -->
-  <button class="back-btn" onclick="goBack()">Volver</button>
-
-  <!-- ➕ AÑADIR -->
-  <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
-
-  <!-- 📥 FORM -->
-  <div id="formJugador" class="form-card" style="display:none;">
-
-    <input id="nombre" placeholder="Nombre">
-    <input id="dorsal" placeholder="Dorsal">
-    <input id="equipo" placeholder="Equipo" oninput="verificarEquipo()">
-
-    <!-- 🔍 PREVIEW -->
-    <div id="previewEquipo"></div>
-
-    <button onclick="crearJugador()">Guardar</button>
-
+  <div class="ap-title-row">
+    <h1 class="admin-title">Jugadores</h1>
+    <button class="back-btn" onclick="goBack()">⬅ Volver</button>
   </div>
 
-  <!-- 📋 TABLA -->
+  <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
+
+  <div id="formJugador" class="form-card" style="display:none; margin-top:16px;">
+    <h3>Nuevo jugador</h3>
+
+    <label>Nombre</label>
+    <input id="nombre" placeholder="Ej: Judameal">
+
+    <label>Dorsal</label>
+    <input id="dorsal" placeholder="Ej: 10" type="number">
+
+    <label>Equipo</label>
+    <input id="equipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipo()">
+
+    <div id="previewEquipo" style="margin-bottom:12px;"></div>
+
+    <button class="form-save-btn" onclick="crearJugador()">Guardar jugador</button>
+  </div>
+
   <div class="admin-card">
     <table id="tablaJugadores">
-      <tr>
-        <th>Nombre</th>
-        <th>Dorsal</th>
-        <th>Equipo</th>
-        <th>Acciones</th>
-      </tr>
+      <thead>
+        <tr>
+          <th style="text-align:left; padding-left:16px;">Jugador</th>
+          <th>#</th>
+          <th>Equipo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
   </div>
 
@@ -56,22 +115,18 @@
 </footer>
 
 <script src="js/app.js"></script>
-
 <script>
 let equipoValido = null;
 
-/* 🔙 VOLVER */
 function goBack() {
   window.location.href = "/haxball.html";
 }
 
-/* 🔽 FORM */
 function toggleForm() {
   const form = document.getElementById("formJugador");
   form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-/* 🔍 VALIDAR EQUIPO */
 async function verificarEquipo() {
   const input = document.getElementById("equipo").value;
   const preview = document.getElementById("previewEquipo");
@@ -84,63 +139,46 @@ async function verificarEquipo() {
 
   const res = await fetch("/api/teams");
   const teams = await res.json();
-
-  const encontrado = teams.find(t =>
-    t.nombre.toLowerCase() === input.toLowerCase()
-  );
+  const encontrado = teams.find(t => t.nombre.toLowerCase() === input.toLowerCase());
 
   if (encontrado) {
     equipoValido = encontrado;
-
     preview.innerHTML = `
       <div class="preview-box preview-ok">
-        <img src="${encontrado.logo}" width="30">
+        <img src="${encontrado.logo}" width="26">
         <span><strong>${encontrado.nombre}</strong></span>
-      </div>
-    `;
+      </div>`;
   } else {
     equipoValido = null;
-
     preview.innerHTML = `
       <div class="preview-box preview-error">
         <span>Equipo no encontrado</span>
-      </div>
-    `;
+      </div>`;
   }
 }
 
-/* ➕ CREAR */
 async function crearJugador() {
   const nombre = document.getElementById("nombre").value;
   const dorsal = document.getElementById("dorsal").value;
 
   if (!nombre || !dorsal) {
-    alert("Completa los campos");
+    alert("Completa los campos obligatorios");
     return;
-  }
-
-  let equipoFinal = "Sin equipo";
-
-  if (equipoValido) {
-    equipoFinal = equipoValido.nombre;
   }
 
   await fetch("/api/jugadores", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       nombre,
       dorsal,
-      equipo: equipoFinal
+      equipo: equipoValido ? equipoValido.nombre : "Sin equipo"
     })
   });
 
   location.reload();
 }
 
-/* 📥 CARGAR */
 async function cargarJugadores() {
   const resJug = await fetch("/api/jugadores");
   const jugadores = await resJug.json();
@@ -148,28 +186,28 @@ async function cargarJugadores() {
   const resTeams = await fetch("/api/teams");
   const teams = await resTeams.json();
 
-  const tabla = document.getElementById("tablaJugadores");
+  const tbody = document.querySelector("#tablaJugadores tbody");
 
   jugadores.forEach(j => {
-    const equipo = teams.find(t =>
-      t.nombre.toLowerCase() === j.equipo.toLowerCase()
-    );
-
-    const logo = equipo ? `<img src="${equipo.logo}" width="30">` : "—";
+    const equipo = teams.find(t => t.nombre.toLowerCase() === j.equipo.toLowerCase());
+    const logoCell = equipo
+      ? `<div style="display:flex;align-items:center;gap:8px;justify-content:center;">
+           <img src="${equipo.logo}" width="24" style="border-radius:4px;">
+           <span style="font-size:0.88rem;font-weight:600;">${equipo.nombre}</span>
+         </div>`
+      : `<span class="sin-equipo">Sin equipo</span>`;
 
     const row = document.createElement("tr");
-
     row.innerHTML = `
-      <td>${j.nombre}</td>
-      <td>${j.dorsal}</td>
-      <td>${logo}</td>
+      <td style="text-align:left; padding-left:16px; font-weight:700;">${j.nombre}</td>
+      <td><span class="dorsal-badge">${j.dorsal}</span></td>
+      <td>${logoCell}</td>
       <td class="actions">
         <button onclick="editarJugador('${j._id}', '${j.nombre}', '${j.dorsal}', '${j.equipo}')">Editar</button>
-        <button onclick="eliminarJugador('${j._id}')">Eliminar</button>
+        <button onclick="eliminarJugador('${j._id}')" style="border-color:#ef4444;color:#ef4444;">Eliminar</button>
       </td>
     `;
-
-    tabla.appendChild(row);
+    tbody.appendChild(row);
   });
 }
 cargarJugadores();
@@ -186,11 +224,7 @@ async function editarJugador(id, nombreActual, dorsalActual, equipoActual) {
   if (nuevoEquipoInput) {
     const res = await fetch("/api/teams");
     const teams = await res.json();
-
-    const encontrado = teams.find(t =>
-      t.nombre.toLowerCase() === nuevoEquipoInput.toLowerCase()
-    );
-
+    const encontrado = teams.find(t => t.nombre.toLowerCase() === nuevoEquipoInput.toLowerCase());
     if (encontrado) {
       equipoFinal = encontrado.nombre;
     } else {
@@ -200,32 +234,20 @@ async function editarJugador(id, nombreActual, dorsalActual, equipoActual) {
 
   await fetch("/api/jugadores", {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      id,
-      nombre: nuevoNombre,
-      dorsal: nuevoDorsal,
-      equipo: equipoFinal
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, nombre: nuevoNombre, dorsal: nuevoDorsal, equipo: equipoFinal })
   });
 
   location.reload();
 }
 
 async function eliminarJugador(id) {
-  const confirmar = confirm("¿Eliminar jugador?");
-  if (!confirmar) return;
-
+  if (!confirm("¿Eliminar jugador?")) return;
   await fetch("/api/jugadores", {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })
   });
-
   location.reload();
 }
 </script>
