@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mejores Jugadores — Haxec</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── GRID DE JUGADORES ── */
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .player-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all .22s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform .22s;
+      transform-origin: left;
+    }
+
+    .player-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(34,197,94,.13);
+    }
+
+    .player-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .player-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+
+    .avatar-initials {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--black);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .player-dorsal {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: var(--black);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 1px 7px;
+    }
+
+    .player-name {
+      font-family: var(--font-head);
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--black);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .player-team-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .player-team-row img {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      object-fit: contain;
+    }
+
+    .player-team-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .5px;
+    }
+
+    .player-grl {
+      background: var(--black);
+      color: var(--accent);
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 900;
+      padding: 3px 12px;
+      border-radius: 6px;
+      letter-spacing: 2px;
+    }
+
+    /* ── OVERLAY CARTA FIFA ── */
+    .carta-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,20,16,.82);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .carta-overlay.open {
+      display: flex;
+    }
+
+    /* ── CARTA FIFA ── */
+    .fifa-card {
+      width: 280px;
+      min-height: 420px;
+      border-radius: 18px;
+      position: relative;
+      padding: 0;
+      overflow: hidden;
+      animation: cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
+      box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(34,197,94,.3);
+      background: linear-gradient(160deg, #1a2e1c 0%, #0f1410 55%, #0d1f10 100%);
+    }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: scale(.75) translateY(30px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Líneas decorativas de fondo */
+    .fifa-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          transparent,
+          transparent 30px,
+          rgba(34,197,94,.03) 30px,
+          rgba(34,197,94,.03) 31px
+        );
+      pointer-events: none;
+    }
+
+    .card-top {
+      padding: 22px 22px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .card-grl-big {
+      font-family: var(--font-head);
+      font-size: 3.4rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -1px;
+      text-shadow: 0 0 30px rgba(34,197,94,.4);
+    }
+
+    .card-pos {
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: rgba(34,197,94,.7);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .card-flag-area {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-team-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+    }
+
+    /* Foto del jugador */
+    .card-photo-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .card-photo {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      box-shadow: 0 0 30px rgba(34,197,94,.25), 0 8px 24px rgba(0,0,0,.4);
+    }
+
+    .card-initials-big {
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      background: var(--black2);
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      box-shadow: 0 0 30px rgba(34,197,94,.2);
+    }
+
+    /* Separador con nombre */
+    .card-name-band {
+      width: 100%;
+      text-align: center;
+      padding: 14px 16px 10px;
+      border-top: 1px solid rgba(34,197,94,.15);
+      margin-top: 14px;
+    }
+
+    .card-player-name {
+      font-family: var(--font-head);
+      font-size: 1.22rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .card-dorsal-inline {
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* Stats grid */
+    .card-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: rgba(34,197,94,.1);
+      border-top: 1px solid rgba(34,197,94,.15);
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .card-stat {
+      background: rgba(15,20,16,.9);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .stat-val {
+      font-family: var(--font-head);
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-family: var(--font-head);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: .8;
+    }
+
+    /* Botón cerrar */
+    .carta-close {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,.3);
+      color: rgba(255,255,255,.7);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+
+    .carta-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .carta-wrapper {
+      position: relative;
+    }
+
+    /* ── MODAL GRL (admin) ── */
+    .grl-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,20,16,.75);
+      backdrop-filter: blur(6px);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .grl-modal-overlay.open {
+      display: flex;
+    }
+
+    .grl-modal-box {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px 22px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      animation: fadeUp .25s ease both;
+    }
+
+    .grl-modal-box h3 {
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .grl-modal-box label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .grl-input {
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-head);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      background: var(--black);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 10px;
+      outline: none;
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+    }
+
+    .grl-input:focus {
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .grl-modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-grl-cancel {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      padding: 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all .18s;
+    }
+
+    .btn-grl-cancel:hover { border-color: var(--red); color: var(--red); }
+
+    .btn-grl-save {
+      background: var(--black);
+      border: none;
+      color: #fff;
+      padding: 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all .18s;
+    }
+
+    .btn-grl-save:hover { background: var(--accent); color: var(--black); }
+
+    /* ── BOTÓN EDITAR GRL (en carta, solo admin) ── */
+    .btn-edit-grl {
+      display: block;
+      width: calc(100% - 44px);
+      margin: 12px 22px 18px;
+      padding: 10px;
+      background: transparent;
+      border: 1.5px solid rgba(34,197,94,.4);
+      color: var(--accent);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      transition: all .2s;
+    }
+
+    .btn-edit-grl:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* ── ESTADO VACÍO ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-family: var(--font-head);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.88rem;
+    }
+
+    /* ── FILTRO / SEARCH ── */
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .search-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 480px) {
+      .players-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .fifa-card { width: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hex-mid"></div>
+
+<header>
+  <div class="logo">
+    <img src="img/logo.png" alt="Haxec">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <div class="ap-title-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+    <h1 class="admin-title">Jugadores</h1>
+    <button class="back-btn" onclick="window.location.href='/haxball.html'">⬅ Volver</button>
+  </div>
+
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="Buscar jugador o equipo..." oninput="filtrarJugadores()">
+  </div>
+
+  <div id="loadingState" class="loading-state">
+    <div class="spinner"></div>
+    Cargando jugadores...
+  </div>
+
+  <div id="playersGrid" class="players-grid" style="display:none;"></div>
+  <div id="emptyState" class="empty-state" style="display:none;">No hay jugadores registrados.</div>
+
+</div>
+
+<!-- OVERLAY CARTA FIFA -->
+<div class="carta-overlay" id="cartaOverlay" onclick="cerrarCarta(event)">
+  <div class="carta-wrapper">
+    <button class="carta-close" onclick="cerrarCartaBtn()">✕</button>
+    <div class="fifa-card" id="fifaCard">
+      <!-- se llena por JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GRL (solo admin) -->
+<div class="grl-modal-overlay" id="grlModal">
+  <div class="grl-modal-box">
+    <h3>Editar GRL</h3>
+    <label>Global Rating (1 – 99)</label>
+    <input class="grl-input" type="number" id="grlInput" min="1" max="99" placeholder="––">
+    <div class="grl-modal-actions">
+      <button class="btn-grl-cancel" onclick="cerrarGrlModal()">Cancelar</button>
+      <button class="btn-grl-save" onclick="guardarGrl()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+var todosLosJugadores = [];
+var todosLosEquipos   = [];
+var jugadorActivo     = null;
+var esAdmin           = false;
+
+// ── Verificar si es admin ──────────────────────────────────
+function checkAdmin() {
+  try {
+    const u = JSON.parse(localStorage.getItem("user") || "null");
+    esAdmin = u && (u.role === "admin" || u.isAdmin === true || u.username === "admin");
+  } catch { esAdmin = false; }
+}
+
+// ── Iniciar ────────────────────────────────────────────────
+async function init() {
+  checkAdmin();
+
+  const [jugadores, equipos] = await Promise.all([
+    fetch("/api/jugadores").then(r => r.json()),
+    fetch("/api/teams").then(r => r.json())
+  ]);
+
+  todosLosJugadores = jugadores;
+  todosLosEquipos   = equipos;
+
+  document.getElementById("loadingState").style.display = "none";
+  renderGrid(jugadores);
+}
+
+// ── Render grid ────────────────────────────────────────────
+function renderGrid(jugadores) {
+  const grid  = document.getElementById("playersGrid");
+  const empty = document.getElementById("emptyState");
+  grid.innerHTML = "";
+
+  if (!jugadores.length) {
+    grid.style.display = "none";
+    empty.style.display = "block";
+    return;
+  }
+
+  grid.style.display = "grid";
+  empty.style.display = "none";
+
+  jugadores.forEach(j => {
+    const equipo = todosLosEquipos.find(t => t.nombre.toLowerCase() === (j.equipo || "").toLowerCase());
+    const grl = j.grl != null ? j.grl : "—";
+
+    const fotoHTML = j.foto
+      ? `<img class="player-avatar" src="${j.foto}" alt="${j.nombre}">`
+      : `<div class="avatar-initials">${iniciales(j.nombre)}</div>`;
+
+    const teamHTML = equipo
+      ? `<div class="player-team-row">
+           <img src="${equipo.logo}" alt="${equipo.nombre}">
+           <span class="player-team-name">${equipo.nombre}</span>
+         </div>`
+      : `<span class="player-team-name" style="color:var(--muted);">Sin equipo</span>`;
+
+    const card = document.createElement("div");
+    card.className = "player-card";
+    card.innerHTML = `
+      <span class="player-dorsal">${j.dorsal}</span>
+      ${fotoHTML}
+      <div class="player-name">${j.nombre}</div>
+      ${teamHTML}
+      <div class="player-grl">GRL ${grl}</div>
+    `;
+    card.addEventListener("click", () => abrirCarta(j));
+    grid.appendChild(card);
+  });
+}
+
+// ── Filtrar ────────────────────────────────────────────────
+function filtrarJugadores() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  if (!q) { renderGrid(todosLosJugadores); return; }
+  const filtrados = todosLosJugadores.filter(j =>
+    j.nombre.toLowerCase().includes(q) ||
+    (j.equipo || "").toLowerCase().includes(q)
+  );
+  renderGrid(filtrados);
+}
+
+// ── Abrir carta FIFA ───────────────────────────────────────
+function abrirCarta(j) {
+  jugadorActivo = j;
+  const equipo  = todosLosEquipos.find(t => t.nombre.toLowerCase() === (j.equipo || "").toLowerCase());
+  const grl     = j.grl != null ? j.grl : "—";
+
+  const fotoHTML = j.foto
+    ? `<img class="card-photo" src="${j.foto}" alt="${j.nombre}">`
+    : `<div class="card-initials-big">${iniciales(j.nombre)}</div>`;
+
+  const teamLogoHTML = equipo
+    ? `<img class="card-team-logo" src="${equipo.logo}" alt="${equipo.nombre}">`
+    : "";
+
+  const editGrlBtn = esAdmin
+    ? `<button class="btn-edit-grl" onclick="abrirGrlModal()">✎ Editar GRL</button>`
+    : "";
+
+  document.getElementById("fifaCard").innerHTML = `
+    <div class="card-top">
+      <div class="card-grl-big">${grl}</div>
+      <div class="card-pos">GRL</div>
+      <div class="card-flag-area">
+        ${teamLogoHTML}
+      </div>
+    </div>
+
+    <div class="card-photo-wrap">
+      ${fotoHTML}
+    </div>
+
+    <div class="card-name-band">
+      <div class="card-player-name">${j.nombre}</div>
+      <div class="card-dorsal-inline"># ${j.dorsal}</div>
+    </div>
+
+    ${editGrlBtn}
+
+    <div class="card-stats">
+      <div class="card-stat">
+        <span class="stat-val">${j.goles ?? 0}</span>
+        <span class="stat-lbl">GOL</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-val">${j.asistencias ?? 0}</span>
+        <span class="stat-lbl">AST</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-val">${j.mvp ?? 0}</span>
+        <span class="stat-lbl">MVP</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-val">${j.vallas_imbatidas ?? 0}</span>
+        <span class="stat-lbl">VI</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-val">${j.amarillas ?? 0}</span>
+        <span class="stat-lbl" style="color:#f59e0b;">AM</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-val">${j.rojas ?? 0}</span>
+        <span class="stat-lbl" style="color:#ef4444;">RJ</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("cartaOverlay").classList.add("open");
+}
+
+function cerrarCarta(e) {
+  if (e.target === document.getElementById("cartaOverlay")) cerrarCartaBtn();
+}
+
+function cerrarCartaBtn() {
+  document.getElementById("cartaOverlay").classList.remove("open");
+  jugadorActivo = null;
+}
+
+// ── Modal GRL ──────────────────────────────────────────────
+function abrirGrlModal() {
+  if (!esAdmin) return;
+  document.getElementById("grlInput").value = jugadorActivo.grl ?? "";
+  document.getElementById("grlModal").classList.add("open");
+}
+
+function cerrarGrlModal() {
+  document.getElementById("grlModal").classList.remove("open");
+}
+
+async function guardarGrl() {
+  const val = parseInt(document.getElementById("grlInput").value);
+  if (isNaN(val) || val < 1 || val > 99) {
+    alert("El GRL debe ser un número entre 1 y 99");
+    return;
+  }
+
+  const res = await fetch("/api/jugadores-grl", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: jugadorActivo._id, grl: val })
+  });
+
+  if (res.ok) {
+    // Actualizar en memoria
+    jugadorActivo.grl = val;
+    const idx = todosLosJugadores.findIndex(j => j._id === jugadorActivo._id);
+    if (idx !== -1) todosLosJugadores[idx].grl = val;
+
+    cerrarGrlModal();
+    abrirCarta(jugadorActivo); // re-renderiza la carta con el nuevo GRL
+    renderGrid(todosLosJugadores);
+  } else {
+    alert("Error al guardar el GRL");
+  }
+}
+
+// ── Cerrar modal GRL clicando fuera ───────────────────────
+document.getElementById("grlModal").addEventListener("click", function(e) {
+  if (e.target === this) cerrarGrlModal();
+});
+
+// ── Utils ──────────────────────────────────────────────────
+function iniciales(nombre) {
+  return String(nombre).split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
+}
+
+// Exponer funciones usadas en onclick del HTML generado dinámicamente
+window.filtrarJugadores  = filtrarJugadores;
+window.cerrarCarta       = cerrarCarta;
+window.cerrarCartaBtn    = cerrarCartaBtn;
+window.abrirGrlModal     = abrirGrlModal;
+window.cerrarGrlModal    = cerrarGrlModal;
+window.guardarGrl        = guardarGrl;
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+
+</body>
+</html>

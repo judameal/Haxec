@@ -68,6 +68,8 @@ if (req.method === "DELETE") {
   amarillas: 0,
   rojas: 0,
   mvp: 0,
+  vallas_imbatidas: 0,
+  grl: null,
 });
 
   return res.status(200).json({ message: "Jugador creado" });
