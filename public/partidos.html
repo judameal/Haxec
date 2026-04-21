@@ -297,7 +297,7 @@
 const API = "/api";
 const user    = JSON.parse(localStorage.getItem("user") || "null");
 const esAdmin = user && user.role === "admin";
-const ICONOS  = { gol:"⚽", asistencia:"🅰️", amarilla:"🟨", roja:"🟥" };
+const ICONOS  = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
 
 function goBack() { window.location.href = "/haxball.html"; }
 
@@ -478,7 +478,7 @@ function abrirInforme(event, jornadaIdx, partidoIdx) {
   html += "<div class='informe-section-title'>📊 Estadísticas</div>";
   html += "<div class='stats-grid'>";
   html += buildStat("⚽", "Goles", statsLocal.goles, statsVisit.goles);
-  html += buildStat("🅰️", "Asistencias", statsLocal.asistencias, statsVisit.asistencias);
+  html += buildStat("👟", "Asistencias", statsLocal.asistencias, statsVisit.asistencias);
   html += buildStat("🟨", "Amarillas", statsLocal.amarillas, statsVisit.amarillas);
   html += buildStat("🟥", "Rojas", statsLocal.rojas, statsVisit.rojas);
   html += "</div></div>";

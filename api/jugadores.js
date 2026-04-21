@@ -19,11 +19,11 @@ export default async function handler(req, res) {
     req.on("end", resolve);
   });
 
-  const { id, nombre, dorsal, equipo } = JSON.parse(body);
+  const { id, nombre, dorsal, equipo, foto } = JSON.parse(body);
 
   await jugadores.updateOne(
     { _id: new ObjectId(id) },
-    { $set: { nombre, dorsal, equipo } }
+    { $set: { nombre, dorsal, equipo, foto } }
   );
 
   return res.status(200).json({ message: "Jugador actualizado" });
@@ -59,10 +59,18 @@ if (req.method === "DELETE") {
   }
 
   await jugadores.insertOne({
-    dorsal,
-    nombre,
-    equipo: equipo || "Sin equipo"
-  });
+  dorsal,
+  nombre,
+  equipo: equipo || "Sin equipo",
+
+  goles: 0,
+  asistencias: 0,
+  amarillas: 0,
+  rojas: 0,
+  mvp: 0,
+
+  foto: ""
+});
 
   return res.status(200).json({ message: "Jugador creado" });
 }
