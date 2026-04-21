@@ -285,9 +285,10 @@
 
 <script src="js/app.js"></script>
 <script>
+var _teamsCache = null;
 let equipoValido = null;
 let equipoValidoEdit = null;
-let fotoEditBase64 = null; // null = no cambió
+let fotoEditBase64 = null;
 
 function goBack() {
   window.location.href = "/haxball.html";
@@ -412,7 +413,7 @@ async function cargarJugadores() {
     tbody.appendChild(row);
   });
 }
-cargarJugadores();
+document.addEventListener("DOMContentLoaded", cargarJugadores);
 
 // ——— Modal edición ———
 function abrirModal(id, nombre, dorsal, equipo, foto) {
@@ -497,7 +498,6 @@ async function eliminarJugador(id) {
 }
 
 // ——— Utilidades ———
-let _teamsCache = null;
 async function fetchTeams() {
   if (_teamsCache) return _teamsCache;
   _teamsCache = await fetch("/api/teams").then(r => r.json());

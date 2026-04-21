@@ -52,7 +52,7 @@ if (req.method === "DELETE") {
     req.on("end", resolve);
   });
 
-  const { dorsal, nombre, equipo } = JSON.parse(body);
+  const { dorsal, nombre, equipo, foto } = JSON.parse(body);
 
   if (!dorsal || !nombre) {
     return res.status(400).json({ message: "Faltan datos" });
@@ -62,14 +62,12 @@ if (req.method === "DELETE") {
   dorsal,
   nombre,
   equipo: equipo || "Sin equipo",
-
+  foto: foto || "",
   goles: 0,
   asistencias: 0,
   amarillas: 0,
   rojas: 0,
   mvp: 0,
-
-  foto: ""
 });
 
   return res.status(200).json({ message: "Jugador creado" });
