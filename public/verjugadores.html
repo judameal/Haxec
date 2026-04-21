@@ -150,81 +150,62 @@
 
     /* ── CARTA FIFA ── */
     .fifa-card {
-      width: 280px;
-      min-height: 420px;
+      width: 270px;
       border-radius: 18px;
-      position: relative;
-      padding: 0;
       overflow: hidden;
       animation: cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
-      box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(34,197,94,.3);
-      background: linear-gradient(160deg, #1a2e1c 0%, #0f1410 55%, #0d1f10 100%);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
     }
 
     @keyframes cardPop {
-      from { opacity: 0; transform: scale(.75) translateY(30px); }
+      from { opacity: 0; transform: scale(.78) translateY(24px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* Líneas decorativas de fondo */
-    .fifa-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          135deg,
-          transparent,
-          transparent 30px,
-          rgba(34,197,94,.03) 30px,
-          rgba(34,197,94,.03) 31px
-        );
-      pointer-events: none;
-    }
-
+    /* Header negro con GRL */
     .card-top {
-      padding: 22px 22px 0;
+      background: var(--black);
+      padding: 18px 20px 16px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      align-items: flex-end;
+      justify-content: space-between;
       position: relative;
     }
 
     .card-grl-big {
       font-family: var(--font-head);
-      font-size: 3.4rem;
+      font-size: 3.2rem;
       font-weight: 900;
       color: var(--accent);
       line-height: 1;
-      letter-spacing: -1px;
-      text-shadow: 0 0 30px rgba(34,197,94,.4);
+      letter-spacing: -2px;
     }
 
     .card-pos {
       font-family: var(--font-head);
-      font-size: 0.78rem;
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 3px;
-      color: rgba(34,197,94,.7);
+      color: rgba(34,197,94,.6);
       text-transform: uppercase;
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     .card-flag-area {
-      position: absolute;
-      top: 22px;
-      right: 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .card-team-logo {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+      border-radius: 6px;
+      border: 1px solid rgba(34,197,94,.3);
     }
 
     /* Foto del jugador */
@@ -232,100 +213,102 @@
       width: 100%;
       display: flex;
       justify-content: center;
-      margin-top: 8px;
-      position: relative;
+      padding: 20px 20px 0;
+      background: var(--surface);
     }
 
     .card-photo {
-      width: 148px;
-      height: 148px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--accent);
-      box-shadow: 0 0 30px rgba(34,197,94,.25), 0 8px 24px rgba(0,0,0,.4);
     }
 
     .card-initials-big {
-      width: 148px;
-      height: 148px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
-      background: var(--black2);
+      background: var(--black);
       border: 3px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-head);
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: 900;
       color: var(--accent);
-      box-shadow: 0 0 30px rgba(34,197,94,.2);
     }
 
-    /* Separador con nombre */
+    /* Nombre + dorsal */
     .card-name-band {
+      background: var(--surface);
       width: 100%;
       text-align: center;
-      padding: 14px 16px 10px;
-      border-top: 1px solid rgba(34,197,94,.15);
+      padding: 14px 16px 12px;
+      border-bottom: 1.5px solid var(--border);
       margin-top: 14px;
     }
 
     .card-player-name {
       font-family: var(--font-head);
-      font-size: 1.22rem;
+      font-size: 1.1rem;
       font-weight: 900;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: #fff;
+      color: var(--black);
     }
 
     .card-dorsal-inline {
       font-family: var(--font-head);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 2px;
       color: var(--accent);
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
-    /* Stats grid */
+    /* Stats grid — blanco con separadores finos */
     .card-stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 1px;
-      background: rgba(34,197,94,.1);
-      border-top: 1px solid rgba(34,197,94,.15);
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 18px;
-      overflow: hidden;
-      margin-top: 4px;
+      background: var(--surface);
+      padding: 4px 20px 20px;
+      gap: 0;
     }
 
     .card-stat {
-      background: rgba(15,20,16,.9);
-      padding: 12px 8px;
+      padding: 12px 4px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
+
+    .card-stat:nth-child(3),
+    .card-stat:nth-child(6) { border-right: none; }
+
+    .card-stat:nth-child(4),
+    .card-stat:nth-child(5),
+    .card-stat:nth-child(6) { border-bottom: none; }
 
     .stat-val {
       font-family: var(--font-head);
-      font-size: 1.45rem;
+      font-size: 1.5rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--black);
       line-height: 1;
     }
 
     .stat-lbl {
       font-family: var(--font-head);
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--accent);
-      opacity: .8;
     }
 
     /* Botón cerrar */
