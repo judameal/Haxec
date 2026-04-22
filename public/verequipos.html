@@ -17,47 +17,12 @@
       color: #111;
     }
 
-    /* HEADER */
-    header {
-      background: #fff;
-      border-bottom: 2px solid #22c55e;
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo img { width: 34px; height: 34px; object-fit: contain; }
-    .logo h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-      color: #111;
-      font-weight: 400;
-    }
-    .logo h1 span { color: #22c55e; }
-
-    /* CONTAINER */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 36px 24px;
-    }
-
-    /* TITLE ROW */
-    .title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 32px;
-    }
-    .page-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.2rem;
-      letter-spacing: 3px;
-      color: #111;
-    }
+    /* BOTÓN VOLVER — esquina superior derecha fijo */
     .back-btn {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: 100;
       background: #fff;
       border: 1.5px solid #e2e8f0;
       border-radius: 8px;
@@ -68,14 +33,38 @@
       color: #444;
       cursor: pointer;
       transition: border-color .15s, color .15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
     .back-btn:hover { border-color: #22c55e; color: #22c55e; }
 
-    /* GRID */
+    /* CONTAINER */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 24px;
+    }
+
+    /* TITLE */
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      color: #111;
+      margin-bottom: 28px;
+    }
+
+    /* GRID — 3 columnas fijas */
     .equipos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .equipos-grid { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 701px) and (max-width: 960px) {
+      .equipos-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* CARD */
@@ -95,6 +84,7 @@
     .equipo-card.open {
       border-color: #22c55e;
       box-shadow: 0 6px 24px rgba(34,197,94,.15);
+      transform: translateY(-2px);
     }
 
     /* CARD HEADER */
@@ -127,7 +117,6 @@
       color: #111;
     }
 
-    /* Indicador de expand */
     .card-chevron {
       margin-left: auto;
       width: 20px;
@@ -173,7 +162,6 @@
     }
     .player-row:last-child { border-bottom: none; }
 
-    /* Dorsal sin ningún estilo especial */
     .player-dorsal {
       font-size: 0.9rem;
       color: #22c55e;
@@ -242,19 +230,11 @@
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src="img/logo.png" alt="Haxec">
-    <h1>Haxec <span>Esport</span></h1>
-  </div>
-</header>
+<button class="back-btn" onclick="window.location.href='/haxball.html'">⬅ Volver</button>
 
 <div class="container">
 
-  <div class="title-row">
-    <h1 class="page-title">Equipos</h1>
-    <button class="back-btn" onclick="window.location.href='/haxball.html'">⬅ Volver</button>
-  </div>
+  <h1 class="page-title">Equipos</h1>
 
   <div id="loading">
     <div class="spinner"></div>
