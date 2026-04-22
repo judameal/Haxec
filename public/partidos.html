@@ -584,7 +584,11 @@ async function cargarPartidos() {
   try {
     var res = await Promise.all([
       fetch(API + "/teams").then(function(r) { return r.json(); }),
-      fetch(API + "/partidos").then(function(r) { return r.ok ? r.json() : []; }).catch(function() { return []; })
+      fetch(API + "/partidos").then(function(r) {
+        return r.text().then(function(txt) {
+          try { return JSON.parse(txt); } catch(_) { return []; }
+        });
+      }).catch(function() { return []; })
     ]);
     var equipos      = res[0];
     var dataPartidos = res[1];
