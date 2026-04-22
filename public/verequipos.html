@@ -17,25 +17,31 @@
       color: #111;
     }
 
-    /* BOTÓN VOLVER — esquina superior derecha fijo */
+    /* BOTÓN VOLVER — esquina superior derecha, alineado con el header */
     .back-btn {
       position: fixed;
-      top: 18px;
-      right: 24px;
-      z-index: 100;
-      background: #fff;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 9px 18px;
+      top: 0;
+      right: 0;
+      z-index: 200;
+      height: 70px;
+      padding: 0 28px;
+      background: transparent;
+      border: none;
+      border-left: 1.5px solid rgba(255,255,255,.08);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.85rem;
       font-weight: 600;
-      color: #444;
+      color: #fff;
       cursor: pointer;
-      transition: border-color .15s, color .15s;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .back-btn:hover { border-color: #22c55e; color: #22c55e; }
+    .back-btn:hover {
+      background: rgba(34,197,94,.15);
+      color: #22c55e;
+    }
 
     /* CONTAINER */
     .container {
@@ -229,6 +235,7 @@
   </style>
 </head>
 <body>
+
 <header>
   <div class="logo">
     <img src="img/logo.png" alt="Logo">
