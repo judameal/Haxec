@@ -4,202 +4,256 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login — Haxec Esport</title>
-  <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      background: #e8eaf0;
+      background: #f5f7f5;
       display: flex;
       flex-direction: column;
-      font-family: 'DM Sans', sans-serif;
-      color: #171718;
-      overflow-x: hidden;
+      font-family: 'Rajdhani', sans-serif;
+      color: #0f1410;
     }
 
-    /* ── FONDO ── */
-    .bg-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .bg-layer::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-    }
-    .bg-layer::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
-    }
-    /* ── MAIN ── */
     main {
-      position: relative;
-      z-index: 5;
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 48px 20px;
     }
 
     /* ── CARD ── */
     .auth-card {
       width: 100%;
-      max-width: 400px;
-      animation: cardIn .5s ease both;
+      max-width: 380px;
+      background: #ffffff;
+      border: 1.5px solid #d8e8d8;
+      border-radius: 20px;
+      padding: 40px 36px 34px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.07);
+      animation: cardIn .5s cubic-bezier(.34,1.2,.64,1) both;
     }
+
     @keyframes cardIn {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── LOGO ── */
+    .card-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeUp .4s ease .1s forwards;
+    }
+    .logo-pill {
+      background: #0f1410;
+      color: #22c55e;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 5px;
+    }
+    .logo-sep {
+      flex: 1;
+      height: 1px;
+      background: #d8e8d8;
+    }
+
+    /* ── HEADER ── */
     .card-header {
-      margin-bottom: 32px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .4s ease .18s forwards;
     }
     .card-eyebrow {
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: 2.5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: #22c55e;
-      margin-bottom: 8px;
+      color: #7a9478;
+      margin-bottom: 6px;
     }
     .card-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.4rem;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 900;
       letter-spacing: 2px;
-      color: #131212;
-      font-weight: 400;
+      text-transform: uppercase;
+      color: #0f1410;
       line-height: 1;
     }
-    .card-sub {
-      font-size: .85rem;
-      color: rgba(27, 25, 25, 0.74);
-      margin-top: 6px;
+    .card-title span { color: #22c55e; }
+
+    /* ── TOAST ── */
+    .toast-msg {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .toast-msg.error {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+    .toast-msg.success {
+      display: block;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
     }
 
     /* ── FORM ── */
-    .form-group { margin-bottom: 16px; }
+    .form-group {
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp .4s ease forwards;
+    }
+    .form-group:nth-child(1) { animation-delay: .24s; }
+    .form-group:nth-child(2) { animation-delay: .30s; }
+
     .form-label {
       display: block;
-      font-size: .72rem;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(26, 24, 24, 0.623);
-      margin-bottom: 8px;
+      color: #7a9478;
+      margin-bottom: 7px;
     }
+
     .form-input {
       width: 100%;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
+      background: #f5f8f5;
+      border: 1.5px solid #d8e8d8;
       border-radius: 10px;
-      padding: 13px 16px;
-      font-size: .95rem;
-      font-family: 'DM Sans', sans-serif;
-      color: #fff;
+      padding: 12px 15px;
+      font-size: 0.95rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 500;
+      color: #0f1410;
       outline: none;
-      transition: border-color .2s, background .2s, box-shadow .2s;
+      transition: border-color .2s, box-shadow .2s, background .2s;
     }
-    .form-input::placeholder { color: rgba(255,255,255,.2); }
+    .form-input::placeholder { color: #a8bfa8; }
     .form-input:focus {
       border-color: #22c55e;
-      background: rgba(34,197,94,.06);
-      box-shadow: 0 0 0 3px rgba(34,197,94,.12);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.1);
     }
 
     /* ── BOTÓN ── */
     .btn-submit {
       width: 100%;
       margin-top: 8px;
-      background: #22c55e;
-      color: #000;
+      background: #0f1410;
+      color: #fff;
       border: none;
       border-radius: 10px;
-      padding: 14px;
-      font-size: .95rem;
-      font-weight: 700;
-      font-family: 'DM Sans', sans-serif;
-      letter-spacing: .5px;
+      padding: 13px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      font-family: 'Exo 2', sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background .15s, transform .15s, box-shadow .15s;
+      transition: background .18s, transform .18s, box-shadow .18s;
+      opacity: 0;
+      animation: fadeUp .4s ease .36s forwards;
     }
     .btn-submit:hover {
-      background: #16a34a;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(34,197,94,.3);
+      background: #22c55e;
+      color: #0f1410;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34,197,94,.22);
     }
     .btn-submit:active { transform: translateY(0); }
 
-    /* Divider */
+    /* ── DIVIDER ── */
     .divider {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 24px 0;
+      margin: 22px 0 16px;
+      opacity: 0;
+      animation: fadeUp .4s ease .42s forwards;
     }
     .divider::before, .divider::after {
-      content: "";
+      content: '';
       flex: 1;
       height: 1px;
-      background: rgba(22, 21, 21, 0.979);
+      background: #d8e8d8;
     }
-    .divider span { font-size: .72rem; color: rgba(19, 18, 18, 0.932); white-space: nowrap; }
+    .divider span {
+      font-size: 0.68rem;
+      color: #7a9478;
+      white-space: nowrap;
+      letter-spacing: 1.5px;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
 
-    /* Link registro */
+    /* ── FOOTER LINK ── */
     .auth-footer {
       text-align: center;
-      font-size: .85rem;
-      color: rgb(24, 23, 23);
+      font-size: 0.88rem;
+      color: #7a9478;
+      opacity: 0;
+      animation: fadeUp .4s ease .48s forwards;
     }
     .auth-footer a {
-      color: #22c55e;
+      color: #16a34a;
       font-weight: 700;
       text-decoration: none;
       transition: color .15s;
     }
-    .auth-footer a:hover { color: #4ade80; }
+    .auth-footer a:hover { color: #22c55e; }
 
-    /* Error/success toast */
-    .toast-msg {
-      display: none;
-      padding: 11px 16px;
-      border-radius: 8px;
-      font-size: .83rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .toast-msg.error   { display: block; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #f87171; }
-    .toast-msg.success { display: block; background: rgba(34,197,94,.1);  border: 1px solid rgba(34,197,94,.3);  color: #4ade80; }
-
-    /* ── FOOTER ── */
+    /* ── PAGE FOOTER ── */
     footer {
-      position: relative; z-index: 10;
-      text-align: center; padding: 18px;
-      font-size: .75rem; color: rgb(241, 235, 235);
-      border-top: 1px solid rgba(17, 17, 17, 0.884);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.72rem;
+      color: #7a9478;
+      border-top: 1px solid #d8e8d8;
+      letter-spacing: 1px;
+      font-family: 'Exo 2', sans-serif;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-<div class="bg-layer"></div>
-
 <main>
   <div class="auth-card">
 
+    <div class="card-logo">
+      <div class="logo-pill">Haxec</div>
+      <div class="logo-sep"></div>
+    </div>
+
     <div class="card-header">
       <div class="card-eyebrow">Bienvenido de vuelta</div>
-      <div class="card-title">Iniciar sesión</div>
-      <div class="card-sub">Accede a tu cuenta para ver la liga</div>
+      <div class="card-title">Iniciar <span>sesión</span></div>
     </div>
 
     <div id="msgBox" class="toast-msg"></div>
@@ -231,7 +285,6 @@
 
 <script src="js/app.js"></script>
 <script>
-  // Soporte para Enter
   document.addEventListener("keydown", function(e) {
     if (e.key === "Enter") login();
   });
