@@ -238,18 +238,6 @@
   <p>© 2026 Haxec Esport — Hecho por Judameal</p>
 </footer>
 <script>
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-  const nav  = document.getElementById("nav");
-
-  if (user && user.role === "admin") {
-    nav.innerHTML = `
-      <button onclick="window.location.href='/dashboard.html'">Panel de Control</button>
-      <button onclick="logout()">Cerrar sesión</button>
-    `;
-  } else {
-    nav.innerHTML = `<button onclick="logout()">Cerrar sesión</button>`;
-  }
-
   function goGoleadores() { window.location.href = "/goleadores.html"; }
   function goAsistencias() { window.location.href = "/asistencias.html"; }
   function goAmarillas()   { window.location.href = "/amarillas.html"; }
