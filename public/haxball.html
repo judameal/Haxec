@@ -78,10 +78,11 @@
 
     .menu-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 14px;
       width: 100%;
-      max-width: 440px;
+      max-width: 600px;
+      justify-items: center;
     }
 
     .menu-btn {
@@ -99,13 +100,18 @@
       overflow: hidden;
       transition: border-color .22s, transform .22s, box-shadow .22s;
       opacity: 0;
+      width: 100%;
+      max-width: 200px;
     }
 
+    /* Animaciones escalonadas para todos los botones */
     .menu-btn:nth-child(1) { animation: fadeUp .45s ease .35s forwards; }
     .menu-btn:nth-child(2) { animation: fadeUp .45s ease .42s forwards; }
     .menu-btn:nth-child(3) { animation: fadeUp .45s ease .49s forwards; }
     .menu-btn:nth-child(4) { animation: fadeUp .45s ease .56s forwards; }
-    .menu-btn:nth-child(5) { animation: fadeUp .45s ease .63s forwards; grid-column: 1 / -1; }
+    .menu-btn:nth-child(5) { animation: fadeUp .45s ease .63s forwards; }
+    .menu-btn:nth-child(6) { animation: fadeUp .45s ease .70s forwards; }
+    .menu-btn:nth-child(7) { animation: fadeUp .45s ease .77s forwards; }
 
     .menu-btn::after {
       content: '';
@@ -167,9 +173,31 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 400px) {
-      .menu-grid { grid-template-columns: 1fr; }
-      .menu-btn:nth-child(5) { grid-column: auto; }
+    @media (max-width: 768px) {
+      .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        max-width: 500px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        gap: 14px;
+      }
+      
+      .menu-btn {
+        max-width: none;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .btn-icon {
+        font-size: 1.6rem;
+      }
     }
   </style>
 </head>
@@ -239,18 +267,21 @@
     <button class="menu-btn" onclick="goVerJugadores()">
       <span class="btn-icon">👤</span>
       <span class="btn-label">Jugadores</span>
-      <span class="btn-desc">Cartas y estadísticas individuales</span>
+      <span class="btn-desc">Cartas y estadísticas</span>
     </button>
-    <button class = "menu-btn" onclick = "goVerCopa()">
+
+    <button class="menu-btn" onclick="goVerCopa()">
       <span class="btn-icon">🏆</span>
       <span class="btn-label">Copa Ecuador</span>
-      <span class="btn-desc">Mira llaves y resultados </span>
+      <span class="btn-desc">Llaves y resultados</span>
     </button>
-    <button class = "menu-btn" onclick = "goVerSupercopa()">
+
+    <button class="menu-btn" onclick="goVerSupercopa()">
       <span class="btn-icon">⭐</span>
-      <span class="btn-label">Supercopa Ecuador</span>
-      <span class="btn-desc">Lo mejor de la ligaPro y la Copa Ecuador</span>
+      <span class="btn-label">Supercopa</span>
+      <span class="btn-desc">Lo mejor de la liga</span>
     </button>
+
   </div>
 
 </div>
@@ -270,6 +301,11 @@
 
   function toggleMenu() {
     document.getElementById("dropdownContent").classList.toggle("show");
+  }
+
+  function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "/index.html";
   }
 
   function goUsuarios()     { window.location.href = "/dashboard.html"; }
