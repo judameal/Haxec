@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Haxec Esport | Stats</title>
+  <title>LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* ── PÁGINA ENTERA ── */
     .home-wrap {
       flex: 1;
       display: flex;
@@ -16,10 +15,18 @@
       padding: 48px 20px 80px;
       position: relative;
       z-index: 1;
-      overflow: hidden;
     }
 
-    /* ── HERO TEXT ── */
+    .hero-logo-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp .5s ease .05s forwards;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
+    }
+
     .hero-eyebrow {
       font-family: var(--font-head);
       font-size: 0.7rem;
@@ -46,9 +53,7 @@
       animation: fadeUp .5s ease .2s forwards;
     }
 
-    .hero-title span {
-      color: var(--accent);
-    }
+    .hero-title span { color: var(--accent); }
 
     .hero-sub {
       font-family: var(--font-body);
@@ -61,7 +66,16 @@
       animation: fadeUp .5s ease .3s forwards;
     }
 
-    /* ── GRID DE BOTONES ── */
+    .hero-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: 0 auto 36px;
+      opacity: 0;
+      animation: fadeUp .5s ease .28s forwards;
+    }
+
     .menu-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -87,7 +101,6 @@
       opacity: 0;
     }
 
-    /* entrada escalonada */
     .menu-btn:nth-child(1) { animation: fadeUp .45s ease .35s forwards; }
     .menu-btn:nth-child(2) { animation: fadeUp .45s ease .42s forwards; }
     .menu-btn:nth-child(3) { animation: fadeUp .45s ease .49s forwards; }
@@ -112,15 +125,11 @@
       box-shadow: 0 10px 28px rgba(34,197,94,.18);
     }
 
-    .menu-btn:hover::after {
-      transform: scaleX(1);
-    }
+    .menu-btn:hover::after { transform: scaleX(1); }
 
     .menu-btn:hover .btn-icon,
     .menu-btn:hover .btn-label,
-    .menu-btn:hover .btn-desc {
-      color: var(--black);
-    }
+    .menu-btn:hover .btn-desc { color: var(--black); }
 
     .btn-icon {
       font-size: 1.4rem;
@@ -153,24 +162,11 @@
       line-height: 1.3;
     }
 
-    /* ── LÍNEA DECORATIVA ── */
-    .hero-divider {
-      width: 48px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 2px;
-      margin: 0 auto 36px;
-      opacity: 0;
-      animation: fadeUp .5s ease .28s forwards;
-    }
-
-    /* ── ANIMACIONES ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 400px) {
       .menu-grid { grid-template-columns: 1fr; }
       .menu-btn:nth-child(5) { grid-column: auto; }
@@ -203,8 +199,14 @@
 
 <div class="home-wrap">
 
-  <p class="hero-eyebrow">Haxec Esport</p>
-  <h1 class="hero-title">Bienve<span>nido</span></h1>
+  <img
+    class="hero-logo-img"
+    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+    alt="LigaPro Ecuabet"
+  >
+
+  <p class="hero-eyebrow">Temporada 2026</p>
+  <h1 class="hero-title">LigaPro <span>Ecuabet</span></h1>
   <p class="hero-sub">Selecciona una sección para continuar</p>
   <div class="hero-divider"></div>
 
@@ -245,7 +247,7 @@
 </div>
 
 <footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+  <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
 </footer>
 
 <script src="js/app.js"></script>
@@ -268,7 +270,7 @@
   function goPartidos()     { window.location.href = "/partidos.html"; }
   function goStats()        { window.location.href = "/estadisticas.html"; }
   function goVerequipos()   { window.location.href = "/verequipos.html"; }
-  function goVerJugadores() { window.location.href = "/verjugadores.html"; }
+  function goVerJugadores() { window.location.href = "/mejores.html"; }
 </script>
 
 </body>
