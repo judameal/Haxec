@@ -4,248 +4,274 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LigaPro Ecuabet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      background: #ffffff;
+    .home-wrap {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      font-family: 'Rajdhani', sans-serif;
-      color: #0f1410;
-      overflow-x: hidden;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 60px 32px;
+      padding: 48px 20px 80px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ── HERO ── */
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 48px;
-      max-width: 900px;
-      width: 100%;
-    }
-
-    /* ── LADO IZQUIERDO ── */
-    .hero-left {
-      flex: 1;
-      min-width: 0;
+    .hero-logo-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp .5s ease .05s forwards;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
     }
 
     .hero-eyebrow {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.68rem;
+      font-family: var(--font-head);
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 4px;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      color: #b8860b;
-      margin-bottom: 12px;
+      color: var(--accent);
+      margin-bottom: 10px;
       opacity: 0;
-      animation: fadeUp .45s ease .1s forwards;
+      animation: fadeUp .5s ease .1s forwards;
     }
 
     .hero-title {
-      font-family: 'Exo 2', sans-serif;
-      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 6px;
       text-transform: uppercase;
-      color: #0f1410;
+      color: var(--black);
+      text-align: center;
       line-height: 1;
       margin-bottom: 8px;
       opacity: 0;
-      animation: fadeUp .45s ease .18s forwards;
+      animation: fadeUp .5s ease .2s forwards;
     }
 
-    .hero-title .gold { color: #b8860b; }
+    .hero-title span { color: var(--accent); }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeUp .5s ease .3s forwards;
+    }
 
     .hero-divider {
       width: 48px;
       height: 3px;
-      background: #b8860b;
+      background: var(--accent);
       border-radius: 2px;
-      margin: 16px 0 20px;
+      margin: 0 auto 36px;
       opacity: 0;
-      animation: fadeUp .45s ease .24s forwards;
+      animation: fadeUp .5s ease .28s forwards;
     }
 
-    .hero-sub {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #5a5a5a;
-      line-height: 1.6;
-      margin-bottom: 40px;
-      max-width: 360px;
-      opacity: 0;
-      animation: fadeUp .45s ease .3s forwards;
-    }
-
-    /* ── BOTONES ── */
-    .hero-btns {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp .45s ease .38s forwards;
-    }
-
-    .btn-primary {
-      background: #0f1410;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 13px 30px;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background .18s, transform .18s, box-shadow .18s;
-    }
-    .btn-primary:hover {
-      background: #b8860b;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(184,134,11,.25);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: #0f1410;
-      border: 1.5px solid #d0d0d0;
-      border-radius: 10px;
-      padding: 12px 30px;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: border-color .18s, color .18s, transform .18s;
-    }
-    .btn-ghost:hover {
-      border-color: #0f1410;
-      transform: translateY(-2px);
-    }
-
-    /* ── LOGO DERECHO ── */
-    .hero-logo {
-      flex-shrink: 0;
-      width: 280px;
-      opacity: 0;
-      animation: fadeIn .6s ease .2s forwards;
-    }
-
-    .hero-logo img {
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
       width: 100%;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 8px 24px rgba(0,0,0,.1));
+      max-width: 440px;
     }
 
-    /* ── BADGE ABAJO ── */
-    .hero-badge {
+    .menu-btn {
+      position: relative;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 36px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 18px;
+      cursor: pointer;
+      text-align: left;
+      overflow: hidden;
+      transition: border-color .22s, transform .22s, box-shadow .22s;
       opacity: 0;
-      animation: fadeUp .45s ease .48s forwards;
     }
 
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #b8860b;
+    .menu-btn:nth-child(1) { animation: fadeUp .45s ease .35s forwards; }
+    .menu-btn:nth-child(2) { animation: fadeUp .45s ease .42s forwards; }
+    .menu-btn:nth-child(3) { animation: fadeUp .45s ease .49s forwards; }
+    .menu-btn:nth-child(4) { animation: fadeUp .45s ease .56s forwards; }
+    .menu-btn:nth-child(5) { animation: fadeUp .45s ease .63s forwards; grid-column: 1 / -1; }
+
+    .menu-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      z-index: 0;
+      border-radius: inherit;
     }
 
-    .badge-text {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 2.5px;
+    .menu-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(34,197,94,.18);
+    }
+
+    .menu-btn:hover::after { transform: scaleX(1); }
+
+    .menu-btn:hover .btn-icon,
+    .menu-btn:hover .btn-label,
+    .menu-btn:hover .btn-desc { color: var(--black); }
+
+    .btn-icon {
+      font-size: 1.4rem;
+      position: relative;
+      z-index: 1;
+      transition: color .22s;
+    }
+
+    .btn-label {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: #9a9a9a;
+      color: var(--black);
+      position: relative;
+      z-index: 1;
+      transition: color .22s;
+      line-height: 1;
     }
 
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      padding: 18px;
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.72rem;
-      color: #b0b0b0;
-      border-top: 1px solid #eee;
-      letter-spacing: 1px;
+    .btn-desc {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+      transition: color .22s;
+      line-height: 1.3;
     }
 
-    /* ── ANIMACIONES ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(.94); }
-      to   { opacity: 1; transform: scale(1); }
-    }
 
-    @media (max-width: 640px) {
-      .hero { flex-direction: column-reverse; align-items: center; text-align: center; gap: 32px; }
-      .hero-logo { width: 180px; }
-      .hero-btns { justify-content: center; }
-      .hero-sub { max-width: 100%; }
-      .hero-badge { justify-content: center; }
+    @media (max-width: 400px) {
+      .menu-grid { grid-template-columns: 1fr; }
+      .menu-btn:nth-child(5) { grid-column: auto; }
     }
   </style>
 </head>
 <body>
 
-<main>
-  <div class="hero">
+<div class="hex-mid"></div>
 
-    <!-- TEXTO -->
-    <div class="hero-left">
-      <p class="hero-eyebrow">Temporada 2026</p>
-      <h1 class="hero-title">LigaPro<br><span class="gold">Ecuabet</span></h1>
-      <div class="hero-divider"></div>
-      <p class="hero-sub">
-        La plataforma oficial de estadísticas, resultados y clasificaciones de la liga.
-      </p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="goLogin()">Iniciar sesión</button>
-        <button class="btn-ghost"   onclick="goRegister()">Crear cuenta</button>
-      </div>
-      <div class="hero-badge">
-        <div class="badge-dot"></div>
-        <span class="badge-text">Haxec Esport · Ecuador</span>
+<header>
+  <div class="logo">
+    <img src="img/logo.png" alt="Haxec">
+    <h1>Haxec <span>Esport</span></h1>
+  </div>
+
+  <div class="nav-buttons">
+    <div class="dropdown" id="adminMenu" style="display:none;">
+      <button onclick="toggleMenu()">Panel de Control</button>
+      <div class="dropdown-content" id="dropdownContent">
+        <p class="dropdown-title">Administrar</p>
+        <button onclick="goUsuarios()">Usuarios</button>
+        <button onclick="goJugadores()">Jugadores</button>
+        <button onclick="goTeams()">Equipos</button>
       </div>
     </div>
-
-    <!-- LOGO -->
-    <div class="hero-logo">
-      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet Logo">
+    <button onclick="logout()">Cerrar sesión</button>
   </div>
-</main>
+</header>
+
+<div class="home-wrap">
+
+  <img
+    class="hero-logo-img"
+    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+    alt="LigaPro Ecuabet"
+  >
+
+  <p class="hero-eyebrow">Temporada 2026</p>
+  <h1 class="hero-title">LigaPro <span>Ecuabet</span></h1>
+  <p class="hero-sub">Selecciona una sección para continuar</p>
+  <div class="hero-divider"></div>
+
+  <div class="menu-grid">
+
+    <button class="menu-btn" onclick="goTabla()">
+      <span class="btn-icon">🏆</span>
+      <span class="btn-label">Tabla</span>
+      <span class="btn-desc">Posiciones de equipos</span>
+    </button>
+
+    <button class="menu-btn" onclick="goPartidos()">
+      <span class="btn-icon">⚽</span>
+      <span class="btn-label">Partidos</span>
+      <span class="btn-desc">Jornadas y resultados</span>
+    </button>
+
+    <button class="menu-btn" onclick="goStats()">
+      <span class="btn-icon">📊</span>
+      <span class="btn-label">Estadísticas</span>
+      <span class="btn-desc">Números del torneo</span>
+    </button>
+
+    <button class="menu-btn" onclick="goVerequipos()">
+      <span class="btn-icon">🛡️</span>
+      <span class="btn-label">Equipos</span>
+      <span class="btn-desc">Ver todos los clubes</span>
+    </button>
+
+    <button class="menu-btn" onclick="goVerJugadores()">
+      <span class="btn-icon">👤</span>
+      <span class="btn-label">Jugadores</span>
+      <span class="btn-desc">Cartas y estadísticas individuales</span>
+    </button>
+
+  </div>
+
+</div>
 
 <footer>
   <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
 </footer>
 
+<script src="js/app.js"></script>
 <script>
-  function goLogin()    { window.location.href = "/login.html"; }
-  function goRegister() { window.location.href = "/register.html"; }
+  const user = JSON.parse(localStorage.getItem("user"));
+  const adminMenu = document.getElementById("adminMenu");
+
+  if (user && user.role === "admin") {
+    adminMenu.style.display = "block";
+  }
+
+  function toggleMenu() {
+    document.getElementById("dropdownContent").classList.toggle("show");
+  }
+
+  function goUsuarios()     { window.location.href = "/dashboard.html"; }
+  function goJugadores()    { window.location.href = "/jugadores.html"; }
+  function goTeams()        { window.location.href = "/teams.html"; }
+  function goTabla()        { window.location.href = "/tabla.html"; }
+  function goPartidos()     { window.location.href = "/partidos.html"; }
+  function goStats()        { window.location.href = "/estadisticas.html"; }
+  function goVerequipos()   { window.location.href = "/verequipos.html"; }
+  function goVerJugadores() { window.location.href = "/mejores.html"; }
 </script>
+
 </body>
 </html>
