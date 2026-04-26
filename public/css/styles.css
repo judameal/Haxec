@@ -15,11 +15,11 @@
   --accent:      #b8860b;        /* Amarillo oscuro principal */
   --accent-dark: #966f0c;        /* Amarillo oscuro más intenso */
   --accent-glow: rgba(217, 119, 6, .15);
-  --black:       #111827;
-  --black2:      #1f2937;
+  --black:       #0d0e0f;
+  --black2:      #111214;
   --red:         #d8a012;
   --yellow:      #b8860b;
-  --text:        #111827;
+  --text:        #101013;
   --text2:       #374151;
   --muted:       #6b7280;
   --font-head:   'Exo 2', sans-serif;
