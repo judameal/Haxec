@@ -1,28 +1,27 @@
 /* ================================================================
    HAXEC ESPORT — styles.css FINAL UNIFICADO
-   Tema: Blanco + Verde + Negro | Hexágonos de fondo
+   Tema: BLANCO + NEGRO + AMARILLO OSCURO | Hexágonos de fondo
    ================================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 /* ── VARIABLES ─────────────────────────────────────────────── */
 :root {
-  --bg:          #f0f4f0;
+  --bg:          #fafafa;
   --surface:     #ffffff;
-  --surface2:    #f5f8f5;
-  --surface3:    #eaf2ea;
-  --border:      #d8e8d8;
-  --accent:      #22c55e;
-  --accent-dark: #16a34a;
-  --accent-glow: rgba(34,197,94,.15);
-  --black:       #0f1410;
-  --black2:      #1a2118;
-  --red:         #ef4444;
-  --green:       #22c55e;
-  --yellow:      #f59e0b;
-  --text:        #0f1410;
-  --text2:       #374736;
-  --muted:       #7a9478;
+  --surface2:    #f8f9fa;
+  --surface3:    #f0f0f0;
+  --border:      #e5e5e5;
+  --accent:      #d97706;        /* Amarillo oscuro principal */
+  --accent-dark: #b45309;        /* Amarillo oscuro más intenso */
+  --accent-glow: rgba(217, 119, 6, .15);
+  --black:       #111827;
+  --black2:      #1f2937;
+  --red:         #dc2626;
+  --yellow:      #d97706;
+  --text:        #111827;
+  --text2:       #374151;
+  --muted:       #6b7280;
   --font-head:   'Exo 2', sans-serif;
   --font-body:   'Rajdhani', sans-serif;
 }
@@ -926,9 +925,9 @@ td img:hover { transform: scale(1.15); }
 #tabla tbody tr:hover td { background: var(--surface3); }
 
 /* Top 3 */
-#tabla tbody tr:nth-child(1) td:first-child { color: var(--yellow); }
-#tabla tbody tr:nth-child(2) td:first-child { color: var(--accent); }
-#tabla tbody tr:nth-child(3) td:first-child { color: #b87333; }
+#tabla tbody tr:nth-child(1) td:first-child { color: var(--accent); }
+#tabla tbody tr:nth-child(2) td:first-child { color: var(--accent-dark); }
+#tabla tbody tr:nth-child(3) td:first-child { color: #f59e0b; }
 
 .equipo-cell {
   display: flex;
@@ -984,7 +983,7 @@ td img:hover { transform: scale(1.15); }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15,20,16,.7);
+  background: rgba(17,24,39,.7);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
