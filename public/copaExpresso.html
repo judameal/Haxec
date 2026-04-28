@@ -30,19 +30,6 @@
       flex-direction: column;
     }
 
-    /* ── HEADER ── */
-    header {
-      background: #fff;
-      border-bottom: 2px solid var(--border);
-      padding: 0 28px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 200;
-    }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .header-logo { width: 34px; height: 34px; object-fit: contain; }
     .header-title {
@@ -536,13 +523,18 @@
 <div class="top-strip"></div>
 
 <header>
-  <div class="header-left">
-    <img class="header-logo" src="assets/liga-pro.png" alt="LigaPro"
-         onerror="this.style.display='none'">
-    <span class="header-title">Copa <span>Expresso</span></span>
+  <div class="logo">
+    <img
+    class="hero-logo-img"
+    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+    alt="LigaPro Ecuabet"
+  >
+    <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
-  <button class="btn-back" onclick="window.location.href='index.html'">← Volver</button>
+  <div id="nav" class="nav-buttons"></div>
+  <button class="back-btn" onclick="window.location.href='index.html'">← Volver</button>
 </header>
+  
 
 <div class="tabs">
   <div class="tab active"  onclick="switchTab('torneo')">Torneo</div>
