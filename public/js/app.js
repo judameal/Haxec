@@ -63,7 +63,7 @@ async function register() {
 
   if (res.ok) {
     alert("Usuario registrado");
-    window.location.href = "/login.html";
+    window.location.href = "/haxball.html";
   } else {
     alert(data.message);
   }
