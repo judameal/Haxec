@@ -6,188 +6,15 @@
   <title>LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    :root {
-      --black: #111827;
-      --accent: #22c55e;
-      --surface: #ffffff;
-      --border: #e5e7eb;
-      --muted: #6b7280;
-      --font-head: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: var(--font-body);
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: var(--black);
-    }
-
-    .hex-mid {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
-
-    .logo h1 {
-      font-family: var(--font-head);
-      font-size: 1.4rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--black), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown button {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.85rem;
-    }
-
-    .dropdown button:hover {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 100%;
-      background: var(--surface);
-      min-width: 180px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      z-index: 1000;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .dropdown-content.show {
-      display: block;
-      animation: slideDown 0.3s ease;
-    }
-
-    .dropdown-title {
-      padding: 16px 20px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .dropdown-content button {
-      width: 100%;
-      padding: 12px 20px;
-      border: none;
-      background: none;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dropdown-content button:hover {
-      background: var(--accent);
-      color: white;
-    }
-
-    .dropdown-content button:last-child {
-      border-bottom: none;
-    }
-
-    button[onclick="logout()"] {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.85rem;
-    }
-
-    button[onclick="logout()"]:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(239,68,68,0.4);
-    }
-
     .home-wrap {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 100px 20px 80px;
+      padding: 48px 20px 80px;
       position: relative;
       z-index: 1;
-      min-height: 100vh;
     }
 
     .hero-logo-img {
@@ -196,8 +23,8 @@
       object-fit: contain;
       margin-bottom: 14px;
       opacity: 0;
-      animation: fadeUp 0.5s ease 0.05s forwards;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+      animation: fadeUp .5s ease .05s forwards;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
     }
 
     .hero-eyebrow {
@@ -209,7 +36,7 @@
       color: var(--accent);
       margin-bottom: 10px;
       opacity: 0;
-      animation: fadeUp 0.5s ease 0.1s forwards;
+      animation: fadeUp .5s ease .1s forwards;
     }
 
     .hero-title {
@@ -223,26 +50,20 @@
       line-height: 1;
       margin-bottom: 8px;
       opacity: 0;
-      animation: fadeUp 0.5s ease 0.2s forwards;
+      animation: fadeUp .5s ease .2s forwards;
     }
 
-    .hero-title span { 
-      background: linear-gradient(135deg, var(--accent), #16a34a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+    .hero-title span { color: var(--accent); }
 
     .hero-sub {
       font-family: var(--font-body);
       font-size: 0.9rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.9);
+      color: var(--muted);
       letter-spacing: 1px;
       margin-bottom: 44px;
       opacity: 0;
-      animation: fadeUp 0.5s ease 0.3s forwards;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      animation: fadeUp .5s ease .3s forwards;
     }
 
     .hero-divider {
@@ -252,8 +73,7 @@
       border-radius: 2px;
       margin: 0 auto 36px;
       opacity: 0;
-      animation: fadeUp 0.5s ease 0.28s forwards;
-      box-shadow: 0 2px 8px rgba(34,197,94,0.4);
+      animation: fadeUp .5s ease .28s forwards;
     }
 
     .menu-grid {
@@ -261,7 +81,7 @@
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 14px;
       width: 100%;
-      max-width: 700px;
+      max-width: 600px;
       justify-items: center;
     }
 
@@ -271,38 +91,36 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
       border-radius: 14px;
       padding: 20px 18px;
       cursor: pointer;
       text-align: left;
       overflow: hidden;
-      transition: all 0.22s ease;
+      transition: border-color .22s, transform .22s, box-shadow .22s;
       opacity: 0;
       width: 100%;
       max-width: 200px;
-      backdrop-filter: blur(10px);
     }
 
-    .menu-btn:nth-child(1) { animation: fadeUp 0.45s ease 0.35s forwards; }
-    .menu-btn:nth-child(2) { animation: fadeUp 0.45s ease 0.42s forwards; }
-    .menu-btn:nth-child(3) { animation: fadeUp 0.45s ease 0.49s forwards; }
-    .menu-btn:nth-child(4) { animation: fadeUp 0.45s ease 0.56s forwards; }
-    .menu-btn:nth-child(5) { animation: fadeUp 0.45s ease 0.63s forwards; }
-    .menu-btn:nth-child(6) { animation: fadeUp 0.45s ease 0.70s forwards; }
-    .menu-btn:nth-child(7) { animation: fadeUp 0.45s ease 0.77s forwards; }
-    .menu-btn:nth-child(8) { animation: fadeUp 0.45s ease 0.84s forwards; }
-    .menu-btn:nth-child(9) { animation: fadeUp 0.45s ease 0.91s forwards; }
+    /* Animaciones escalonadas para todos los botones */
+    .menu-btn:nth-child(1) { animation: fadeUp .45s ease .35s forwards; }
+    .menu-btn:nth-child(2) { animation: fadeUp .45s ease .42s forwards; }
+    .menu-btn:nth-child(3) { animation: fadeUp .45s ease .49s forwards; }
+    .menu-btn:nth-child(4) { animation: fadeUp .45s ease .56s forwards; }
+    .menu-btn:nth-child(5) { animation: fadeUp .45s ease .63s forwards; }
+    .menu-btn:nth-child(6) { animation: fadeUp .45s ease .70s forwards; }
+    .menu-btn:nth-child(7) { animation: fadeUp .45s ease .77s forwards; }
 
-    .menu-btn::before {
+    .menu-btn::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, var(--accent), #16a34a);
+      background: var(--accent);
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
       z-index: 0;
       border-radius: inherit;
     }
@@ -310,24 +128,20 @@
     .menu-btn:hover {
       border-color: var(--accent);
       transform: translateY(-3px);
-      box-shadow: 0 20px 40px rgba(34,197,94,0.25);
+      box-shadow: 0 10px 28px rgba(34,197,94,.18);
     }
 
-    .menu-btn:hover::before { 
-      transform: scaleX(1); 
-    }
+    .menu-btn:hover::after { transform: scaleX(1); }
 
     .menu-btn:hover .btn-icon,
     .menu-btn:hover .btn-label,
-    .menu-btn:hover .btn-desc { 
-      color: white !important; 
-    }
+    .menu-btn:hover .btn-desc { color: var(--black); }
 
     .btn-icon {
       font-size: 1.4rem;
       position: relative;
       z-index: 1;
-      transition: color 0.22s;
+      transition: color .22s;
     }
 
     .btn-label {
@@ -339,7 +153,7 @@
       color: var(--black);
       position: relative;
       z-index: 1;
-      transition: color 0.22s;
+      transition: color .22s;
       line-height: 1;
     }
 
@@ -347,53 +161,19 @@
       font-family: var(--font-body);
       font-size: 0.75rem;
       font-weight: 500;
-      color: var(--black);
+      color: var(--muted);
       position: relative;
       z-index: 1;
-      transition: color 0.22s;
+      transition: color .22s;
       line-height: 1.3;
     }
 
-    footer {
-      padding: 2rem;
-      text-align: center;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.85rem;
-      position: relative;
-      z-index: 1;
-    }
-
     @keyframes fadeUp {
-      from { 
-        opacity: 0; 
-        transform: translateY(18px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
-      }
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 768px) {
-      header {
-        padding: 1rem;
-      }
-      
-      .home-wrap {
-        padding: 140px 16px 60px;
-      }
-      
       .menu-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 12px;
@@ -402,10 +182,6 @@
     }
 
     @media (max-width: 480px) {
-      .logo h1 {
-        font-size: 1.2rem;
-      }
-      
       .menu-grid {
         grid-template-columns: 1fr;
         max-width: 300px;
@@ -417,15 +193,10 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        padding: 24px 20px;
       }
       
       .btn-icon {
-        font-size: 1.8rem;
-      }
-      
-      .btn-label {
-        font-size: 0.9rem;
+        font-size: 1.6rem;
       }
     }
   </style>
