@@ -104,7 +104,7 @@
       max-width: 200px;
     }
 
-    /* Animaciones escalonadas para todos los botones */
+    /* Animaciones escalonadas para TODOS los 9 botones */
     .menu-btn:nth-child(1) { animation: fadeUp .45s ease .35s forwards; }
     .menu-btn:nth-child(2) { animation: fadeUp .45s ease .42s forwards; }
     .menu-btn:nth-child(3) { animation: fadeUp .45s ease .49s forwards; }
@@ -112,6 +112,8 @@
     .menu-btn:nth-child(5) { animation: fadeUp .45s ease .63s forwards; }
     .menu-btn:nth-child(6) { animation: fadeUp .45s ease .70s forwards; }
     .menu-btn:nth-child(7) { animation: fadeUp .45s ease .77s forwards; }
+    .menu-btn:nth-child(8) { animation: fadeUp .45s ease .84s forwards; }
+    .menu-btn:nth-child(9) { animation: fadeUp .45s ease .91s forwards; }
 
     .menu-btn::after {
       content: '';
@@ -213,24 +215,24 @@
 
   <div class="nav-buttons">
     <div class="dropdown" id="adminMenu" style="display:none;">
-      <button onclick="toggleMenu()" type="button">Panel de Control</button>
+      <button onclick="toggleMenu()">Panel de Control</button>
       <div class="dropdown-content" id="dropdownContent">
         <p class="dropdown-title">Administrar</p>
-        <button onclick="goUsuarios()" type="button">Usuarios</button>
-        <button onclick="goJugadores()" type="button">Jugadores</button>
-        <button onclick="goTeams()" type="button">Equipos</button>
+        <button onclick="goUsuarios()">Usuarios</button>
+        <button onclick="goJugadores()">Jugadores</button>
+        <button onclick="goTeams()">Equipos</button>
       </div>
     </div>
-    <button onclick="logout()" type="button">Cerrar sesión</button>
+    <button onclick="logout()">Cerrar sesión</button>
   </div>
 </header>
 
-<main class="home-wrap">
+<div class="home-wrap">
+
   <img
     class="hero-logo-img"
     src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
     alt="LigaPro Ecuabet"
-    loading="lazy"
   >
 
   <p class="hero-eyebrow">Temporada 2025</p>
@@ -239,61 +241,64 @@
   <div class="hero-divider"></div>
 
   <div class="menu-grid">
-    <button class="menu-btn" onclick="goTabla()" type="button">
+
+    <button class="menu-btn" onclick="goTabla()">
       <span class="btn-icon">📋</span>
       <span class="btn-label">Tabla</span>
       <span class="btn-desc">Posiciones de equipos</span>
     </button>
 
-    <button class="menu-btn" onclick="goPartidos()" type="button">
+    <button class="menu-btn" onclick="goPartidos()">
       <span class="btn-icon">⚽</span>
       <span class="btn-label">Partidos</span>
       <span class="btn-desc">Jornadas y resultados</span>
     </button>
 
-    <button class="menu-btn" onclick="goStats()" type="button">
+    <button class="menu-btn" onclick="goStats()">
       <span class="btn-icon">📊</span>
       <span class="btn-label">Estadísticas</span>
       <span class="btn-desc">Números del torneo</span>
     </button>
 
-    <button class="menu-btn" onclick="goVerequipos()" type="button">
+    <button class="menu-btn" onclick="goVerequipos()">
       <span class="btn-icon">🏟️</span>
       <span class="btn-label">Equipos</span>
       <span class="btn-desc">Ver todos los clubes</span>
     </button>
 
-    <button class="menu-btn" onclick="goVerJugadores()" type="button">
+    <button class="menu-btn" onclick="goVerJugadores()">
       <span class="btn-icon">👤</span>
       <span class="btn-label">Jugadores</span>
       <span class="btn-desc">Cartas y estadísticas</span>
     </button>
 
-    <button class="menu-btn" onclick="goVerCopa()" type="button">
+    <button class="menu-btn" onclick="goVerCopa()">
       <span class="btn-icon">🏆</span>
       <span class="btn-label">Copa Ecuador</span>
       <span class="btn-desc">Llaves y resultados</span>
     </button>
 
-    <button class="menu-btn" onclick="goVerSupercopa()" type="button">
+    <button class="menu-btn" onclick="goVerSupercopa()">
       <span class="btn-icon">⭐</span>
       <span class="btn-label">Supercopa</span>
       <span class="btn-desc">Lo mejor de la Liga y Copa</span>
     </button>
 
-    <button class="menu-btn" onclick="goVerExpresso()" type="button">
+    <button class="menu-btn" onclick="goVerExpresso()">
       <span class="btn-icon">☕</span>
       <span class="btn-label">Copa Expresso</span>
       <span class="btn-desc">Campeonatos relámpagos</span>
     </button>
 
-    <button class="menu-btn" onclick="goRecords()" type="button">
+    <button class="menu-btn" onclick="goRecords()">
       <span class="btn-icon">⚡</span>
       <span class="btn-label">Records</span>
       <span class="btn-desc">Rachas de jugadores y equipos</span>
     </button>
+
   </div>
-</main>
+
+</div>
 
 <footer>
   <p>© 2025 LigaPro Ecuabet — Hecho por <strong>Judameal</strong></p>
@@ -301,31 +306,15 @@
 
 <script src="js/app.js"></script>
 <script>
-  // Verificar usuario y mostrar menú admin
-  (function() {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const adminMenu = document.getElementById("adminMenu");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const adminMenu = document.getElementById("adminMenu");
 
-      if (user && user.role === "admin") {
-        adminMenu.style.display = "inline-block";
-      }
-    } catch (e) {
-      console.warn('Error al leer usuario del localStorage:', e);
-    }
-  })();
+  if (user && user.role === "admin") {
+    adminMenu.style.display = "block";
+  }
 
   function toggleMenu() {
-    const dropdownContent = document.getElementById("dropdownContent");
-    dropdownContent.classList.toggle("show");
-    
-    // Cerrar menú al hacer click fuera
-    document.addEventListener('click', function closeMenu(e) {
-      if (!e.target.closest('.dropdown')) {
-        dropdownContent.classList.remove("show");
-        document.removeEventListener('click', closeMenu);
-      }
-    });
+    document.getElementById("dropdownContent").classList.toggle("show");
   }
 
   function logout() {
@@ -333,27 +322,18 @@
     window.location.href = "/index.html";
   }
 
-  // Navegación
-  const navigation = {
-    goUsuarios: "/dashboard.html",
-    goJugadores: "/jugadores.html", 
-    goTeams: "/teams.html",
-    goTabla: "/tabla.html",
-    goPartidos: "/partidos.html",
-    goStats: "/estadisticas.html",
-    goVerequipos: "/verequipos.html",
-    goVerJugadores: "/verjugadores.html",
-    goVerCopa: "/copa.html",
-    goVerSupercopa: "/Supercopa.html",
-    goVerExpresso: "/copaExpresso.html",
-    goRecords: "/records.html"
-  };
-
-  Object.keys(navigation).forEach(key => {
-    window[key] = () => {
-      window.location.href = navigation[key];
-    };
-  });
+  function goUsuarios()     { window.location.href = "/dashboard.html"; }
+  function goJugadores()    { window.location.href = "/jugadores.html"; }
+  function goTeams()        { window.location.href = "/teams.html"; }
+  function goTabla()        { window.location.href = "/tabla.html"; }
+  function goPartidos()     { window.location.href = "/partidos.html"; }
+  function goStats()        { window.location.href = "/estadisticas.html"; }
+  function goVerequipos()   { window.location.href = "/verequipos.html"; }
+  function goVerJugadores() { window.location.href = "/verjugadores.html"; }
+  function goVerCopa()      { window.location.href = "/copa.html"; }
+  function goVerSupercopa() { window.location.href = "/Supercopa.html"; }
+  function goVerExpresso()  { window.location.href = "/copaExpresso.html"; }
+  function goRecords()      { window.location.href = "/records.html"; }
 </script>
 
 </body>
