@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Expresso | LigaPro Ecuabet</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── ESPECÍFICO COPA EXPRESSO ────────────────────────────── */
+    .copa-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .copa-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .copa-title {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .copa-subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── BRACKETS ────────────────────────────────────────────── */
+    .bracket-container {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      margin-bottom: 50px;
+    }
+
+    .bracket-round {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px 80px;
+      align-items: center;
+      position: relative;
+    }
+
+    .bracket-round::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      z-index: 0;
+    }
+
+    .match-bracket {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,.08);
+      transition: all .3s ease;
+      z-index: 1;
+    }
+
+    .match-bracket:hover {
+      border-color: var(--accent);
+      box-shadow: 0 16px 48px var(--accent-glow);
+      transform: translateY(-4px);
+    }
+
+    .match-round {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: var(--black);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .match-teams {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .team-bracket {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--surface2);
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      transition: all .2s;
+    }
+
+    .team-bracket:hover {
+      border-color: var(--accent);
+      background: var(--surface3);
+    }
+
+    .team-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .team-logo-bracket {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .team-name-bracket {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--black);
+      letter-spacing: 1px;
+    }
+
+    .match-score {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .match-status {
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .status-pending {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-result {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: var(--accent);
+      color: var(--black);
+      display: inline-block;
+    }
+
+    /* ── SEMIFINALES Y FINAL ─────────────────────────────────── */
+    .bracket-semis {
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 40px 60px;
+    }
+
+    .bracket-final {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+
+    .final-connector {
+      position: absolute;
+      top: 50%;
+      left: -60px;
+      width: 60px;
+      height: 4px;
+      background: var(--accent);
+      transform: translateY(-50%);
+    }
+
+    /* ── ESTADÍSTICAS ────────────────────────────────────────── */
+    .stats-section {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 50px;
+    }
+
+    .stats-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .stats-title {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .stat-leaderboard {
+      background: var(--surface2);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1.5px solid var(--border);
+    }
+
+    .leaderboard-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--surface);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1.5px solid var(--border);
+      transition: all .2s;
+    }
+
+    .leaderboard-item:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .leader-pos {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--accent);
+      width: 44px;
+      text-align: center;
+    }
+
+    .leader-pos.gold { color: #ffd700; }
+    .leader-pos.silver { color: #c0c0c0; }
+    .leader-pos.bronze { color: #cd7f32; }
+
+    .leader-team {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .leader-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .leader-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--black);
+    }
+
+    .leader-stat {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--accent);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    /* ── BOTÓN JUGAR ─────────────────────────────────────────── */
+    .btn-play-match {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: var(--black);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all .3s;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-play-match:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .btn-play-match:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── MOBILE ──────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .bracket-round {
+        grid-template-columns: 1fr;
+        gap: 30px 0;
+      }
+      
+      .bracket-round::before {
+        display: none;
+      }
+      
+      .bracket-semis {
+        grid-template-columns: 1fr;
+      }
+      
+      .final-connector {
+        display: none;
+      }
+      
+      .copa-container {
+        padding: 24px 16px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro">
+    <h1>Copa <span>Expresso</span></h1>
+  </div>
+  <div class="nav-buttons">
+    <button onclick="window.location.href='index.html'">← Volver</button>
+  </div>
+</header>
+
+<div class="copa-container">
+  
+  <!-- HEADER -->
+  <div class="copa-header">
+    <h1 class="copa-title">Copa Expresso</h1>
+    <p class="copa-subtitle">Eliminación Directa - 8 Equipos</p>
+  </div>
+
+  <!-- BRACKETS -->
+  <div class="bracket-container">
+    
+    <!-- CUARTOS DE FINAL -->
+    <div class="bracket-round">
+      <div class="match-bracket">
+        <div class="match-round">Cuartos</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/22c55e/ffffff?text=E1" alt="E1">
+              <span class="team-name-bracket">Barcelona SC</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/ef4444/ffffff?text=E2" alt="E2">
+              <span class="team-name-bracket">Liga de Quito</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(1)">Jugar Partido</button>
+        </div>
+      </div>
+
+      <div class="match-bracket">
+        <div class="match-round">Cuartos</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/3b82f6/ffffff?text=E3" alt="E3">
+              <span class="team-name-bracket">Independiente</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/f59e0b/000?text=E4" alt="E4">
+              <span class="team-name-bracket">Emelec</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(2)">Jugar Partido</button>
+        </div>
+      </div>
+
+      <div class="match-bracket">
+        <div class="match-round">Cuartos</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/10b981/ffffff?text=E5" alt="E5">
+              <span class="team-name-bracket">Aucas</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/8b5cf6/ffffff?text=E6" alt="E6">
+              <span class="team-name-bracket">Universidad</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(3)">Jugar Partido</button>
+        </div>
+      </div>
+
+      <div class="match-bracket">
+        <div class="match-round">Cuartos</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/ec4899/ffffff?text=E7" alt="E7">
+              <span class="team-name-bracket">Delfín</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="https://via.placeholder.com/40x40/f97316/ffffff?text=E8" alt="E8">
+              <span class="team-name-bracket">Macará</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(4)">Jugar Partido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEMIFINALES -->
+    <div class="bracket-round bracket-semis">
+      <div class="match-bracket">
+        <div class="match-round">Semis</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador 1">
+              <span class="team-name-bracket">Ganador Cuartos 1</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador 4">
+              <span class="team-name-bracket">Ganador Cuartos 4</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(5)" disabled>Jugar Partido</button>
+        </div>
+      </div>
+
+      <div class="final-connector"></div>
+
+      <div class="match-bracket">
+        <div class="match-round">Semis</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador 2">
+              <span class="team-name-bracket">Ganador Cuartos 2</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador 3">
+              <span class="team-name-bracket">Ganador Cuartos 3</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(6)" disabled>Jugar Partido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL -->
+    <div class="bracket-round bracket-final">
+      <div class="match-bracket">
+        <div class="match-round">🏆 FINAL</div>
+        <div class="match-teams">
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador Semis 1">
+              <span class="team-name-bracket">Ganador Semifinal 1</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+          <div class="team-bracket">
+            <div class="team-info">
+              <img class="team-logo-bracket" src="" alt="Ganador Semis 2">
+              <span class="team-name-bracket">Ganador Semifinal 2</span>
+            </div>
+            <span class="match-score">-</span>
+          </div>
+        </div>
+        <div class="match-status">
+          <div class="status-pending">Pendiente</div>
+          <button class="btn-play-match" onclick="playMatch(7)" disabled>Jugar Final</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="stats-section">
+    <div class="stats-header">
+      <h2 class="stats-title">🏆 Estadísticas Copa Expresso</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-leaderboard">
+        <h3 class="leaderboard-title">⚽ Goleadores</h3>
+        <div class="leaderboard-item">
+          <span class="leader-pos gold">1</span>
+          <div class="leader-team">
+            <img class="leader-logo" src="https://via.placeholder.com/36x36/22c55e/fff" alt="Barcelona">
+            <span class="leader-name">Damián Díaz</span>
+          </div>
+          <span class="leader-stat">5</span>
+        </div>
+        <!-- Más items dinámicos -->
+      </div>
+
+      <div class="stat-leaderboard">
+        <h3 class="leaderboard-title">🎯 Asistencias</h3>
+        <div class="leaderboard-item">
+          <span class="leader-pos gold">1</span>
+          <div class="leader-team">
+            <img class="leader-logo" src="https://via.placeholder.com/36x36/ef4444/fff" alt="Liga">
+            <span class="leader-name">Ezequiel Piovi</span>
+          </div>
+          <span class="leader-stat">4</span>
+        </div>
+      </div>
+
+      <div class="stat-leaderboard">
+        <h3 class="leaderboard-title">⭐ MVP</h3>
+        <div class="leaderboard-item">
+          <span class="leader-pos gold">1</span>
+          <div class="leader-team">
+            <img class="leader-logo" src="https://via.placeholder.com/36x36/3b82f6/fff" alt="Independiente">
+            <span class="leader-name">Junior Sornoza</span>
+          </div>
+          <span class="leader-stat">3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 LigaPro Ecuabet — Copa Expresso</p>
+</footer>
+
+<script>
+  // Datos simulados de la copa (se cargarán desde API)
+  const copaExpresso = {
+    cuartos: [
+      { id: 1, local: 'Barcelona SC', visitante: 'Liga de Quito', score: null, jugado: false },
+      { id: 2, local: 'Independiente', visitante: 'Emelec', score: null, jugado: false },
+      { id: 3, local: 'Aucas', visitante: 'Universidad', score: null, jugado: false },
+      { id: 4, local: 'Delfín', visitante: 'Macará', score: null, jugado: false }
+    ],
+    semis: [
+      { id: 5, local: null, visitante: null, score: null, jugado: false },
+      { id: 6, local: null, visitante: null, score: null, jugado: false }
+    ],
+    final: { id: 7, local: null, visitante: null, score: null, jugado: false }
+  };
+
+  async function playMatch(matchId) {
+    // Aquí iría la lógica para abrir modal de jugar partido
+    // Por ahora, simulación
+    alert(`🆚 Jugar Partido #${matchId} - Modal se abrirá aquí`);
+    
+    // TODO: Integrar con API /api/copaExpresso/partidos
+    // POST { torneo: 'copa_expresso', fase: 'cuartos', partido: matchId, resultado: {...} }
+  }
+
+  // Cargar datos al iniciar
+  window.addEventListener('load', async () => {
+    try {
+      // TODO: Fetch('/api/copaExpresso/partidos')
+      console.log('📊 Cargando datos Copa Expresso...');
+    } catch (error) {
+      console.error('Error cargando copa:', error);
+    }
+  });
+</script>
+
+</body>
+</html>
