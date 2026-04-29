@@ -7,20 +7,20 @@
   <link rel="stylesheet" href="css/styles.css">
   <style>
     :root {
-      --mustard: #b8860b;
+      --mustard:       #b8860b;
+      --mustard-dark:  #966f0c;
       --mustard-light: #f5e9c0;
-      --mustard-glow: rgba(184,134,11,.18);
-      --bg: #fafafa;
-      --surface: #ffffff;
-      --surface2: #f6f6f6;
-      --border: #e8e8e8;
-      --text: #1a1a1a;
-      --muted: #888;
-      --red-soft: #dc2626;
+      --mustard-glow:  rgba(184,134,11,.18);
+      --bg:            #fafafa;
+      --surface:       #ffffff;
+      --surface2:      #f6f6f6;
+      --border:        #e8e8e8;
+      --text:          #1a1a1a;
+      --muted:         #888;
+      --red-soft:      #dc2626;
+      --black:         #0d0e0f;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -29,41 +29,28 @@
       display: flex;
       flex-direction: column;
     }
-
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .header-logo { width: 34px; height: 34px; object-fit: contain; }
-    .header-title {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-    .header-title span { color: var(--mustard); }
-    .btn-back {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      padding: 7px 16px;
-      border-radius: 7px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .btn-back:hover { border-color: var(--mustard); color: var(--mustard); }
-
     .top-strip { height: 3px; background: var(--mustard); }
 
-    /* ── TABS ── */
+    /* ADMIN BADGE */
+    .admin-badge {
+      background: var(--mustard);
+      color: var(--black);
+      font-size: .6rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+
+    /* TABS */
     .tabs {
       display: flex;
       border-bottom: 2px solid var(--border);
       background: #fff;
       padding: 0 28px;
+      overflow-x: auto;
     }
     .tab {
       padding: 14px 22px;
@@ -76,13 +63,14 @@
       border-bottom: 2px solid transparent;
       margin-bottom: -2px;
       transition: color .2s, border-color .2s;
+      white-space: nowrap;
     }
     .tab.active { color: var(--mustard); border-bottom-color: var(--mustard); }
     .tab:hover:not(.active) { color: var(--text); }
 
     .page { display: none; }
     .page.active { display: block; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 32px 24px 80px; }
 
     .sec-title {
       font-family: 'Exo 2', sans-serif;
@@ -104,12 +92,8 @@
       border-radius: 2px;
     }
 
-    /* ── LOADING ── */
-    .loading-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--muted);
-    }
+    /* LOADING */
+    .loading-state { text-align: center; padding: 48px 20px; color: var(--muted); }
     .spinner {
       width: 32px; height: 32px;
       border: 3px solid var(--border);
@@ -120,7 +104,22 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── SETUP CARD ── */
+    /* READONLY NOTICE */
+    .readonly-notice {
+      background: var(--mustard-light);
+      border: 1.5px solid var(--mustard);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--mustard-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* SETUP CARD */
     .setup-card {
       background: #fff;
       border: 1.5px solid var(--border);
@@ -136,7 +135,6 @@
       color: var(--muted);
       margin-bottom: 18px;
     }
-
     .selected-count {
       font-size: .8rem;
       font-weight: 700;
@@ -156,7 +154,7 @@
       letter-spacing: 1px;
     }
 
-    /* ── TEAM GRID ── */
+    /* TEAM GRID */
     .team-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -175,15 +173,10 @@
       user-select: none;
     }
     .team-card:hover { border-color: var(--mustard); }
-    .team-card.selected {
-      background: var(--mustard-light);
-      border-color: var(--mustard);
-    }
-    .team-card img {
-      width: 36px; height: 36px;
-      object-fit: contain; border-radius: 6px;
-      flex-shrink: 0;
-    }
+    .team-card.selected { background: var(--mustard-light); border-color: var(--mustard); }
+    .team-card.no-click { cursor: default; }
+    .team-card.no-click:hover { border-color: var(--border); }
+    .team-card img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; flex-shrink: 0; }
     .team-card-name { font-size: .88rem; font-weight: 700; color: var(--text); flex: 1; }
     .team-check {
       width: 18px; height: 18px;
@@ -193,11 +186,9 @@
       font-size: .6rem; color: #fff;
       transition: all .18s; flex-shrink: 0;
     }
-    .team-card.selected .team-check {
-      background: var(--mustard); border-color: var(--mustard);
-    }
+    .team-card.selected .team-check { background: var(--mustard); border-color: var(--mustard); }
 
-    /* ── JUGADORES ── */
+    /* JUGADORES */
     .team-section {
       background: #fff;
       border: 1.5px solid var(--border);
@@ -250,7 +241,7 @@
     }
     .btn-icon:hover { border-color: var(--red-soft); color: var(--red-soft); }
 
-    .add-player-row { display: flex; gap: 8px; margin-top: 8px; }
+    .add-player-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     .add-player-row input,
     .add-player-row select {
       background: var(--surface2);
@@ -266,16 +257,16 @@
     }
     .add-player-row input:focus,
     .add-player-row select:focus { border-color: var(--mustard); }
-    .add-player-row input { flex: 1; }
+    .add-player-row input { flex: 1; min-width: 120px; }
     .btn-add-player {
       background: var(--mustard); color: #fff; border: none;
       border-radius: 7px; padding: 8px 14px;
       font-size: .75rem; font-weight: 800; letter-spacing: 1px;
       text-transform: uppercase; cursor: pointer; transition: background .2s; white-space: nowrap;
     }
-    .btn-add-player:hover { background: #966f0c; }
+    .btn-add-player:hover { background: var(--mustard-dark); }
 
-    /* ── BOTONES ── */
+    /* BOTONES */
     .btn-primary {
       background: var(--text); color: #fff; border: none;
       border-radius: 9px; padding: 12px 28px;
@@ -292,7 +283,7 @@
       text-transform: uppercase; cursor: pointer;
       transition: background .2s, transform .15s;
     }
-    .btn-mustard:hover { background: #966f0c; transform: translateY(-1px); }
+    .btn-mustard:hover { background: var(--mustard-dark); transform: translateY(-1px); }
     .btn-outline {
       background: transparent; color: var(--text);
       border: 1.5px solid var(--border);
@@ -303,7 +294,7 @@
     .btn-outline:hover { border-color: var(--mustard); color: var(--mustard); }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 
-    /* ── BRACKET ── */
+    /* BRACKET */
     .bracket-wrapper { overflow-x: auto; padding-bottom: 10px; }
     .bracket { display: flex; gap: 40px; min-width: 700px; align-items: stretch; }
     .bracket-col { display: flex; flex-direction: column; flex: 1; }
@@ -352,10 +343,9 @@
       font-size: .65rem; font-weight: 800; letter-spacing: 1px;
       text-transform: uppercase; cursor: pointer; transition: background .15s;
     }
-    .btn-play-match:hover { background: #966f0c; }
-    .btn-play-match:disabled { opacity: .35; cursor: not-allowed; background: var(--muted); }
+    .btn-play-match:hover { background: var(--mustard-dark); }
 
-    /* ── CHAMPION BANNER ── */
+    /* CHAMPION BANNER */
     .champion-banner {
       background: var(--mustard-light); border: 2px solid var(--mustard);
       border-radius: 16px; padding: 28px; text-align: center;
@@ -372,10 +362,10 @@
       border-radius: 12px; margin: 14px auto 0; display: block;
     }
 
-    /* ── MODAL ── */
+    /* MODAL */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,.4);
+      background: rgba(0,0,0,.45);
       backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       z-index: 999; padding: 20px;
@@ -386,7 +376,7 @@
       background: #fff; border: 1.5px solid var(--border);
       border-radius: 16px; padding: 28px;
       width: 100%; max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.1);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
       transform: translateY(16px); transition: transform .25s;
     }
     .modal-overlay.show .modal-box { transform: translateY(0); }
@@ -409,7 +399,7 @@
       font-size: 2rem; font-weight: 900; padding: 12px;
       border: 2px solid var(--border); border-radius: 10px;
       background: var(--surface2); color: var(--text); outline: none;
-      transition: border-color .2s; margin-bottom: 0;
+      transition: border-color .2s; margin-bottom: 0; width: 100%;
     }
     .score-row input:focus { border-color: var(--mustard); }
     .score-sep { text-align: center; font-weight: 900; color: var(--muted); }
@@ -428,7 +418,7 @@
     }
     .btn-confirm:hover { background: var(--mustard); }
 
-    /* ── HISTORIAL ── */
+    /* HISTORIAL */
     .history-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -458,7 +448,6 @@
     .h-stat { background: var(--surface2); border-radius: 8px; padding: 8px; text-align: center; }
     .h-stat-num { font-family: 'Exo 2', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--mustard); }
     .h-stat-lbl { font-size: .6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
-
     .stats-leaderboard {
       background: #fff; border: 1.5px solid var(--border);
       border-radius: 12px; overflow: hidden; margin-top: 14px;
@@ -480,7 +469,7 @@
     .lb-team { font-size: .7rem; color: var(--muted); font-weight: 600; }
     .lb-val { font-family: 'Exo 2', sans-serif; font-size: 1rem; font-weight: 900; color: var(--mustard); min-width: 22px; text-align: right; }
 
-    /* ── EMPTY / ERROR ── */
+    /* EMPTY / ERROR */
     .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-state .icon { font-size: 2.8rem; margin-bottom: 12px; opacity: .4; }
     .empty-state p { font-size: .88rem; font-weight: 600; letter-spacing: 1px; }
@@ -491,14 +480,15 @@
       display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
     }
 
-    /* ── TOAST ── */
+    /* TOAST */
     .toast {
       position: fixed; bottom: 24px; right: 24px;
       background: var(--text); color: #fff;
       border-left: 3px solid var(--mustard);
       padding: 12px 20px; border-radius: 9px;
       font-size: .82rem; font-weight: 600; z-index: 9999;
-      animation: toastIn .3s ease both; max-width: 280px;
+      animation: toastIn .3s ease both; max-width: 300px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
     }
     .toast.error { border-left-color: var(--red-soft); }
 
@@ -511,42 +501,51 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    footer {
-      background: #fff; border-top: 1px solid var(--border);
-      padding: 16px; text-align: center;
-      font-size: .72rem; color: #bbb; margin-top: auto;
+    /* Botón eliminar rojo suave */
+    .btn-delete {
+      width: 100%; margin-top: 14px;
+      font-size: .72rem; padding: 9px;
+      background: transparent;
+      border: 1.5px solid #fecaca;
+      color: var(--red-soft);
+      border-radius: 9px;
+      font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: all .2s;
     }
+    .btn-delete:hover { background: var(--red-soft); color: #fff; border-color: var(--red-soft); }
   </style>
 </head>
 <body>
 
-<div class="top-strip"></div>
-
 <header>
   <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet">
     <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
   <div id="nav" class="nav-buttons"></div>
-  <button class="back-btn" onclick="window.location.href='index.html'">← Volver</button>
+  <button class="back-btn" onclick="window.location.href='haxball.html'">← Volver</button>
 </header>
-  
 
-<div class="tabs">
-  <div class="tab active"  onclick="switchTab('torneo')">Torneo</div>
-  <div class="tab"         onclick="switchTab('jugadores')">Jugadores</div>
-  <div class="tab"         onclick="switchTab('bracket')">Bracket</div>
-  <div class="tab"         onclick="switchTab('historial')">Historial</div>
+<div class="top-strip"></div>
+
+<div class="tabs" id="tabBar">
+  <div class="tab active" onclick="switchTab('torneo')">🏟 Torneo</div>
+  <div class="tab"        onclick="switchTab('jugadores')" id="tabJugadores">👥 Jugadores</div>
+  <div class="tab"        onclick="switchTab('bracket')">🏆 Bracket</div>
+  <div class="tab"        onclick="switchTab('historial')" id="tabHistorial">📜 Historial</div>
 </div>
 
-<!-- ══════════ TAB: TORNEO ══════════ -->
+<!-- TORNEO -->
 <div class="page active" id="page-torneo">
   <div class="container">
-    <div class="sec-title">Seleccionar Equipos</div>
+    <div class="sec-title">
+      Seleccionar Equipos
+      <span id="adminBadge" style="display:none" class="admin-badge">⚡ Admin</span>
+    </div>
+
+    <div id="userReadonlyNotice" class="readonly-notice" style="display:none">
+      👁 Modo visualización — solo los administradores pueden gestionar el torneo
+    </div>
 
     <div class="setup-card">
       <h3>Equipos de la base de datos — selecciona exactamente 8</h3>
@@ -555,29 +554,30 @@
         seleccionados para este torneo
       </div>
       <div id="teamGrid">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          Cargando equipos...
-        </div>
+        <div class="loading-state"><div class="spinner"></div>Cargando equipos...</div>
       </div>
     </div>
 
-    <div class="btn-row">
+    <div class="btn-row" id="adminActions" style="display:none">
       <button class="btn-primary" id="btnContinue" onclick="goToPlayers()" disabled>
-        Continuar → Agregar Jugadores
+        Continuar → Jugadores
       </button>
-      <button class="btn-outline" onclick="retryLoadTeams()">↺ Recargar equipos</button>
-      <button class="btn-outline" onclick="resumeCopa()">Reanudar copa guardada</button>
+      <button class="btn-outline" onclick="retryLoadTeams()">↺ Recargar</button>
+      <button class="btn-outline" onclick="resumeCopa()">▶ Reanudar copa</button>
+    </div>
+
+    <div class="btn-row" id="userViewActions" style="display:none">
+      <button class="btn-outline" onclick="resumeCopa()">▶ Ver copa activa</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════ TAB: JUGADORES ══════════ -->
+<!-- JUGADORES (solo admin) -->
 <div class="page" id="page-jugadores">
   <div class="container">
     <div class="sec-title">Plantillas del Torneo</div>
     <p style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">
-      Agrega jugadores para cada equipo. Solo aplican en esta Copa Expresso.
+      Jugadores únicos para esta Copa Expresso — no afectan la liga principal.
     </p>
     <div id="playersContainer"></div>
     <div class="btn-row">
@@ -587,7 +587,7 @@
   </div>
 </div>
 
-<!-- ══════════ TAB: BRACKET ══════════ -->
+<!-- BRACKET -->
 <div class="page" id="page-bracket">
   <div class="container">
     <div id="championBanner" style="display:none"></div>
@@ -603,20 +603,17 @@
   </div>
 </div>
 
-<!-- ══════════ TAB: HISTORIAL ══════════ -->
+<!-- HISTORIAL (solo admin) -->
 <div class="page" id="page-historial">
   <div class="container">
     <div class="sec-title">Historial de Copas</div>
     <div id="historialContainer">
-      <div class="empty-state">
-        <div class="icon">📜</div>
-        <p>Aún no hay copas completadas</p>
-      </div>
+      <div class="loading-state"><div class="spinner"></div>Cargando historial...</div>
     </div>
   </div>
 </div>
 
-<!-- ══════════ MODAL: JUGAR PARTIDO ══════════ -->
+<!-- MODAL PARTIDO -->
 <div class="modal-overlay" id="matchModal">
   <div class="modal-box">
     <div class="modal-title" id="modalRound">Cuartos de Final</div>
@@ -636,82 +633,118 @@
 <footer>© 2026 LigaPro Ecuabet — Copa Expresso | Hecho por Judameal</footer>
 
 <script>
-/* ═══════════════════════════════════════════════
-   CONSTANTES
-═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   ROLES
+═══════════════════════════════════════════ */
 const POSITIONS = ['PO', 'DF', 'MC', 'DL'];
+let currentUser = null;
+let isAdmin     = false;
 
-/* ═══════════════════════════════════════════════
+function initUser() {
+  try {
+    currentUser = JSON.parse(localStorage.getItem('user'));
+    isAdmin = currentUser?.role === 'admin';
+  } catch (_) { isAdmin = false; }
+
+  document.getElementById('adminBadge').style.display      = isAdmin ? 'inline' : 'none';
+  document.getElementById('adminActions').style.display    = isAdmin ? 'flex'   : 'none';
+  document.getElementById('userViewActions').style.display = isAdmin ? 'none'   : 'flex';
+  document.getElementById('userReadonlyNotice').style.display = isAdmin ? 'none' : 'flex';
+
+  // Ocultar tabs restringidas si no es admin
+  document.getElementById('tabJugadores').style.display  = isAdmin ? 'block' : 'none';
+  document.getElementById('tabHistorial').style.display  = isAdmin ? 'block' : 'none';
+}
+
+/* ═══════════════════════════════════════════
    ESTADO
-═══════════════════════════════════════════════ */
-let allTeams      = [];   // equipos desde /api/teams
+═══════════════════════════════════════════ */
+let allTeams  = [];
 let state = {
   selectedTeams : [],
-  players       : {},   // { teamId: [{name, pos}] }
-  bracket       : null,
-  history       : []
+  players       : {},
+  bracket       : null
 };
 let currentMatchRef = null;
+let historialCache  = [];
+let saveTimeout     = null;
 
-/* ═══════════════════════════════════════════════
-   PERSISTENCIA
-═══════════════════════════════════════════════ */
-function loadState() {
+/* ═══════════════════════════════════════════
+   DB — /api/copas  (DB: copa_expresso)
+═══════════════════════════════════════════ */
+async function saveStateToDB() {
+  if (!isAdmin) return;
   try {
-    const h = localStorage.getItem('copa_history');
-    if (h) state.history = JSON.parse(h);
-    const s = localStorage.getItem('copa_state');
-    if (s) {
-      const saved = JSON.parse(s);
-      state.selectedTeams = saved.selectedTeams || [];
-      state.players       = saved.players || {};
-      state.bracket       = saved.bracket || null;
+    await fetch('/api/copas', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({
+        action       : 'save',
+        selectedTeams: state.selectedTeams,
+        players      : state.players,
+        bracket      : state.bracket
+      })
+    });
+  } catch (e) { console.warn('save error', e); }
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(saveStateToDB, 700);
+}
+
+async function loadFromDB() {
+  try {
+    const res  = await fetch('/api/copas');
+    const data = await res.json();
+    const active = data.find(c => c.status === 'active');
+    if (active) {
+      state.selectedTeams = active.selectedTeams || [];
+      state.players       = active.players       || {};
+      state.bracket       = active.bracket       || null;
     }
-  } catch (e) { console.warn('loadState error', e); }
+    historialCache = data.filter(c => c.status === 'finished');
+  } catch (e) { console.warn('loadFromDB error', e); }
 }
 
-function saveState() {
-  localStorage.setItem('copa_state', JSON.stringify({
-    selectedTeams : state.selectedTeams,
-    players       : state.players,
-    bracket       : state.bracket
-  }));
-}
-
-function saveHistory() {
-  localStorage.setItem('copa_history', JSON.stringify(state.history));
-}
-
-/* ═══════════════════════════════════════════════
-   CARGAR EQUIPOS DESDE LA API
-═══════════════════════════════════════════════ */
-async function fetchTeams() {
+async function fetchHistorialFromDB() {
   try {
-    const res = await fetch('/api/teams');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    allTeams = await res.json();
-    renderTeamGrid();
-  } catch (err) {
-    document.getElementById('teamGrid').innerHTML = `
-      <div class="error-banner">
-        ⚠️ No se pudieron cargar los equipos desde la base de datos.
-        <button class="btn-outline" style="margin-left:auto;padding:6px 14px;font-size:.75rem"
-                onclick="retryLoadTeams()">Reintentar</button>
-      </div>`;
-    console.error('fetchTeams error:', err);
-  }
+    const res  = await fetch('/api/copas');
+    const data = await res.json();
+    historialCache = data.filter(c => c.status === 'finished');
+  } catch (e) { console.warn('fetchHistorial error', e); }
 }
 
-function retryLoadTeams() {
-  document.getElementById('teamGrid').innerHTML = `
-    <div class="loading-state"><div class="spinner"></div>Cargando equipos...</div>`;
-  fetchTeams();
+async function archiveInDB(payload) {
+  try {
+    await fetch('/api/copas', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ action: 'archive', ...payload })
+    });
+  } catch (e) { console.warn('archive error', e); }
 }
 
-/* ═══════════════════════════════════════════════
+async function deleteFromDB(id) {
+  try {
+    const res = await fetch('/api/copas', {
+      method : 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ id })
+    });
+    return res.ok;
+  } catch (e) { return false; }
+}
+
+/* ═══════════════════════════════════════════
    TABS
-═══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function switchTab(name) {
+  // Bloquear tabs de admin si no lo es
+  if (!isAdmin && (name === 'jugadores' || name === 'historial')) {
+    toast('Solo los administradores pueden acceder a esta sección', 'error');
+    return;
+  }
   const names = ['torneo', 'jugadores', 'bracket', 'historial'];
   document.querySelectorAll('.tab').forEach((t, i) =>
     t.classList.toggle('active', names[i] === name));
@@ -721,29 +754,49 @@ function switchTab(name) {
   if (name === 'bracket' && state.bracket) renderBracket();
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
+   CARGAR EQUIPOS
+═══════════════════════════════════════════ */
+async function fetchTeams() {
+  try {
+    const res = await fetch('/api/teams');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    allTeams = await res.json();
+    renderTeamGrid();
+  } catch (err) {
+    document.getElementById('teamGrid').innerHTML = `
+      <div class="error-banner">
+        ⚠️ No se pudieron cargar los equipos.
+        <button class="btn-outline" style="margin-left:auto;padding:6px 14px;font-size:.75rem"
+                onclick="retryLoadTeams()">Reintentar</button>
+      </div>`;
+  }
+}
+
+function retryLoadTeams() {
+  document.getElementById('teamGrid').innerHTML =
+    `<div class="loading-state"><div class="spinner"></div>Cargando...</div>`;
+  fetchTeams();
+}
+
+/* ═══════════════════════════════════════════
    TORNEO: SELECCIÓN
-═══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function renderTeamGrid() {
   const grid = document.getElementById('teamGrid');
   if (!allTeams.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">🏟</div>
-        <p>No hay equipos registrados en la base de datos</p>
-      </div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🏟</div><p>Sin equipos en la base de datos</p></div>`;
     return;
   }
-
   grid.innerHTML = `<div class="team-grid">${
     allTeams.map(t => {
-      const id  = t._id;
-      const sel = state.selectedTeams.some(s => s._id === id);
+      const sel   = state.selectedTeams.some(s => s._id === t._id);
+      const click = isAdmin ? `onclick="toggleTeam('${t._id}')"` : '';
+      const noClick = isAdmin ? '' : 'no-click';
       return `
-        <div class="team-card ${sel ? 'selected' : ''}"
-             onclick="toggleTeam('${id}')" id="tc-${id}">
-          <img src="${t.logo || ''}" alt="${t.nombre}"
-               onerror="this.src='https://via.placeholder.com/36x36/ddd/888?text=${encodeURIComponent(t.nombre[0])}'">
+        <div class="team-card ${sel ? 'selected' : ''} ${noClick}" ${click} id="tc-${t._id}">
+          <img src="${t.logo||''}" alt="${t.nombre}"
+               onerror="this.src='https://placehold.co/36x36/ddd/888?text=${encodeURIComponent(t.nombre[0])}'">
           <span class="team-card-name">${t.nombre}</span>
           <div class="team-check">${sel ? '✓' : ''}</div>
         </div>`;
@@ -752,15 +805,14 @@ function renderTeamGrid() {
 }
 
 function toggleTeam(id) {
+  if (!isAdmin) return;
   const team = allTeams.find(t => t._id === id);
   if (!team) return;
   const idx = state.selectedTeams.findIndex(t => t._id === id);
   if (idx >= 0) {
     state.selectedTeams.splice(idx, 1);
   } else {
-    if (state.selectedTeams.length >= 8) {
-      toast('Máximo 8 equipos', 'error'); return;
-    }
+    if (state.selectedTeams.length >= 8) { toast('Máximo 8 equipos', 'error'); return; }
     state.selectedTeams.push(team);
   }
   updateSelCount();
@@ -770,24 +822,26 @@ function toggleTeam(id) {
 function updateSelCount() {
   const n = state.selectedTeams.length;
   document.getElementById('selCountPill').textContent = n + ' / 8';
-  document.getElementById('btnContinue').disabled = n !== 8;
+  const btn = document.getElementById('btnContinue');
+  if (btn) btn.disabled = n !== 8;
 }
 
 function goToPlayers() {
-  if (state.selectedTeams.length !== 8) return;
+  if (!isAdmin || state.selectedTeams.length !== 8) return;
+  scheduleSave();
   renderPlayersPage();
   switchTab('jugadores');
 }
 
 function resumeCopa() {
-  if (!state.bracket) { toast('No hay copa guardada', 'error'); return; }
+  if (!state.bracket) { toast('No hay copa activa guardada', 'error'); return; }
   renderBracket();
   switchTab('bracket');
 }
 
-/* ═══════════════════════════════════════════════
-   JUGADORES
-═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   JUGADORES (solo admin)
+═══════════════════════════════════════════ */
 function renderPlayersPage() {
   const container = document.getElementById('playersContainer');
   container.innerHTML = state.selectedTeams.map(team => {
@@ -795,12 +849,10 @@ function renderPlayersPage() {
     return `
       <div class="team-section" id="ts-${team._id}">
         <div class="team-section-header" onclick="toggleSection('${team._id}')">
-          <img src="${team.logo || ''}" alt="${team.nombre}"
-               onerror="this.src='https://via.placeholder.com/28/ddd/888?text=${encodeURIComponent(team.nombre[0])}'">
+          <img src="${team.logo||''}" alt="${team.nombre}"
+               onerror="this.src='https://placehold.co/28/ddd/888?text=${encodeURIComponent(team.nombre[0])}'">
           <span class="team-section-name">${team.nombre}</span>
-          <span class="team-section-count" id="cnt-${team._id}">
-            ${state.players[team._id].length} jugadores
-          </span>
+          <span class="team-section-count" id="cnt-${team._id}">${state.players[team._id].length} jugadores</span>
           <span class="chevron">▼</span>
         </div>
         <div class="team-players" id="tp-${team._id}">
@@ -816,7 +868,6 @@ function renderPlayersPage() {
         </div>
       </div>`;
   }).join('');
-
   state.selectedTeams.forEach(t => renderPlayerList(t._id));
 }
 
@@ -825,16 +876,16 @@ function toggleSection(teamId) {
 }
 
 function renderPlayerList(teamId) {
-  const list = document.getElementById('pl-list-' + teamId);
+  const list    = document.getElementById('pl-list-' + teamId);
   if (!list) return;
   const players = state.players[teamId] || [];
   list.innerHTML = players.length
     ? players.map((p, i) => `
         <div class="player-row">
-          <span class="player-num">#${i + 1}</span>
+          <span class="player-num">#${i+1}</span>
           <span class="player-pos">${p.pos}</span>
           <span class="player-name">${p.name}</span>
-          <button class="btn-icon" onclick="removePlayer('${teamId}',${i})" title="Eliminar">✕</button>
+          <button class="btn-icon" onclick="removePlayer('${teamId}',${i})">✕</button>
         </div>`).join('')
     : `<p style="font-size:.78rem;color:var(--muted);margin-bottom:10px;">Sin jugadores aún</p>`;
 
@@ -843,6 +894,7 @@ function renderPlayerList(teamId) {
 }
 
 function addPlayer(teamId) {
+  if (!isAdmin) return;
   const nameEl = document.getElementById('pname-' + teamId);
   const posEl  = document.getElementById('ppos-'  + teamId);
   const name   = nameEl.value.trim();
@@ -851,55 +903,43 @@ function addPlayer(teamId) {
   state.players[teamId].push({ name, pos: posEl.value });
   nameEl.value = '';
   renderPlayerList(teamId);
-  saveState();
+  scheduleSave();
 }
 
 function removePlayer(teamId, idx) {
+  if (!isAdmin) return;
   state.players[teamId].splice(idx, 1);
   renderPlayerList(teamId);
-  saveState();
+  scheduleSave();
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    BRACKET
-═══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function generateBracket() {
-  if (state.selectedTeams.length !== 8) {
-    toast('Selecciona 8 equipos primero', 'error'); return;
-  }
-  const shuffled = [...state.selectedTeams].sort(() => Math.random() - .5);
+  if (!isAdmin) return;
+  if (state.selectedTeams.length !== 8) { toast('Selecciona 8 equipos primero', 'error'); return; }
+  const sh = [...state.selectedTeams].sort(() => Math.random() - .5);
   state.bracket = {
-    cuartos: [
-      mkMatch(shuffled[0], shuffled[1]),
-      mkMatch(shuffled[2], shuffled[3]),
-      mkMatch(shuffled[4], shuffled[5]),
-      mkMatch(shuffled[6], shuffled[7]),
-    ],
-    semis  : [ mkMatch(null, null), mkMatch(null, null) ],
-    final  : mkMatch(null, null),
+    cuartos : [mkM(sh[0],sh[1]), mkM(sh[2],sh[3]), mkM(sh[4],sh[5]), mkM(sh[6],sh[7])],
+    semis   : [mkM(null,null), mkM(null,null)],
+    final   : mkM(null,null),
     champion: null
   };
-  saveState();
+  scheduleSave();
   renderBracket();
   switchTab('bracket');
   toast('¡Bracket generado!');
 }
 
-function mkMatch(a, b) {
-  return { teamA: a, teamB: b, scoreA: null, scoreB: null, played: false };
-}
-
-function getWinner(m) {
-  if (!m.played) return null;
-  return m.scoreA >= m.scoreB ? m.teamA : m.teamB;
-}
+function mkM(a, b) { return { teamA:a, teamB:b, scoreA:null, scoreB:null, played:false }; }
+function winner(m) { if (!m.played) return null; return m.scoreA >= m.scoreB ? m.teamA : m.teamB; }
 
 function renderBracket() {
   const el = document.getElementById('bracketEl');
   const br = state.bracket;
   if (!br) return;
 
-  // banner campeón
   const banner = document.getElementById('championBanner');
   if (br.champion) {
     banner.style.display = 'block';
@@ -907,8 +947,8 @@ function renderBracket() {
       <div class="champion-banner">
         <div class="trophy">🏆</div>
         <h2>Campeón Copa Expresso</h2>
-        <img src="${br.champion.logo || ''}" alt="${br.champion.nombre}"
-             onerror="this.src='https://via.placeholder.com/70/ddd/888?text=?'">
+        <img src="${br.champion.logo||''}" alt="${br.champion.nombre}"
+             onerror="this.src='https://placehold.co/70/ddd/888?text=?'">
         <p style="font-weight:800;font-size:1.1rem;margin-top:6px">${br.champion.nombre}</p>
         <p>¡Felicitaciones al campeón!</p>
       </div>`;
@@ -919,72 +959,61 @@ function renderBracket() {
   el.innerHTML = `
     <div class="bracket-col">
       <div class="bracket-col-title">Cuartos de Final</div>
-      <div class="bracket-matches">
-        ${br.cuartos.map((m,i) => matchCard(m,'cuartos',i)).join('')}
-      </div>
+      <div class="bracket-matches">${br.cuartos.map((m,i) => mCard(m,'cuartos',i)).join('')}</div>
     </div>
     <div class="bracket-col">
       <div class="bracket-col-title">Semifinales</div>
-      <div class="bracket-matches" style="margin-top:48px">
-        ${br.semis.map((m,i) => matchCard(m,'semis',i)).join('')}
-      </div>
+      <div class="bracket-matches" style="margin-top:48px">${br.semis.map((m,i) => mCard(m,'semis',i)).join('')}</div>
     </div>
     <div class="bracket-col" style="flex:.65">
       <div class="bracket-col-title">Final</div>
-      <div class="bracket-matches" style="justify-content:center;margin-top:120px">
-        ${matchCard(br.final,'final',0)}
-      </div>
+      <div class="bracket-matches" style="justify-content:center;margin-top:120px">${mCard(br.final,'final',0)}</div>
     </div>`;
 }
 
-function matchCard(match, stage, idx) {
-  const canPlay = match && match.teamA && match.teamB && !match.played;
+function mCard(match, stage, idx) {
+  const canPlay = isAdmin && match?.teamA && match?.teamB && !match?.played;
   const done    = match?.played;
   const wA      = done && match.scoreA >= match.scoreB;
   const wB      = done && match.scoreB >  match.scoreA;
 
-  const teamRow = (team, score, winner) => team ? `
-    <div class="match-team ${winner ? 'winner' : ''}">
-      <img src="${team.logo || ''}" alt="${team.nombre}"
-           onerror="this.src='https://via.placeholder.com/24/ddd/888?text=${encodeURIComponent((team.nombre||'?')[0])}'">
+  const teamRow = (team, score, win) => team ? `
+    <div class="match-team ${win ? 'winner' : ''}">
+      <img src="${team.logo||''}" alt="${team.nombre}"
+           onerror="this.src='https://placehold.co/24/ddd/888?text=${encodeURIComponent((team.nombre||'?')[0])}'">
       <span class="match-team-name">${team.nombre}</span>
       <span class="match-team-score">${score !== null ? score : '–'}</span>
     </div>` : `
-    <div class="match-team">
-      <span class="match-team-name" style="color:var(--muted)">Por definir</span>
-    </div>`;
+    <div class="match-team"><span class="match-team-name" style="color:var(--muted)">Por definir</span></div>`;
 
   return `
     <div class="match-card">
       ${teamRow(match?.teamA, match?.scoreA, wA)}
       ${teamRow(match?.teamB, match?.scoreB, wB)}
       <div class="match-footer">
-        <span class="match-status-lbl ${done ? 'done' : ''}">${done ? '✓ Jugado' : 'Pendiente'}</span>
-        ${canPlay
-          ? `<button class="btn-play-match" onclick="openModal('${stage}',${idx})">Jugar</button>`
-          : ''}
+        <span class="match-status-lbl ${done?'done':''}">${done ? '✓ Jugado' : 'Pendiente'}</span>
+        ${canPlay ? `<button class="btn-play-match" onclick="openModal('${stage}',${idx})">Jugar</button>` : ''}
       </div>
     </div>`;
 }
 
-/* ═══════════════════════════════════════════════
-   MODAL PARTIDO
-═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   MODAL PARTIDO (solo admin)
+═══════════════════════════════════════════ */
 function openModal(stage, idx) {
+  if (!isAdmin) return;
   currentMatchRef = { stage, idx };
   const match  = getMatch(stage, idx);
   const labels = { cuartos:'Cuartos de Final', semis:'Semifinal', final:'Gran Final' };
   document.getElementById('modalRound').textContent = labels[stage];
   document.getElementById('modalVs').innerHTML = `
     <div class="modal-team">
-      <img src="${match.teamA.logo||''}" alt="${match.teamA.nombre}"
-           onerror="this.src='https://via.placeholder.com/48/ddd/888?text=?'">
+      <img src="${match.teamA.logo||''}" onerror="this.src='https://placehold.co/48/ddd/888?text=?'">
       <div class="modal-team-name">${match.teamA.nombre}</div>
     </div>
     <div class="modal-sep">VS</div>
     <div class="modal-team">
-      <img src="${match.teamB.logo||''}" alt="${match.teamB.nombre}"
-           onerror="this.src='https://via.placeholder.com/48/ddd/888?text=?'">
+      <img src="${match.teamB.logo||''}" onerror="this.src='https://placehold.co/48/ddd/888?text=?'">
       <div class="modal-team-name">${match.teamB.nombre}</div>
     </div>`;
   document.getElementById('scoreA').value = '';
@@ -1003,136 +1032,121 @@ function getMatch(stage, idx) {
   return state.bracket.final;
 }
 
-function confirmResult() {
+async function confirmResult() {
+  if (!isAdmin) return;
   const a = parseInt(document.getElementById('scoreA').value);
   const b = parseInt(document.getElementById('scoreB').value);
-  if (isNaN(a) || isNaN(b) || a < 0 || b < 0) {
-    toast('Ingresa marcadores válidos', 'error'); return;
-  }
+  if (isNaN(a) || isNaN(b) || a < 0 || b < 0) { toast('Ingresa marcadores válidos', 'error'); return; }
+
   const { stage, idx } = currentMatchRef;
   const match = getMatch(stage, idx);
-  match.scoreA = a;
-  match.scoreB = b;
-  match.played = true;
-  const winner = getWinner(match);
+  match.scoreA = a; match.scoreB = b; match.played = true;
+  const w = winner(match);
 
   if (stage === 'cuartos') {
-    const semiIdx = idx < 2 ? 0 : 1;
-    const slot    = idx % 2 === 0 ? 'teamA' : 'teamB';
-    state.bracket.semis[semiIdx][slot] = winner;
+    const si   = idx < 2 ? 0 : 1;
+    const slot = idx % 2 === 0 ? 'teamA' : 'teamB';
+    state.bracket.semis[si][slot] = w;
   } else if (stage === 'semis') {
-    state.bracket.final[idx === 0 ? 'teamA' : 'teamB'] = winner;
+    state.bracket.final[idx === 0 ? 'teamA' : 'teamB'] = w;
   } else {
-    state.bracket.champion = winner;
-    archiveCopa();
+    state.bracket.champion = w;
+    await archiveCopa();
   }
 
   closeModal();
-  saveState();
+  scheduleSave();
   renderBracket();
-  const msg = a === b
-    ? `Empate ${a}-${b} — avanza ${winner.nombre} (local)`
-    : `${winner.nombre} gana ${Math.max(a,b)}-${Math.min(a,b)}`;
-  toast(msg);
+  toast(a === b ? `Empate ${a}-${b} — avanza ${w.nombre}` : `${w.nombre} gana ${Math.max(a,b)}-${Math.min(a,b)}`);
 }
 
-/* ═══════════════════════════════════════════════
-   ARCHIVAR COPA TERMINADA
-═══════════════════════════════════════════════ */
-function archiveCopa() {
-  const br = state.bracket;
-  const allMatches = [...br.cuartos, ...br.semis, br.final];
-  const totalGoals = allMatches.filter(m => m.played)
-    .reduce((s, m) => s + m.scoreA + m.scoreB, 0);
-  const goleadores = buildGoalscorers(allMatches);
+/* ═══════════════════════════════════════════
+   ARCHIVAR COPA
+═══════════════════════════════════════════ */
+async function archiveCopa() {
+  const br  = state.bracket;
+  const all = [...br.cuartos, ...br.semis, br.final];
+  const totalGoals = all.filter(m => m.played).reduce((s, m) => s + m.scoreA + m.scoreB, 0);
+  const goleadores = buildScorers(all);
+  const edition    = historialCache.length + 1;
 
-  const edition = state.history.length + 1;
-  state.history.unshift({
-    edition,
-    date      : new Date().toLocaleDateString('es-EC', { day:'2-digit', month:'short', year:'numeric' }),
+  await archiveInDB({
     champion  : br.champion,
     teams     : state.selectedTeams.map(t => t.nombre),
     totalGoals,
-    matches   : allMatches.filter(m => m.played).length,
-    goleadores
+    matches   : all.filter(m => m.played).length,
+    goleadores,
+    edition,
+    date      : new Date().toLocaleDateString('es-EC', { day:'2-digit', month:'short', year:'numeric' })
   });
-  saveHistory();
 
-  // reset para nueva copa
-  state.bracket       = null;
-  state.selectedTeams = [];
-  state.players       = {};
-  saveState();
+  state.bracket = null; state.selectedTeams = []; state.players = {};
+  await fetchHistorialFromDB();
   toast('🏆 Copa archivada en el historial!');
 }
 
-function buildGoalscorers(matches) {
-  const scores = {};
+function buildScorers(matches) {
+  const sc = {};
   matches.forEach(m => {
     if (!m.played) return;
-    const addGoals = (team, goals) => {
+    const add = (team, goals) => {
       if (!goals) return;
-      const teamPlayers = state.players[team?._id] || [];
+      const tp = state.players[team?._id] || [];
       for (let g = 0; g < goals; g++) {
-        const key = teamPlayers.length
-          ? `${teamPlayers[Math.floor(Math.random() * teamPlayers.length)].name}||${team.nombre}`
-          : `Jugador Anónimo||${team?.nombre || '?'}`;
-        scores[key] = (scores[key] || 0) + 1;
+        const key = tp.length
+          ? `${tp[Math.floor(Math.random()*tp.length)].name}||${team.nombre}`
+          : `Jugador Anónimo||${team?.nombre||'?'}`;
+        sc[key] = (sc[key]||0) + 1;
       }
     };
-    addGoals(m.teamA, m.scoreA);
-    addGoals(m.teamB, m.scoreB);
+    add(m.teamA, m.scoreA);
+    add(m.teamB, m.scoreB);
   });
-  return Object.entries(scores)
-    .map(([k, v]) => { const [name, team] = k.split('||'); return { name, team, goals: v }; })
-    .sort((a, b) => b.goals - a.goals)
-    .slice(0, 5);
+  return Object.entries(sc)
+    .map(([k,v]) => { const [name,team]=k.split('||'); return {name,team,goals:v}; })
+    .sort((a,b) => b.goals-a.goals).slice(0,5);
 }
 
-/* ═══════════════════════════════════════════════
-   HISTORIAL
-═══════════════════════════════════════════════ */
-function renderHistorial() {
+/* ═══════════════════════════════════════════
+   HISTORIAL (solo admin)
+═══════════════════════════════════════════ */
+async function renderHistorial() {
+  if (!isAdmin) return;
   const c = document.getElementById('historialContainer');
-  if (!state.history.length) {
+  c.innerHTML = `<div class="loading-state"><div class="spinner"></div>Cargando...</div>`;
+  await fetchHistorialFromDB();
+
+  if (!historialCache.length) {
     c.innerHTML = `<div class="empty-state"><div class="icon">📜</div><p>Aún no hay copas completadas</p></div>`;
     return;
   }
+
   c.innerHTML = `<div class="history-grid">${
-    state.history.map(h => `
+    historialCache.map(h => `
       <div class="history-card">
         <div class="history-card-head">
-          <span class="history-edition">Copa Expresso #${h.edition}</span>
-          <span class="history-date">${h.date}</span>
+          <span class="history-edition">Copa Expresso #${h.edition||'?'}</span>
+          <span class="history-date">${h.date||''}</span>
         </div>
         <div class="history-champion">
           <img src="${h.champion?.logo||''}" alt="${h.champion?.nombre||''}"
-               onerror="this.src='https://via.placeholder.com/44/ddd/888?text=?'">
+               onerror="this.src='https://placehold.co/44/ddd/888?text=?'">
           <div>
             <div class="history-champion-label">Campeón</div>
-            <div class="history-champion-name">${h.champion?.nombre || '—'}</div>
+            <div class="history-champion-name">${h.champion?.nombre||'—'}</div>
           </div>
         </div>
         <div class="history-stats">
-          <div class="h-stat">
-            <div class="h-stat-num">${h.teams.length}</div>
-            <div class="h-stat-lbl">Equipos</div>
-          </div>
-          <div class="h-stat">
-            <div class="h-stat-num">${h.matches}</div>
-            <div class="h-stat-lbl">Partidos</div>
-          </div>
-          <div class="h-stat">
-            <div class="h-stat-num">${h.totalGoals}</div>
-            <div class="h-stat-lbl">Goles</div>
-          </div>
+          <div class="h-stat"><div class="h-stat-num">${h.teams?.length||8}</div><div class="h-stat-lbl">Equipos</div></div>
+          <div class="h-stat"><div class="h-stat-num">${h.matches||7}</div><div class="h-stat-lbl">Partidos</div></div>
+          <div class="h-stat"><div class="h-stat-num">${h.totalGoals||0}</div><div class="h-stat-lbl">Goles</div></div>
         </div>
         ${h.goleadores?.length ? `
           <div class="stats-leaderboard">
             <div class="stats-lb-head">⚽ Goleadores</div>
-            ${h.goleadores.map((g, i) => `
+            ${h.goleadores.map((g,i) => `
               <div class="lb-row">
-                <span class="lb-pos">${i + 1}</span>
+                <span class="lb-pos">${i+1}</span>
                 <div style="flex:1">
                   <div class="lb-name">${g.name}</div>
                   <div class="lb-team">${g.team}</div>
@@ -1140,25 +1154,22 @@ function renderHistorial() {
                 <span class="lb-val">${g.goals}</span>
               </div>`).join('')}
           </div>` : ''}
-        <button class="btn-outline"
-                style="width:100%;margin-top:14px;font-size:.72rem;padding:9px"
-                onclick="deleteHistory(${h.edition})">
-          🗑 Eliminar registro
-        </button>
+        <button class="btn-delete" onclick="deleteHistory('${h._id}')">🗑 Eliminar registro</button>
       </div>`).join('')
   }</div>`;
 }
 
-function deleteHistory(edition) {
+async function deleteHistory(id) {
+  if (!isAdmin) return;
   if (!confirm('¿Eliminar este registro del historial?')) return;
-  state.history = state.history.filter(h => h.edition !== edition);
-  saveHistory();
-  renderHistorial();
+  const ok = await deleteFromDB(id);
+  if (ok) { toast('Registro eliminado'); renderHistorial(); }
+  else    { toast('Error al eliminar', 'error'); }
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    TOAST
-═══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 function toast(msg, type = 'ok') {
   const el = document.createElement('div');
   el.className = 'toast' + (type === 'error' ? ' error' : '');
@@ -1167,12 +1178,13 @@ function toast(msg, type = 'ok') {
   setTimeout(() => el.remove(), 3400);
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    INIT
-═══════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  loadState();
-  fetchTeams();           // ← carga desde /api/teams
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  initUser();
+  await loadFromDB();
+  fetchTeams();
   updateSelCount();
   if (state.bracket) renderBracket();
 });
