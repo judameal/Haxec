@@ -528,99 +528,6 @@
       font-size: .74rem; color: var(--muted); font-style: italic; padding: 5px 0;
     }
 
-    /* ── HISTORIAL ── */
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-    }
-    .history-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 14px; padding: 22px;
-      animation: fadeUp .4s ease both;
-      transition: border-color .2s, box-shadow .2s;
-      box-shadow: 0 2px 10px rgba(0,0,0,.04);
-    }
-    .history-card:hover { border-color: var(--accent); box-shadow: 0 4px 18px var(--accent-glow); }
-    .history-card-head {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px; padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .history-edition {
-      font-family: var(--font-head);
-      font-size: .75rem; font-weight: 900;
-      letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent);
-    }
-    .history-date { font-size: .68rem; color: var(--muted); }
-
-    .podium { display: flex; gap: 10px; margin-bottom: 14px; }
-    .podium-slot {
-      flex: 1; background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 9px; padding: 12px;
-      text-align: center;
-    }
-    .podium-slot.first { border-color: rgba(184,134,11,.35); background: rgba(184,134,11,.05); }
-    .podium-slot img { width: 38px; height: 38px; object-fit: contain; border-radius: 6px; margin-bottom: 6px; }
-    .podium-slot .medal { font-size: .95rem; margin-bottom: 4px; display: block; }
-    .podium-slot .p-label {
-      font-size: .55rem; font-weight: 900; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
-      font-family: var(--font-head);
-    }
-    .podium-slot.first .p-label { color: var(--accent); }
-    .podium-slot .p-name {
-      font-size: .78rem; font-weight: 900; color: var(--text); line-height: 1.2;
-      font-family: var(--font-head);
-    }
-
-    .history-stats {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 7px; margin-bottom: 12px;
-    }
-    .h-stat { background: var(--surface2); border-radius: 7px; padding: 8px; text-align: center; }
-    .h-stat-num {
-      font-family: var(--font-head);
-      font-size: 1.3rem; font-weight: 900; color: var(--accent);
-    }
-    .h-stat-lbl {
-      font-size: .56rem; font-weight: 800; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--muted); margin-top: 1px;
-      font-family: var(--font-head);
-    }
-
-    .stats-leaderboard {
-      background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 9px; overflow: hidden;
-    }
-    .stats-lb-head {
-      padding: 8px 14px; border-bottom: 1px solid var(--border);
-      font-size: .6rem; font-weight: 900; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--accent);
-      font-family: var(--font-head);
-      background: var(--surface3);
-    }
-    .lb-row {
-      display: flex; align-items: center; gap: 9px;
-      padding: 8px 14px; border-bottom: 1px solid var(--border);
-      font-size: .82rem; font-weight: 600;
-    }
-    .lb-row:last-child { border-bottom: none; }
-    .lb-pos {
-      font-family: var(--font-head);
-      font-size: 1rem; font-weight: 900;
-      color: var(--accent); width: 18px; text-align: center;
-    }
-    .lb-name { flex: 1; color: var(--text); font-weight: 700; }
-    .lb-team { font-size: .65rem; color: var(--muted); font-weight: 600; }
-    .lb-val {
-      font-family: var(--font-head);
-      font-size: 1.1rem; font-weight: 900; color: var(--accent);
-    }
-
     /* ── EMPTY / ERROR ── */
     .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-state .icon { font-size: 2.6rem; margin-bottom: 10px; opacity: .3; }
@@ -645,18 +552,6 @@
       color: #fff;
     }
     .toast.error { border-left-color: var(--red); }
-
-    /* ── DELETE BTN ── */
-    .btn-delete {
-      width: 100%; margin-top: 12px; font-size: .68rem; padding: 8px;
-      background: transparent;
-      border: 1.5px solid rgba(220,38,38,.2);
-      color: rgba(220,38,38,.7);
-      border-radius: 8px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; cursor: pointer; transition: all .2s;
-      font-family: var(--font-head);
-    }
-    .btn-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
     /* ── RESET WARNING CARD ── */
     .reset-card {
@@ -704,7 +599,6 @@
   <div class="tab active"  onclick="switchTab('torneo')"   id="tabTorneo">🏟 Torneo</div>
   <div class="tab"         onclick="switchTab('jugadores')" id="tabJugadores">👥 Jugadores</div>
   <div class="tab"         onclick="switchTab('bracket')"  id="tabBracket">🏆 Bracket</div>
-  <div class="tab"         onclick="switchTab('historial')" id="tabHistorial">📜 Historial</div>
 </div>
 
 <!-- TORNEO -->
@@ -739,13 +633,12 @@
         <button class="btn-outline" onclick="resumeCopa()">▶ Reanudar copa</button>
       </div>
 
-      <!-- RESET CARD — solo admin -->
+      <!-- RESET CARD -->
       <div class="reset-card">
         <h4>⚠ Zona de peligro</h4>
         <p>
-          Reinicia la Copa Expresso activa. El bracket actual quedará guardado en el historial
-          para que los usuarios puedan consultarlo. Solo usa esto cuando la copa ya terminó o
-          quieres empezar una nueva.
+          Reinicia la Copa Expresso activa. Se borrará todo el estado actual de la copa
+          (equipos, jugadores y bracket). Solo usa esto cuando quieras empezar una nueva copa.
         </p>
         <button class="btn-danger" onclick="resetCopa()">🔄 Reiniciar Copa Expresso</button>
       </div>
@@ -780,16 +673,6 @@
           <p>Genera el bracket desde la pestaña Jugadores</p>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- HISTORIAL (todos pueden ver) -->
-<div class="page" id="page-historial">
-  <div class="container">
-    <div class="sec-title">Historial de Copas</div>
-    <div id="historialContainer">
-      <div class="loading-state"><div class="spinner"></div>Cargando historial...</div>
     </div>
   </div>
 </div>
@@ -831,24 +714,23 @@ function initUser() {
     isAdmin = currentUser?.role === 'admin';
   } catch (_) { isAdmin = false; }
 
-  document.getElementById('adminBadge').style.display       = isAdmin ? 'inline' : 'none';
-  document.getElementById('torneoAdminContent').style.display = isAdmin ? 'block' : 'none';
-  document.getElementById('userReadonlyNotice').style.display  = isAdmin ? 'none'  : 'flex';
+  document.getElementById('adminBadge').style.display        = isAdmin ? 'inline' : 'none';
+  document.getElementById('torneoAdminContent').style.display = isAdmin ? 'block'  : 'none';
+  document.getElementById('userReadonlyNotice').style.display  = isAdmin ? 'none'   : 'flex';
 
-  // Tabs visibles
+  // Tabs: torneo y jugadores solo admin
   document.getElementById('tabTorneo').style.display    = isAdmin ? 'block' : 'none';
   document.getElementById('tabJugadores').style.display = isAdmin ? 'block' : 'none';
-  // tabBracket y tabHistorial: siempre visibles
+  // tabBracket: siempre visible
 }
 
 /* ═══════════════════════════════════════════
    ESTADO
 ═══════════════════════════════════════════ */
-let allTeams = [];
-let state = { selectedTeams: [], players: {}, bracket: null };
+let allTeams        = [];
+let state           = { selectedTeams: [], players: {}, bracket: null };
 let currentMatchRef = null;
 let modalScorers    = { a: {}, b: {} };
-let historialCache  = [];
 let saveTimeout     = null;
 
 /* ═══════════════════════════════════════════
@@ -912,103 +794,40 @@ async function loadFromDB() {
   try {
     const res  = await fetch('/api/copas');
     const data = await res.json();
+    // Solo nos interesa la copa activa
     const active = data.find(c => c.status === 'active');
     if (active) {
       state.selectedTeams = active.selectedTeams || [];
       state.players       = active.players       || {};
       state.bracket       = active.bracket       || null;
     }
-    historialCache = data.filter(c => c.status === 'finished');
   } catch (e) { console.warn('loadFromDB error', e); }
 }
 
-async function fetchHistorialFromDB() {
-  try {
-    const res  = await fetch('/api/copas');
-    const data = await res.json();
-    historialCache = data.filter(c => c.status === 'finished');
-  } catch (e) { console.warn('fetchHistorial error', e); }
-}
-
-async function archiveInDB(payload) {
-  try {
-    await fetch('/api/copas', {
-      method : 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ action: 'archive', ...payload })
-    });
-  } catch (e) { console.warn('archive error', e); }
-}
-
-async function deleteFromDB(id) {
-  try {
-    const res = await fetch('/api/copas', {
-      method : 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ id })
-    });
-    return res.ok;
-  } catch (e) { return false; }
-}
-
 /* ═══════════════════════════════════════════
-   RESET COPA (admin) — archiva si hay bracket
-   y limpia el estado activo
+   RESET COPA (admin) — borra la copa activa,
+   no archiva nada
 ═══════════════════════════════════════════ */
 async function resetCopa() {
   if (!isAdmin) return;
   const hasActive = state.bracket || state.selectedTeams.length > 0;
   if (!hasActive) { toast('No hay copa activa para reiniciar', 'error'); return; }
 
-  const msg = state.bracket
-    ? '¿Reiniciar la Copa Expresso? El estado actual quedará guardado en el historial para que los usuarios puedan verlo.'
-    : '¿Limpiar la selección de equipos actual?';
+  if (!confirm('¿Reiniciar la Copa Expresso? Se borrará todo el estado actual (equipos, jugadores y bracket).')) return;
 
-  if (!confirm(msg)) return;
-
-  // Si hay bracket lo archivamos para que quede en historial
-  if (state.bracket) {
-    const br  = state.bracket;
-    const all = [...br.cuartos, ...br.semis, br.final];
-    const totalGoals = all.filter(m => m.played).reduce((s, m) => s + m.scoreA + m.scoreB, 0);
-    const sc = {};
-    all.filter(m => m.played && m.scorers?.length).forEach(m => {
-      m.scorers.forEach(s => {
-        const key = `${s.name}||${s.team}`;
-        sc[key] = (sc[key] || 0) + s.goals;
-      });
+  // Limpiamos el documento activo en la DB
+  try {
+    await fetch('/api/copas', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ action: 'save', selectedTeams: [], players: {}, bracket: null })
     });
-    const goleadores = Object.entries(sc)
-      .map(([k,v]) => { const [name,team]=k.split('||'); return {name,team,goals:v}; })
-      .sort((a,b)=>b.goals-a.goals).slice(0,5);
+  } catch (e) { console.warn('reset error', e); }
 
-    await archiveInDB({
-      champion  : stripTeam(br.champion),
-      runnerUp  : stripTeam(br.runnerUp),
-      teams     : state.selectedTeams.map(t => t.nombre),
-      totalGoals,
-      matches   : all.filter(m => m.played).length,
-      goleadores,
-      edition   : historialCache.length + 1,
-      date      : new Date().toLocaleDateString('es-EC', { day:'2-digit', month:'short', year:'numeric' }),
-      resetManual: true
-    });
-  } else {
-    // Solo limpiar el activo sin archivar
-    try {
-      await fetch('/api/copas', {
-        method : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({ action: 'save', selectedTeams: [], players: {}, bracket: null })
-      });
-    } catch (e) {}
-  }
-
-  state.bracket = null;
+  state.bracket       = null;
   state.selectedTeams = [];
-  state.players = {};
+  state.players       = {};
 
-  await fetchHistorialFromDB();
   updateSelCount();
   renderTeamGrid();
 
@@ -1021,7 +840,7 @@ async function resetCopa() {
     </div>`;
 
   switchTab('torneo');
-  toast('Copa reiniciada — disponible en el historial ✓');
+  toast('Copa reiniciada ✓');
 }
 
 /* ═══════════════════════════════════════════
@@ -1032,12 +851,11 @@ function switchTab(name) {
     toast('Solo los administradores pueden acceder a esta sección', 'error');
     return;
   }
-  const names = ['torneo', 'jugadores', 'bracket', 'historial'];
+  const names = ['torneo', 'jugadores', 'bracket'];
   document.querySelectorAll('.tab').forEach((t, i) =>
     t.classList.toggle('active', names[i] === name));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  if (name === 'historial') renderHistorial();
   if (name === 'bracket' && state.bracket) renderBracket();
 }
 
@@ -1078,7 +896,7 @@ function renderTeamGrid() {
   }
   grid.innerHTML = `<div class="team-grid">${
     allTeams.map(t => {
-      const sel  = state.selectedTeams.some(s => s._id === t._id);
+      const sel   = state.selectedTeams.some(s => s._id === t._id);
       const click = isAdmin ? `onclick="toggleTeam('${t._id}')"` : '';
       const nc    = isAdmin ? '' : 'no-click';
       return `
@@ -1419,13 +1237,13 @@ async function confirmResult() {
   } else if (stage === 'semis') {
     state.bracket.final[idx===0 ? 'teamA' : 'teamB'] = w;
   } else {
+    // Final — guardamos campeón y subcampeón, seguimos mostrando
     state.bracket.champion = w;
     state.bracket.runnerUp = l;
     closeModal();
     scheduleSave();
     renderBracket();
     toast(`🏆 ${w.nombre} es el Campeón!`);
-    await archiveCopa();
     return;
   }
 
@@ -1440,9 +1258,9 @@ async function confirmResult() {
 function buildMatchScorers(match, goalsA, goalsB) {
   const list = [];
   const addSide = (side, team, total) => {
-    const assigned = modalScorers[side] || {};
+    const assigned      = modalScorers[side] || {};
     const assignedTotal = Object.values(assigned).reduce((s,v)=>s+v,0);
-    const remaining = total - assignedTotal;
+    const remaining     = total - assignedTotal;
     Object.entries(assigned).forEach(([name, goals]) => {
       if (goals > 0) list.push({ name, team: team.nombre, goals });
     });
@@ -1451,118 +1269,6 @@ function buildMatchScorers(match, goalsA, goalsB) {
   if (match.teamA) addSide('a', match.teamA, goalsA);
   if (match.teamB) addSide('b', match.teamB, goalsB);
   return list;
-}
-
-/* ═══════════════════════════════════════════
-   ARCHIVAR COPA
-═══════════════════════════════════════════ */
-async function archiveCopa() {
-  const br  = state.bracket;
-  const all = [...br.cuartos, ...br.semis, br.final];
-  const totalGoals = all.filter(m=>m.played).reduce((s,m)=>s+m.scoreA+m.scoreB,0);
-  const sc = {};
-  all.filter(m=>m.played && m.scorers?.length).forEach(m => {
-    m.scorers.forEach(s => {
-      const key = `${s.name}||${s.team}`;
-      sc[key] = (sc[key]||0) + s.goals;
-    });
-  });
-  const goleadores = Object.entries(sc)
-    .map(([k,v]) => { const [name,team]=k.split('||'); return {name,team,goals:v}; })
-    .sort((a,b)=>b.goals-a.goals).slice(0,5);
-
-  await archiveInDB({
-    champion  : stripTeam(br.champion),
-    runnerUp  : stripTeam(br.runnerUp),
-    teams     : state.selectedTeams.map(t=>t.nombre),
-    totalGoals,
-    matches   : all.filter(m=>m.played).length,
-    goleadores,
-    edition   : historialCache.length + 1,
-    date      : new Date().toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'})
-  });
-
-  state.bracket = null;
-  state.selectedTeams = [];
-  state.players = {};
-  await fetchHistorialFromDB();
-  toast('🏆 Copa archivada en el historial!');
-}
-
-/* ═══════════════════════════════════════════
-   HISTORIAL (todos pueden ver)
-═══════════════════════════════════════════ */
-async function renderHistorial() {
-  const c = document.getElementById('historialContainer');
-  c.innerHTML = `<div class="loading-state"><div class="spinner"></div>Cargando...</div>`;
-  await fetchHistorialFromDB();
-
-  if (!historialCache.length) {
-    c.innerHTML = `<div class="empty-state"><div class="icon">📜</div><p>Aún no hay copas completadas</p></div>`;
-    return;
-  }
-
-  c.innerHTML = `<div class="history-grid">${
-    historialCache.map(h => `
-      <div class="history-card">
-        <div class="history-card-head">
-          <span class="history-edition">Copa Expresso #${h.edition||'?'}</span>
-          <span class="history-date">${h.date||''}</span>
-        </div>
-        <div class="podium">
-          <div class="podium-slot first">
-            <span class="medal">🥇</span>
-            <img src="${h.champion?.logo||''}" alt="${h.champion?.nombre||''}"
-                 onerror="this.src='https://placehold.co/38/f0f0f0/888?text=?'">
-            <div class="p-label">Campeón</div>
-            <div class="p-name">${h.champion?.nombre||'—'}</div>
-          </div>
-          <div class="podium-slot">
-            <span class="medal">🥈</span>
-            <img src="${h.runnerUp?.logo||''}" alt="${h.runnerUp?.nombre||''}"
-                 onerror="this.src='https://placehold.co/38/f0f0f0/888?text=?'">
-            <div class="p-label">Subcampeón</div>
-            <div class="p-name">${h.runnerUp?.nombre||'—'}</div>
-          </div>
-        </div>
-        <div class="history-stats">
-          <div class="h-stat">
-            <div class="h-stat-num">${h.teams?.length||8}</div>
-            <div class="h-stat-lbl">Equipos</div>
-          </div>
-          <div class="h-stat">
-            <div class="h-stat-num">${h.matches||7}</div>
-            <div class="h-stat-lbl">Partidos</div>
-          </div>
-          <div class="h-stat">
-            <div class="h-stat-num">${h.totalGoals||0}</div>
-            <div class="h-stat-lbl">Goles</div>
-          </div>
-        </div>
-        ${h.goleadores?.length ? `
-          <div class="stats-leaderboard">
-            <div class="stats-lb-head">⚽ Goleadores</div>
-            ${h.goleadores.map((g,i)=>`
-              <div class="lb-row">
-                <span class="lb-pos">${i+1}</span>
-                <div style="flex:1">
-                  <div class="lb-name">${g.name}</div>
-                  <div class="lb-team">${g.team}</div>
-                </div>
-                <span class="lb-val">${g.goals}</span>
-              </div>`).join('')}
-          </div>` : ''}
-        ${isAdmin ? `<button class="btn-delete" onclick="deleteHistory('${h._id}')">🗑 Eliminar registro</button>` : ''}
-      </div>`).join('')
-  }</div>`;
-}
-
-async function deleteHistory(id) {
-  if (!isAdmin) return;
-  if (!confirm('¿Eliminar este registro del historial?')) return;
-  const ok = await deleteFromDB(id);
-  if (ok) { toast('Registro eliminado'); renderHistorial(); }
-  else    { toast('Error al eliminar', 'error'); }
 }
 
 /* ═══════════════════════════════════════════
@@ -1587,20 +1293,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     fetchTeams();
     updateSelCount();
     if (state.bracket) renderBracket();
+    switchTab('torneo');
   } else {
-    // Usuario: ir a bracket si hay uno activo, si no al historial
+    // Usuario normal: ve el bracket si hay uno activo, si no pantalla vacía
     if (state.bracket) {
-      // Necesitamos los equipos para hidratar
       try {
         const res = await fetch('/api/teams');
         allTeams = await res.json();
         state.bracket = hydrateBracket(state.bracket);
         renderBracket();
       } catch(_) {}
-      switchTab('bracket');
-    } else {
-      switchTab('historial');
     }
+    switchTab('bracket');
   }
 });
 </script>
