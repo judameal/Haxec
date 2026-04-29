@@ -4,538 +4,662 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Copa Expresso | LigaPro Ecuabet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Exo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <style>
     :root {
-      --mustard:       #b8860b;
-      --mustard-dark:  #966f0c;
-      --mustard-light: #f5e9c0;
-      --mustard-glow:  rgba(184,134,11,.18);
-      --bg:            #fafafa;
-      --surface:       #ffffff;
-      --surface2:      #f6f6f6;
-      --border:        #e8e8e8;
-      --text:          #1a1a1a;
-      --muted:         #888;
-      --red-soft:      #dc2626;
-      --black:         #0d0e0f;
+      --gold:          #c9952a;
+      --gold-dark:     #a37820;
+      --gold-light:    #f7edd6;
+      --gold-glow:     rgba(201,149,42,.15);
+      --gold-line:     rgba(201,149,42,.3);
+      --bg:            #0a0a0b;
+      --surface:       #111113;
+      --surface2:      #18181b;
+      --surface3:      #1e1e22;
+      --border:        rgba(255,255,255,.07);
+      --border-gold:   rgba(201,149,42,.25);
+      --text:          #f0ede8;
+      --text-dim:      rgba(240,237,232,.55);
+      --muted:         rgba(240,237,232,.35);
+      --red:           #e05252;
+      --green:         #4ade80;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Exo 2', 'Rajdhani', sans-serif;
+      font-family: 'Exo 2', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-    .top-strip { height: 3px; background: var(--mustard); }
 
-    /* ADMIN BADGE */
-    .admin-badge {
-      background: var(--mustard);
-      color: var(--black);
-      font-size: .6rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-left: 8px;
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+      pointer-events: none;
     }
 
-    /* TABS */
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,11,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-gold);
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 28px; height: 56px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { width: 30px; height: 30px; object-fit: contain; opacity: .9; }
+    .logo h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem; letter-spacing: 3px;
+      color: var(--text); font-weight: 400;
+    }
+    .logo h1 span { color: var(--gold); }
+    .back-btn {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px; border-radius: 6px;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: all .2s;
+      font-family: 'Exo 2', sans-serif;
+    }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── GOLD LINE ── */
+    .top-strip { height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+    /* ── ADMIN BADGE ── */
+    .admin-badge {
+      background: var(--gold);
+      color: #000;
+      font-size: .58rem; font-weight: 900;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px; margin-left: 8px;
+    }
+
+    /* ── TABS ── */
     .tabs {
       display: flex;
-      border-bottom: 2px solid var(--border);
-      background: #fff;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
       padding: 0 28px;
-      overflow-x: auto;
+      overflow-x: auto; position: relative; z-index: 1;
     }
     .tab {
-      padding: 14px 22px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      padding: 14px 20px;
+      font-size: .72rem; font-weight: 800;
+      letter-spacing: 2.5px; text-transform: uppercase;
       color: var(--muted);
       cursor: pointer;
       border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
+      margin-bottom: -1px;
       transition: color .2s, border-color .2s;
       white-space: nowrap;
-    }
-    .tab.active { color: var(--mustard); border-bottom-color: var(--mustard); }
-    .tab:hover:not(.active) { color: var(--text); }
-
-    .page { display: none; }
-    .page.active { display: block; }
-    .container { max-width: 980px; margin: 0 auto; padding: 32px 24px 80px; }
-
-    .sec-title {
       font-family: 'Exo 2', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--text);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab:hover:not(.active) { color: var(--text-dim); }
+
+    .page { display: none; position: relative; z-index: 1; }
+    .page.active { display: block; }
+    .container { max-width: 960px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    /* ── SECTION TITLE ── */
+    .sec-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 5px;
+      color: var(--text); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px;
     }
     .sec-title::before {
       content: '';
-      display: inline-block;
-      width: 4px; height: 1.1rem;
-      background: var(--mustard);
-      border-radius: 2px;
+      width: 3px; height: 1.4rem;
+      background: var(--gold);
+      border-radius: 2px; flex-shrink: 0;
     }
 
-    /* LOADING */
-    .loading-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    /* ── LOADING ── */
+    .loading-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid var(--border);
-      border-top-color: var(--mustard);
+      width: 28px; height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
       border-radius: 50%;
       animation: spin .7s linear infinite;
       margin: 0 auto 14px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* READONLY NOTICE */
+    /* ── NOTICE ── */
     .readonly-notice {
-      background: var(--mustard-light);
-      border: 1.5px solid var(--mustard);
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: .82rem;
-      font-weight: 600;
-      color: var(--mustard-dark);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      background: rgba(201,149,42,.06);
+      border: 1px solid var(--border-gold);
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-size: .78rem; font-weight: 600;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 20px; letter-spacing: .5px;
+    }
+
+    /* ── CARDS ── */
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
       margin-bottom: 20px;
     }
-
-    /* SETUP CARD */
-    .setup-card {
-      background: #fff;
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
-      margin-bottom: 24px;
-    }
     .setup-card h3 {
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 18px;
+      font-size: .65rem; font-weight: 800;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px;
     }
-    .selected-count {
-      font-size: .8rem;
-      font-weight: 700;
-      color: var(--mustard);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .count-line {
+      font-size: .78rem; font-weight: 700; color: var(--text-dim);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
     }
     .count-pill {
-      background: var(--mustard-light);
-      border: 1px solid var(--mustard);
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: 1px;
+      background: rgba(201,149,42,.12);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px; padding: 2px 10px;
+      font-size: .68rem; font-weight: 900;
+      letter-spacing: 1px; color: var(--gold);
     }
 
-    /* TEAM GRID */
+    /* ── TEAM GRID ── */
     .team-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 8px;
     }
     .team-card {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 13px;
       background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all .18s;
-      user-select: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer; transition: all .18s; user-select: none;
     }
-    .team-card:hover { border-color: var(--mustard); }
-    .team-card.selected { background: var(--mustard-light); border-color: var(--mustard); }
+    .team-card:hover { border-color: var(--border-gold); background: var(--surface3); }
+    .team-card.selected { background: rgba(201,149,42,.08); border-color: var(--gold); }
     .team-card.no-click { cursor: default; }
-    .team-card.no-click:hover { border-color: var(--border); }
-    .team-card img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; flex-shrink: 0; }
-    .team-card-name { font-size: .88rem; font-weight: 700; color: var(--text); flex: 1; }
+    .team-card.no-click:hover { border-color: var(--border); background: var(--surface2); }
+    .team-card img { width: 32px; height: 32px; object-fit: contain; border-radius: 5px; flex-shrink: 0; }
+    .team-card-name { font-size: .84rem; font-weight: 700; color: var(--text); flex: 1; }
     .team-check {
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: .6rem; color: #fff;
+      font-size: .55rem; color: #000;
       transition: all .18s; flex-shrink: 0;
     }
-    .team-card.selected .team-check { background: var(--mustard); border-color: var(--mustard); }
+    .team-card.selected .team-check { background: var(--gold); border-color: var(--gold); }
 
-    /* JUGADORES */
+    /* ── PLAYER SECTIONS ── */
     .team-section {
-      background: #fff;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 14px;
-      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px; overflow: hidden;
     }
     .team-section-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 16px;
       background: var(--surface2);
       border-bottom: 1px solid var(--border);
       cursor: pointer;
     }
-    .team-section-header img { width: 28px; height: 28px; object-fit: contain; border-radius: 5px; }
-    .team-section-name { font-size: .88rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; flex: 1; }
-    .team-section-count { font-size: .72rem; color: var(--muted); font-weight: 700; }
-    .chevron { font-size: .7rem; color: var(--muted); transition: transform .2s; }
+    .team-section-header img { width: 26px; height: 26px; object-fit: contain; border-radius: 4px; }
+    .team-section-name { font-size: .82rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; flex: 1; }
+    .team-section-count { font-size: .68rem; color: var(--muted); font-weight: 700; }
+    .chevron { font-size: .65rem; color: var(--muted); transition: transform .2s; }
     .team-section.open .chevron { transform: rotate(180deg); }
-    .team-players { display: none; padding: 14px 18px; }
+    .team-players { display: none; padding: 14px 16px; }
     .team-section.open .team-players { display: block; }
 
     .player-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 11px;
       background: var(--surface2);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: .88rem;
-      font-weight: 600;
+      border-radius: 7px;
+      margin-bottom: 6px;
+      font-size: .84rem; font-weight: 600;
     }
-    .player-num { font-size: .7rem; font-weight: 800; color: var(--mustard); width: 22px; text-align: center; }
-    .player-pos { font-size: .65rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); min-width: 28px; }
-    .player-name { flex: 1; }
+    .player-num { font-size: .65rem; font-weight: 900; color: var(--gold); width: 20px; text-align: center; }
+    .player-pos { font-size: .6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); min-width: 26px; }
+    .player-name { flex: 1; color: var(--text); }
     .btn-icon {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      width: 26px; height: 26px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: .75rem;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); width: 24px; height: 24px;
+      border-radius: 5px; cursor: pointer; font-size: .7rem;
       display: flex; align-items: center; justify-content: center;
       transition: all .15s; flex-shrink: 0;
     }
-    .btn-icon:hover { border-color: var(--red-soft); color: var(--red-soft); }
+    .btn-icon:hover { border-color: var(--red); color: var(--red); }
 
-    .add-player-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .add-player-row { display: flex; gap: 7px; margin-top: 8px; flex-wrap: wrap; }
     .add-player-row input,
     .add-player-row select {
       background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 7px;
-      padding: 8px 10px;
-      font-size: .82rem;
-      font-family: 'Exo 2', sans-serif;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s;
-      margin-bottom: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 10px;
+      font-size: .8rem; font-family: 'Exo 2', sans-serif;
+      color: var(--text); outline: none; transition: border-color .2s;
     }
     .add-player-row input:focus,
-    .add-player-row select:focus { border-color: var(--mustard); }
-    .add-player-row input { flex: 1; min-width: 120px; }
+    .add-player-row select:focus { border-color: var(--gold); }
+    .add-player-row input { flex: 1; min-width: 110px; }
+    .add-player-row select { color: var(--text); background: var(--surface2); }
     .btn-add-player {
-      background: var(--mustard); color: #fff; border: none;
-      border-radius: 7px; padding: 8px 14px;
-      font-size: .75rem; font-weight: 800; letter-spacing: 1px;
-      text-transform: uppercase; cursor: pointer; transition: background .2s; white-space: nowrap;
+      background: var(--gold); color: #000; border: none;
+      border-radius: 6px; padding: 8px 14px;
+      font-size: .72rem; font-weight: 900; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer; transition: background .2s;
+      font-family: 'Exo 2', sans-serif; white-space: nowrap;
     }
-    .btn-add-player:hover { background: var(--mustard-dark); }
+    .btn-add-player:hover { background: var(--gold-dark); }
 
-    /* BOTONES */
+    /* ── BUTTONS ── */
     .btn-primary {
-      background: var(--text); color: #fff; border: none;
-      border-radius: 9px; padding: 12px 28px;
-      font-size: .82rem; font-weight: 800; letter-spacing: 2px;
+      background: var(--text); color: #000; border: none;
+      border-radius: 8px; padding: 11px 26px;
+      font-size: .78rem; font-weight: 900; letter-spacing: 2px;
       text-transform: uppercase; cursor: pointer;
       transition: background .2s, transform .15s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-primary:hover { background: var(--mustard); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; background: var(--text); }
-    .btn-mustard {
-      background: var(--mustard); color: #fff; border: none;
-      border-radius: 9px; padding: 12px 28px;
-      font-size: .82rem; font-weight: 800; letter-spacing: 2px;
+    .btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+    .btn-gold {
+      background: var(--gold); color: #000; border: none;
+      border-radius: 8px; padding: 11px 26px;
+      font-size: .78rem; font-weight: 900; letter-spacing: 2px;
       text-transform: uppercase; cursor: pointer;
       transition: background .2s, transform .15s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-mustard:hover { background: var(--mustard-dark); transform: translateY(-1px); }
+    .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); }
     .btn-outline {
-      background: transparent; color: var(--text);
-      border: 1.5px solid var(--border);
-      border-radius: 9px; padding: 12px 28px;
-      font-size: .82rem; font-weight: 700; letter-spacing: 1.5px;
+      background: transparent; color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 26px;
+      font-size: .78rem; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; cursor: pointer; transition: all .2s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-outline:hover { border-color: var(--mustard); color: var(--mustard); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 
-    /* BRACKET */
+    /* ── BRACKET ── */
     .bracket-wrapper { overflow-x: auto; padding-bottom: 10px; }
-    .bracket { display: flex; gap: 40px; min-width: 700px; align-items: stretch; }
+    .bracket { display: flex; gap: 32px; min-width: 700px; align-items: stretch; }
     .bracket-col { display: flex; flex-direction: column; flex: 1; }
     .bracket-col-title {
-      font-size: .62rem; font-weight: 800; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--mustard);
-      text-align: center; margin-bottom: 14px; padding: 6px 0;
-      border-bottom: 2px solid var(--mustard-light);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .85rem; letter-spacing: 4px;
+      color: var(--gold); text-align: center;
+      margin-bottom: 16px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-gold);
     }
-    .bracket-matches {
-      display: flex; flex-direction: column;
-      justify-content: space-around; flex: 1; gap: 16px;
-    }
+    .bracket-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 14px; }
+
     .match-card {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 12px; overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
       transition: border-color .2s, box-shadow .2s;
     }
-    .match-card:hover { border-color: var(--mustard); box-shadow: 0 4px 18px var(--mustard-glow); }
+    .match-card:hover { border-color: var(--border-gold); box-shadow: 0 4px 20px var(--gold-glow); }
     .match-team {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; transition: background .15s;
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 12px; transition: background .15s;
     }
     .match-team:first-child { border-bottom: 1px solid var(--border); }
-    .match-team.winner { background: var(--mustard-light); }
-    .match-team img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; flex-shrink: 0; }
-    .match-team-name { flex: 1; font-size: .82rem; font-weight: 700; }
+    .match-team.winner { background: rgba(201,149,42,.08); }
+    .match-team img { width: 22px; height: 22px; object-fit: contain; border-radius: 3px; flex-shrink: 0; }
+    .match-team-name { flex: 1; font-size: .8rem; font-weight: 700; color: var(--text); }
+    .match-team.winner .match-team-name { color: var(--gold); }
     .match-team-score {
-      font-size: .95rem; font-weight: 900;
-      font-family: 'Exo 2', sans-serif;
-      color: var(--mustard); min-width: 22px; text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; color: var(--gold);
+      min-width: 20px; text-align: center; letter-spacing: 1px;
     }
     .match-footer {
-      padding: 7px 14px; background: var(--surface2);
+      padding: 6px 12px;
+      background: var(--surface2);
       border-top: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
     }
     .match-status-lbl {
-      font-size: .62rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--muted);
+      font-size: .58rem; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
     }
-    .match-status-lbl.done { color: #22c55e; }
+    .match-status-lbl.done { color: var(--green); }
     .btn-play-match {
-      background: var(--mustard); color: #fff; border: none;
-      border-radius: 6px; padding: 5px 12px;
-      font-size: .65rem; font-weight: 800; letter-spacing: 1px;
+      background: var(--gold); color: #000; border: none;
+      border-radius: 5px; padding: 4px 11px;
+      font-size: .6rem; font-weight: 900; letter-spacing: 1px;
       text-transform: uppercase; cursor: pointer; transition: background .15s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-play-match:hover { background: var(--mustard-dark); }
+    .btn-play-match:hover { background: var(--gold-dark); }
 
-    /* CHAMPION BANNER */
+    /* ── CHAMPION BANNER ── */
     .champion-banner {
-      background: var(--mustard-light); border: 2px solid var(--mustard);
-      border-radius: 16px; padding: 28px; text-align: center;
-      margin-bottom: 28px; animation: fadeUp .5s ease both;
+      background: linear-gradient(135deg, rgba(201,149,42,.1), rgba(201,149,42,.04));
+      border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 32px;
+      text-align: center; margin-bottom: 28px;
+      animation: fadeUp .5s ease both;
+      position: relative; overflow: hidden;
     }
-    .champion-banner .trophy { font-size: 2.4rem; margin-bottom: 8px; }
+    .champion-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,149,42,.12), transparent 60%);
+    }
+    .champion-banner .trophy { font-size: 2.8rem; margin-bottom: 6px; }
     .champion-banner h2 {
-      font-family: 'Exo 2', sans-serif; font-size: 1.6rem;
-      font-weight: 900; letter-spacing: 4px; text-transform: uppercase; color: var(--mustard);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; letter-spacing: 6px; color: var(--gold);
     }
-    .champion-banner p { font-size: .88rem; color: var(--muted); margin-top: 6px; }
     .champion-banner img {
-      width: 70px; height: 70px; object-fit: contain;
-      border-radius: 12px; margin: 14px auto 0; display: block;
+      width: 64px; height: 64px; object-fit: contain;
+      border-radius: 10px; margin: 14px auto 0; display: block;
     }
+    .champion-banner .champ-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 4px;
+      color: var(--text); margin-top: 6px;
+    }
+    .champion-banner p { font-size: .78rem; color: var(--muted); margin-top: 4px; }
 
-    /* MODAL */
+    /* ── MODAL ── */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,.45);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       z-index: 999; padding: 20px;
       opacity: 0; visibility: hidden; transition: all .25s;
     }
     .modal-overlay.show { opacity: 1; visibility: visible; }
     .modal-box {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 16px; padding: 28px;
-      width: 100%; max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      background: var(--surface);
+      border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 28px;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
       transform: translateY(16px); transition: transform .25s;
     }
     .modal-overlay.show .modal-box { transform: translateY(0); }
     .modal-title {
-      font-family: 'Exo 2', sans-serif; font-size: 1rem;
-      font-weight: 900; letter-spacing: 3px; text-transform: uppercase;
-      margin-bottom: 16px; color: var(--text);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 4px;
+      margin-bottom: 18px; color: var(--text);
     }
-    .modal-vs { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+    .modal-vs { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
     .modal-team { flex: 1; text-align: center; }
-    .modal-team img { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; }
-    .modal-team-name { font-size: .82rem; font-weight: 800; margin-top: 6px; }
-    .modal-sep { font-size: 1.1rem; font-weight: 900; color: var(--muted); }
+    .modal-team img { width: 46px; height: 46px; object-fit: contain; border-radius: 8px; }
+    .modal-team-name { font-size: .78rem; font-weight: 800; margin-top: 6px; color: var(--text); }
+    .modal-sep { font-size: 1rem; font-weight: 900; color: var(--muted); }
+
     .score-row {
-      display: grid; grid-template-columns: 1fr 28px 1fr;
+      display: grid; grid-template-columns: 1fr 24px 1fr;
       align-items: center; gap: 8px; margin-bottom: 18px;
     }
     .score-row input {
-      text-align: center; font-family: 'Exo 2', sans-serif;
-      font-size: 2rem; font-weight: 900; padding: 12px;
-      border: 2px solid var(--border); border-radius: 10px;
+      text-align: center; font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem; padding: 12px;
+      border: 1.5px solid var(--border); border-radius: 8px;
       background: var(--surface2); color: var(--text); outline: none;
-      transition: border-color .2s; margin-bottom: 0; width: 100%;
+      transition: border-color .2s; width: 100%; letter-spacing: 2px;
     }
-    .score-row input:focus { border-color: var(--mustard); }
+    .score-row input:focus { border-color: var(--gold); }
     .score-sep { text-align: center; font-weight: 900; color: var(--muted); }
-    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions { display: flex; gap: 8px; }
     .btn-cancel {
-      flex: 1; background: transparent; border: 1.5px solid var(--border);
-      color: var(--muted); border-radius: 8px; padding: 11px;
-      font-size: .78rem; font-weight: 700; cursor: pointer; transition: all .2s;
+      flex: 1; background: transparent;
+      border: 1px solid var(--border); color: var(--muted);
+      border-radius: 7px; padding: 10px;
+      font-size: .75rem; font-weight: 700; cursor: pointer; transition: all .2s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-cancel:hover { border-color: var(--red-soft); color: var(--red-soft); }
+    .btn-cancel:hover { border-color: var(--red); color: var(--red); }
     .btn-confirm {
-      flex: 2; background: var(--text); color: #fff; border: none;
-      border-radius: 8px; padding: 11px;
-      font-size: .78rem; font-weight: 800; letter-spacing: 1.5px;
+      flex: 2; background: var(--gold); color: #000; border: none;
+      border-radius: 7px; padding: 10px;
+      font-size: .75rem; font-weight: 900; letter-spacing: 1.5px;
       text-transform: uppercase; cursor: pointer; transition: background .2s;
+      font-family: 'Exo 2', sans-serif;
     }
-    .btn-confirm:hover { background: var(--mustard); }
+    .btn-confirm:hover { background: var(--gold-dark); color: #fff; }
 
-    /* HISTORIAL */
+    /* ── SCORERS MODAL SECTION ── */
+    .scorers-section {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+    .scorers-section h4 {
+      font-size: .62rem; font-weight: 800;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+    .scorer-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .scorer-row label {
+      flex: 1; font-size: .82rem; font-weight: 700; color: var(--text);
+    }
+    .scorer-row .scorer-team {
+      font-size: .65rem; color: var(--muted); font-weight: 600;
+    }
+    .scorer-qty {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .scorer-qty button {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); width: 24px; height: 24px;
+      border-radius: 5px; cursor: pointer; font-size: .8rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s; font-family: 'Exo 2', sans-serif;
+    }
+    .scorer-qty button:hover { border-color: var(--gold); color: var(--gold); }
+    .scorer-qty span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; color: var(--gold);
+      min-width: 20px; text-align: center; letter-spacing: 1px;
+    }
+    .no-players-note {
+      font-size: .74rem; color: var(--muted); font-style: italic; padding: 6px 0;
+    }
+    .team-scorers-block { margin-bottom: 14px; }
+    .team-scorers-label {
+      font-size: .65rem; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .team-scorers-label img { width: 16px; height: 16px; object-fit: contain; border-radius: 2px; }
+
+    /* ── HISTORIAL ── */
     .history-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
     .history-card {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 14px; padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
       animation: fadeUp .4s ease both;
       transition: border-color .2s, box-shadow .2s;
     }
-    .history-card:hover { border-color: var(--mustard); box-shadow: 0 4px 18px var(--mustard-glow); }
+    .history-card:hover { border-color: var(--border-gold); box-shadow: 0 4px 20px var(--gold-glow); }
+
     .history-card-head {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
     .history-edition {
-      font-family: 'Exo 2', sans-serif; font-size: .7rem; font-weight: 800;
-      letter-spacing: 2px; text-transform: uppercase; color: var(--mustard);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .85rem; letter-spacing: 3px; color: var(--gold);
     }
-    .history-date { font-size: .7rem; color: var(--muted); }
-    .history-champion { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-    .history-champion img { width: 44px; height: 44px; object-fit: contain; border-radius: 8px; }
-    .history-champion-name { font-size: 1rem; font-weight: 900; }
-    .history-champion-label { font-size: .68rem; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-    .history-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .h-stat { background: var(--surface2); border-radius: 8px; padding: 8px; text-align: center; }
-    .h-stat-num { font-family: 'Exo 2', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--mustard); }
-    .h-stat-lbl { font-size: .6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+    .history-date { font-size: .68rem; color: var(--muted); }
+
+    /* Podium: 1st & 2nd */
+    .podium { display: flex; gap: 10px; margin-bottom: 14px; }
+    .podium-slot {
+      flex: 1; background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px;
+      text-align: center; transition: border-color .2s;
+    }
+    .podium-slot.first { border-color: var(--border-gold); background: rgba(201,149,42,.05); }
+    .podium-slot img { width: 38px; height: 38px; object-fit: contain; border-radius: 6px; margin-bottom: 6px; }
+    .podium-slot .medal { font-size: .9rem; margin-bottom: 4px; display: block; }
+    .podium-slot .p-label {
+      font-size: .55rem; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+    }
+    .podium-slot.first .p-label { color: var(--gold); }
+    .podium-slot .p-name {
+      font-size: .78rem; font-weight: 900; color: var(--text); line-height: 1.2;
+    }
+
+    .history-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px; margin-bottom: 12px;
+    }
+    .h-stat { background: var(--surface2); border-radius: 7px; padding: 8px; text-align: center; }
+    .h-stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; color: var(--gold); letter-spacing: 1px;
+    }
+    .h-stat-lbl { font-size: .56rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
+
     .stats-leaderboard {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 12px; overflow: hidden; margin-top: 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden;
     }
     .stats-lb-head {
-      background: var(--surface2); padding: 10px 16px;
+      padding: 8px 14px;
       border-bottom: 1px solid var(--border);
-      font-size: .65rem; font-weight: 800; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--mustard);
+      font-size: .6rem; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gold);
     }
     .lb-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 16px; border-bottom: 1px solid var(--border);
-      font-size: .85rem; font-weight: 600;
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 14px; border-bottom: 1px solid var(--border);
+      font-size: .82rem; font-weight: 600;
     }
     .lb-row:last-child { border-bottom: none; }
-    .lb-pos { font-family: 'Exo 2', sans-serif; font-size: .9rem; font-weight: 900; color: var(--mustard); width: 20px; text-align: center; }
-    .lb-name { flex: 1; }
-    .lb-team { font-size: .7rem; color: var(--muted); font-weight: 600; }
-    .lb-val { font-family: 'Exo 2', sans-serif; font-size: 1rem; font-weight: 900; color: var(--mustard); min-width: 22px; text-align: right; }
-
-    /* EMPTY / ERROR */
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
-    .empty-state .icon { font-size: 2.8rem; margin-bottom: 12px; opacity: .4; }
-    .empty-state p { font-size: .88rem; font-weight: 600; letter-spacing: 1px; }
-    .error-banner {
-      background: #fff5f5; border: 1.5px solid #fecaca;
-      border-radius: 10px; padding: 16px 20px;
-      color: var(--red-soft); font-size: .85rem; font-weight: 600;
-      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    .lb-pos {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; color: var(--gold); width: 18px; text-align: center;
+    }
+    .lb-name { flex: 1; color: var(--text); }
+    .lb-team { font-size: .65rem; color: var(--muted); font-weight: 600; }
+    .lb-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; color: var(--gold);
     }
 
-    /* TOAST */
+    /* ── EMPTY / ERROR ── */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 2.6rem; margin-bottom: 10px; opacity: .3; }
+    .empty-state p { font-size: .82rem; font-weight: 700; letter-spacing: 1px; }
+    .error-banner {
+      background: rgba(224,82,82,.06);
+      border: 1px solid rgba(224,82,82,.2);
+      border-radius: 8px; padding: 14px 18px;
+      color: var(--red); font-size: .82rem; font-weight: 600;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    }
+
+    /* ── TOAST ── */
     .toast {
       position: fixed; bottom: 24px; right: 24px;
-      background: var(--text); color: #fff;
-      border-left: 3px solid var(--mustard);
-      padding: 12px 20px; border-radius: 9px;
-      font-size: .82rem; font-weight: 600; z-index: 9999;
-      animation: toastIn .3s ease both; max-width: 300px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      background: var(--surface2);
+      border: 1px solid var(--border-gold);
+      border-left: 3px solid var(--gold);
+      padding: 11px 18px; border-radius: 8px;
+      font-size: .8rem; font-weight: 700; z-index: 9999;
+      animation: toastIn .3s ease both; max-width: 280px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.4);
+      color: var(--text);
     }
-    .toast.error { border-left-color: var(--red-soft); }
+    .toast.error { border-left-color: var(--red); border-color: rgba(224,82,82,.2); }
+
+    /* ── DELETE BTN ── */
+    .btn-delete {
+      width: 100%; margin-top: 12px; font-size: .68rem; padding: 8px;
+      background: transparent;
+      border: 1px solid rgba(224,82,82,.2);
+      color: rgba(224,82,82,.6);
+      border-radius: 7px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: all .2s;
+      font-family: 'Exo 2', sans-serif;
+    }
+    .btn-delete:hover { background: rgba(224,82,82,.08); color: var(--red); border-color: rgba(224,82,82,.4); }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: auto;
+      padding: 16px 28px;
+      border-top: 1px solid var(--border);
+      font-size: .65rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-align: center;
+      position: relative; z-index: 1;
+    }
 
     @keyframes toastIn {
       from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* Botón eliminar rojo suave */
-    .btn-delete {
-      width: 100%; margin-top: 14px;
-      font-size: .72rem; padding: 9px;
-      background: transparent;
-      border: 1.5px solid #fecaca;
-      color: var(--red-soft);
-      border-radius: 9px;
-      font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; cursor: pointer; transition: all .2s;
-    }
-    .btn-delete:hover { background: var(--red-soft); color: #fff; border-color: var(--red-soft); }
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro">
     <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
-  <div id="nav" class="nav-buttons"></div>
   <button class="back-btn" onclick="window.location.href='haxball.html'">← Volver</button>
 </header>
 
 <div class="top-strip"></div>
 
 <div class="tabs" id="tabBar">
-  <div class="tab active" onclick="switchTab('torneo')">🏟 Torneo</div>
-  <div class="tab"        onclick="switchTab('jugadores')" id="tabJugadores">👥 Jugadores</div>
-  <div class="tab"        onclick="switchTab('bracket')">🏆 Bracket</div>
-  <div class="tab"        onclick="switchTab('historial')" id="tabHistorial">📜 Historial</div>
+  <div class="tab active"  onclick="switchTab('torneo')"   id="tabTorneo">🏟 Torneo</div>
+  <div class="tab"         onclick="switchTab('jugadores')" id="tabJugadores">👥 Jugadores</div>
+  <div class="tab"         onclick="switchTab('bracket')"  id="tabBracket">🏆 Bracket</div>
+  <div class="tab"         onclick="switchTab('historial')" id="tabHistorial">📜 Historial</div>
 </div>
 
-<!-- TORNEO -->
+<!-- TORNEO (solo admin) -->
 <div class="page active" id="page-torneo">
   <div class="container">
     <div class="sec-title">
@@ -544,30 +668,28 @@
     </div>
 
     <div id="userReadonlyNotice" class="readonly-notice" style="display:none">
-      👁 Modo visualización — solo los administradores pueden gestionar el torneo
+      🔒 Esta sección es exclusiva para administradores
     </div>
 
-    <div class="setup-card">
-      <h3>Equipos de la base de datos — selecciona exactamente 8</h3>
-      <div class="selected-count">
-        <span class="count-pill" id="selCountPill">0 / 8</span>
-        seleccionados para este torneo
+    <div id="torneoAdminContent" style="display:none">
+      <div class="setup-card">
+        <h3>Equipos de la base de datos — selecciona exactamente 8</h3>
+        <div class="count-line">
+          <span class="count-pill" id="selCountPill">0 / 8</span>
+          seleccionados para este torneo
+        </div>
+        <div id="teamGrid">
+          <div class="loading-state"><div class="spinner"></div>Cargando equipos...</div>
+        </div>
       </div>
-      <div id="teamGrid">
-        <div class="loading-state"><div class="spinner"></div>Cargando equipos...</div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btnContinue" onclick="goToPlayers()" disabled>
+          Continuar → Jugadores
+        </button>
+        <button class="btn-outline" onclick="retryLoadTeams()">↺ Recargar</button>
+        <button class="btn-outline" onclick="resumeCopa()">▶ Reanudar copa</button>
       </div>
-    </div>
-
-    <div class="btn-row" id="adminActions" style="display:none">
-      <button class="btn-primary" id="btnContinue" onclick="goToPlayers()" disabled>
-        Continuar → Jugadores
-      </button>
-      <button class="btn-outline" onclick="retryLoadTeams()">↺ Recargar</button>
-      <button class="btn-outline" onclick="resumeCopa()">▶ Reanudar copa</button>
-    </div>
-
-    <div class="btn-row" id="userViewActions" style="display:none">
-      <button class="btn-outline" onclick="resumeCopa()">▶ Ver copa activa</button>
     </div>
   </div>
 </div>
@@ -576,13 +698,13 @@
 <div class="page" id="page-jugadores">
   <div class="container">
     <div class="sec-title">Plantillas del Torneo</div>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:20px;">
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:20px;letter-spacing:.3px;">
       Jugadores únicos para esta Copa Expresso — no afectan la liga principal.
     </p>
     <div id="playersContainer"></div>
     <div class="btn-row">
-      <button class="btn-mustard" onclick="generateBracket()">Generar Bracket →</button>
-      <button class="btn-outline"  onclick="switchTab('torneo')">← Cambiar equipos</button>
+      <button class="btn-gold"    onclick="generateBracket()">Generar Bracket →</button>
+      <button class="btn-outline" onclick="switchTab('torneo')">← Cambiar equipos</button>
     </div>
   </div>
 </div>
@@ -603,7 +725,7 @@
   </div>
 </div>
 
-<!-- HISTORIAL (solo admin) -->
+<!-- HISTORIAL (todos) -->
 <div class="page" id="page-historial">
   <div class="container">
     <div class="sec-title">Historial de Copas</div>
@@ -619,11 +741,13 @@
     <div class="modal-title" id="modalRound">Cuartos de Final</div>
     <div class="modal-vs" id="modalVs"></div>
     <div class="score-row">
-      <input type="number" id="scoreA" placeholder="0" min="0">
+      <input type="number" id="scoreA" placeholder="0" min="0" oninput="updateScorers()">
       <div class="score-sep">–</div>
-      <input type="number" id="scoreB" placeholder="0" min="0">
+      <input type="number" id="scoreB" placeholder="0" min="0" oninput="updateScorers()">
     </div>
-    <div class="modal-actions">
+    <!-- Sección goleadores dinámica -->
+    <div class="scorers-section" id="scorersSection"></div>
+    <div class="modal-actions" style="margin-top:18px">
       <button class="btn-cancel"  onclick="closeModal()">Cancelar</button>
       <button class="btn-confirm" onclick="confirmResult()">Guardar resultado</button>
     </div>
@@ -634,43 +758,85 @@
 
 <script>
 /* ═══════════════════════════════════════════
-   ROLES
+   CONFIG
 ═══════════════════════════════════════════ */
 const POSITIONS = ['PO', 'DF', 'MC', 'DL'];
 let currentUser = null;
 let isAdmin     = false;
 
+/* ═══════════════════════════════════════════
+   ROLES
+═══════════════════════════════════════════ */
 function initUser() {
   try {
     currentUser = JSON.parse(localStorage.getItem('user'));
     isAdmin = currentUser?.role === 'admin';
   } catch (_) { isAdmin = false; }
 
-  document.getElementById('adminBadge').style.display      = isAdmin ? 'inline' : 'none';
-  document.getElementById('adminActions').style.display    = isAdmin ? 'flex'   : 'none';
-  document.getElementById('userViewActions').style.display = isAdmin ? 'none'   : 'flex';
-  document.getElementById('userReadonlyNotice').style.display = isAdmin ? 'none' : 'flex';
+  document.getElementById('adminBadge').style.display = isAdmin ? 'inline' : 'none';
 
-  // Ocultar tabs restringidas si no es admin
-  document.getElementById('tabJugadores').style.display  = isAdmin ? 'block' : 'none';
-  document.getElementById('tabHistorial').style.display  = isAdmin ? 'block' : 'none';
+  // Torneo: solo admin ve el contenido, usuario ve aviso
+  document.getElementById('torneoAdminContent').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('userReadonlyNotice').style.display = isAdmin ? 'none'  : 'flex';
+
+  // Jugadores: solo admin
+  document.getElementById('tabJugadores').style.display = isAdmin ? 'block' : 'none';
+
+  // Historial: visible para todos
+  // Torneo tab: visible para admin, oculto para usuario
+  document.getElementById('tabTorneo').style.display = isAdmin ? 'block' : 'none';
 }
 
 /* ═══════════════════════════════════════════
    ESTADO
 ═══════════════════════════════════════════ */
-let allTeams  = [];
+let allTeams = [];
 let state = {
   selectedTeams : [],
   players       : {},
   bracket       : null
 };
 let currentMatchRef = null;
-let historialCache  = [];
-let saveTimeout     = null;
+// scorers[teamId][playerName] = goals
+let modalScorers = { a: {}, b: {} };
+let historialCache = [];
+let saveTimeout = null;
 
 /* ═══════════════════════════════════════════
-   DB — /api/copas  (DB: copa_expresso)
+   STRIP / HYDRATE (fix 413)
+═══════════════════════════════════════════ */
+function stripTeam(t) {
+  return t ? { _id: t._id, nombre: t.nombre, logo: t.logo } : null;
+}
+function stripMatch(m) {
+  return { ...m, teamA: stripTeam(m.teamA), teamB: stripTeam(m.teamB) };
+}
+function stripBracket(br) {
+  if (!br) return null;
+  return {
+    cuartos : br.cuartos.map(stripMatch),
+    semis   : br.semis.map(stripMatch),
+    final   : stripMatch(br.final),
+    champion: stripTeam(br.champion),
+    runnerUp: stripTeam(br.runnerUp)
+  };
+}
+function hydrateBracket(br) {
+  if (!br) return null;
+  const full  = t => t ? (allTeams.find(x => x._id === t._id) || t) : null;
+  const fullM = m => ({ ...m, teamA: full(m.teamA), teamB: full(m.teamB) });
+  return {
+    ...br,
+    cuartos : br.cuartos.map(fullM),
+    semis   : br.semis.map(fullM),
+    final   : fullM(br.final),
+    champion: full(br.champion),
+    runnerUp: full(br.runnerUp)
+  };
+}
+
+/* ═══════════════════════════════════════════
+   DB — /api/copas
 ═══════════════════════════════════════════ */
 async function saveStateToDB() {
   if (!isAdmin) return;
@@ -680,9 +846,9 @@ async function saveStateToDB() {
       headers: { 'Content-Type': 'application/json' },
       body   : JSON.stringify({
         action       : 'save',
-        selectedTeams: state.selectedTeams,
+        selectedTeams: state.selectedTeams.map(t => ({ _id: t._id, nombre: t.nombre, logo: t.logo })),
         players      : state.players,
-        bracket      : state.bracket
+        bracket      : stripBracket(state.bracket)
       })
     });
   } catch (e) { console.warn('save error', e); }
@@ -740,8 +906,7 @@ async function deleteFromDB(id) {
    TABS
 ═══════════════════════════════════════════ */
 function switchTab(name) {
-  // Bloquear tabs de admin si no lo es
-  if (!isAdmin && (name === 'jugadores' || name === 'historial')) {
+  if (!isAdmin && (name === 'jugadores' || name === 'torneo')) {
     toast('Solo los administradores pueden acceder a esta sección', 'error');
     return;
   }
@@ -762,12 +927,14 @@ async function fetchTeams() {
     const res = await fetch('/api/teams');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     allTeams = await res.json();
+    if (state.bracket) state.bracket = hydrateBracket(state.bracket);
     renderTeamGrid();
+    if (state.bracket) renderBracket();
   } catch (err) {
     document.getElementById('teamGrid').innerHTML = `
       <div class="error-banner">
         ⚠️ No se pudieron cargar los equipos.
-        <button class="btn-outline" style="margin-left:auto;padding:6px 14px;font-size:.75rem"
+        <button class="btn-outline" style="margin-left:auto;padding:6px 14px;font-size:.72rem"
                 onclick="retryLoadTeams()">Reintentar</button>
       </div>`;
   }
@@ -784,19 +951,20 @@ function retryLoadTeams() {
 ═══════════════════════════════════════════ */
 function renderTeamGrid() {
   const grid = document.getElementById('teamGrid');
+  if (!grid) return;
   if (!allTeams.length) {
     grid.innerHTML = `<div class="empty-state"><div class="icon">🏟</div><p>Sin equipos en la base de datos</p></div>`;
     return;
   }
   grid.innerHTML = `<div class="team-grid">${
     allTeams.map(t => {
-      const sel   = state.selectedTeams.some(s => s._id === t._id);
+      const sel = state.selectedTeams.some(s => s._id === t._id);
       const click = isAdmin ? `onclick="toggleTeam('${t._id}')"` : '';
       const noClick = isAdmin ? '' : 'no-click';
       return `
         <div class="team-card ${sel ? 'selected' : ''} ${noClick}" ${click} id="tc-${t._id}">
           <img src="${t.logo||''}" alt="${t.nombre}"
-               onerror="this.src='https://placehold.co/36x36/ddd/888?text=${encodeURIComponent(t.nombre[0])}'">
+               onerror="this.src='https://placehold.co/32x32/222/888?text=${encodeURIComponent(t.nombre[0])}'">
           <span class="team-card-name">${t.nombre}</span>
           <div class="team-check">${sel ? '✓' : ''}</div>
         </div>`;
@@ -821,7 +989,8 @@ function toggleTeam(id) {
 
 function updateSelCount() {
   const n = state.selectedTeams.length;
-  document.getElementById('selCountPill').textContent = n + ' / 8';
+  const pill = document.getElementById('selCountPill');
+  if (pill) pill.textContent = n + ' / 8';
   const btn = document.getElementById('btnContinue');
   if (btn) btn.disabled = n !== 8;
 }
@@ -850,7 +1019,7 @@ function renderPlayersPage() {
       <div class="team-section" id="ts-${team._id}">
         <div class="team-section-header" onclick="toggleSection('${team._id}')">
           <img src="${team.logo||''}" alt="${team.nombre}"
-               onerror="this.src='https://placehold.co/28/ddd/888?text=${encodeURIComponent(team.nombre[0])}'">
+               onerror="this.src='https://placehold.co/26/222/888?text=${encodeURIComponent(team.nombre[0])}'">
           <span class="team-section-name">${team.nombre}</span>
           <span class="team-section-count" id="cnt-${team._id}">${state.players[team._id].length} jugadores</span>
           <span class="chevron">▼</span>
@@ -876,7 +1045,7 @@ function toggleSection(teamId) {
 }
 
 function renderPlayerList(teamId) {
-  const list    = document.getElementById('pl-list-' + teamId);
+  const list = document.getElementById('pl-list-' + teamId);
   if (!list) return;
   const players = state.players[teamId] || [];
   list.innerHTML = players.length
@@ -887,7 +1056,7 @@ function renderPlayerList(teamId) {
           <span class="player-name">${p.name}</span>
           <button class="btn-icon" onclick="removePlayer('${teamId}',${i})">✕</button>
         </div>`).join('')
-    : `<p style="font-size:.78rem;color:var(--muted);margin-bottom:10px;">Sin jugadores aún</p>`;
+    : `<p style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">Sin jugadores aún</p>`;
 
   const cnt = document.getElementById('cnt-' + teamId);
   if (cnt) cnt.textContent = players.length + ' jugadores';
@@ -924,7 +1093,8 @@ function generateBracket() {
     cuartos : [mkM(sh[0],sh[1]), mkM(sh[2],sh[3]), mkM(sh[4],sh[5]), mkM(sh[6],sh[7])],
     semis   : [mkM(null,null), mkM(null,null)],
     final   : mkM(null,null),
-    champion: null
+    champion: null,
+    runnerUp: null
   };
   scheduleSave();
   renderBracket();
@@ -932,8 +1102,17 @@ function generateBracket() {
   toast('¡Bracket generado!');
 }
 
-function mkM(a, b) { return { teamA:a, teamB:b, scoreA:null, scoreB:null, played:false }; }
-function winner(m) { if (!m.played) return null; return m.scoreA >= m.scoreB ? m.teamA : m.teamB; }
+function mkM(a, b) {
+  return { teamA: a, teamB: b, scoreA: null, scoreB: null, played: false, scorers: [] };
+}
+function winner(m) {
+  if (!m.played) return null;
+  return m.scoreA >= m.scoreB ? m.teamA : m.teamB;
+}
+function loser(m) {
+  if (!m.played) return null;
+  return m.scoreA >= m.scoreB ? m.teamB : m.teamA;
+}
 
 function renderBracket() {
   const el = document.getElementById('bracketEl');
@@ -948,8 +1127,8 @@ function renderBracket() {
         <div class="trophy">🏆</div>
         <h2>Campeón Copa Expresso</h2>
         <img src="${br.champion.logo||''}" alt="${br.champion.nombre}"
-             onerror="this.src='https://placehold.co/70/ddd/888?text=?'">
-        <p style="font-weight:800;font-size:1.1rem;margin-top:6px">${br.champion.nombre}</p>
+             onerror="this.src='https://placehold.co/64/222/888?text=?'">
+        <div class="champ-name">${br.champion.nombre}</div>
         <p>¡Felicitaciones al campeón!</p>
       </div>`;
   } else {
@@ -980,11 +1159,13 @@ function mCard(match, stage, idx) {
   const teamRow = (team, score, win) => team ? `
     <div class="match-team ${win ? 'winner' : ''}">
       <img src="${team.logo||''}" alt="${team.nombre}"
-           onerror="this.src='https://placehold.co/24/ddd/888?text=${encodeURIComponent((team.nombre||'?')[0])}'">
+           onerror="this.src='https://placehold.co/22/222/888?text=${encodeURIComponent((team.nombre||'?')[0])}'">
       <span class="match-team-name">${team.nombre}</span>
       <span class="match-team-score">${score !== null ? score : '–'}</span>
     </div>` : `
-    <div class="match-team"><span class="match-team-name" style="color:var(--muted)">Por definir</span></div>`;
+    <div class="match-team">
+      <span class="match-team-name" style="color:var(--muted)">Por definir</span>
+    </div>`;
 
   return `
     <div class="match-card">
@@ -998,26 +1179,30 @@ function mCard(match, stage, idx) {
 }
 
 /* ═══════════════════════════════════════════
-   MODAL PARTIDO (solo admin)
+   MODAL — con selección de goleadores
 ═══════════════════════════════════════════ */
 function openModal(stage, idx) {
   if (!isAdmin) return;
   currentMatchRef = { stage, idx };
+  modalScorers = { a: {}, b: {} };
+
   const match  = getMatch(stage, idx);
   const labels = { cuartos:'Cuartos de Final', semis:'Semifinal', final:'Gran Final' };
   document.getElementById('modalRound').textContent = labels[stage];
   document.getElementById('modalVs').innerHTML = `
     <div class="modal-team">
-      <img src="${match.teamA.logo||''}" onerror="this.src='https://placehold.co/48/ddd/888?text=?'">
+      <img src="${match.teamA.logo||''}" onerror="this.src='https://placehold.co/46/222/888?text=?'">
       <div class="modal-team-name">${match.teamA.nombre}</div>
     </div>
     <div class="modal-sep">VS</div>
     <div class="modal-team">
-      <img src="${match.teamB.logo||''}" onerror="this.src='https://placehold.co/48/ddd/888?text=?'">
+      <img src="${match.teamB.logo||''}" onerror="this.src='https://placehold.co/46/222/888?text=?'">
       <div class="modal-team-name">${match.teamB.nombre}</div>
     </div>`;
+
   document.getElementById('scoreA').value = '';
   document.getElementById('scoreB').value = '';
+  document.getElementById('scorersSection').innerHTML = '';
   document.getElementById('matchModal').classList.add('show');
   document.getElementById('scoreA').focus();
 }
@@ -1032,6 +1217,89 @@ function getMatch(stage, idx) {
   return state.bracket.final;
 }
 
+function updateScorers() {
+  const match = getMatch(currentMatchRef.stage, currentMatchRef.idx);
+  const sA = parseInt(document.getElementById('scoreA').value) || 0;
+  const sB = parseInt(document.getElementById('scoreB').value) || 0;
+  const sec = document.getElementById('scorersSection');
+
+  // Reset scorers cuando cambian los marcadores
+  modalScorers = { a: {}, b: {} };
+
+  if (sA === 0 && sB === 0) { sec.innerHTML = ''; return; }
+
+  const playersA = state.players[match.teamA?._id] || [];
+  const playersB = state.players[match.teamB?._id] || [];
+
+  let html = `<h4>⚽ Goleadores (opcional)</h4>`;
+
+  if (sA > 0) {
+    html += buildScorerBlock(match.teamA, playersA, 'a', sA);
+  }
+  if (sB > 0) {
+    html += buildScorerBlock(match.teamB, playersB, 'b', sB);
+  }
+
+  sec.innerHTML = html;
+}
+
+function buildScorerBlock(team, players, side, totalGoals) {
+  if (!players.length) {
+    return `
+      <div class="team-scorers-block">
+        <div class="team-scorers-label">
+          <img src="${team?.logo||''}" onerror="this.src='https://placehold.co/16/222/888?text=?'">
+          ${team?.nombre}
+        </div>
+        <p class="no-players-note">Sin jugadores registrados — los goles se asignarán como anónimos</p>
+      </div>`;
+  }
+
+  let rows = players.map(p => `
+    <div class="scorer-row">
+      <div style="flex:1">
+        <div style="font-size:.82rem;font-weight:700;color:var(--text)">${p.name}</div>
+        <div style="font-size:.62rem;color:var(--muted);letter-spacing:.5px">${p.pos}</div>
+      </div>
+      <div class="scorer-qty">
+        <button onclick="changeScorer('${side}','${p.name}',-1)">−</button>
+        <span id="sq-${side}-${p.name.replace(/\s/g,'_')}_${team._id}">0</span>
+        <button onclick="changeScorer('${side}','${p.name}',1,'${team._id}',${totalGoals})">+</button>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="team-scorers-block">
+      <div class="team-scorers-label">
+        <img src="${team?.logo||''}" onerror="this.src='https://placehold.co/16/222/888?text=?'">
+        ${team?.nombre} — máx ${totalGoals} gol${totalGoals!==1?'es':''}
+      </div>
+      ${rows}
+    </div>`;
+}
+
+function changeScorer(side, playerName, delta, teamId, maxGoals) {
+  if (!modalScorers[side]) modalScorers[side] = {};
+  const cur = modalScorers[side][playerName] || 0;
+
+  // Calcular total actual de ese equipo
+  const total = Object.values(modalScorers[side]).reduce((s,v)=>s+v, 0);
+  const sideScore = parseInt(document.getElementById(side === 'a' ? 'scoreA' : 'scoreB').value) || 0;
+
+  if (delta > 0 && total >= sideScore) {
+    toast(`Máximo ${sideScore} gol${sideScore!==1?'es':''} para este equipo`, 'error');
+    return;
+  }
+  const newVal = Math.max(0, cur + delta);
+  modalScorers[side][playerName] = newVal;
+
+  // Buscar el span por id — necesitamos teamId en el id para unicidad
+  const match = getMatch(currentMatchRef.stage, currentMatchRef.idx);
+  const tId = side === 'a' ? match.teamA._id : match.teamB._id;
+  const el = document.getElementById(`sq-${side}-${playerName.replace(/\s/g,'_')}_${tId}`);
+  if (el) el.textContent = newVal;
+}
+
 async function confirmResult() {
   if (!isAdmin) return;
   const a = parseInt(document.getElementById('scoreA').value);
@@ -1040,8 +1308,13 @@ async function confirmResult() {
 
   const { stage, idx } = currentMatchRef;
   const match = getMatch(stage, idx);
-  match.scoreA = a; match.scoreB = b; match.played = true;
+  match.scoreA  = a;
+  match.scoreB  = b;
+  match.played  = true;
+  match.scorers = buildMatchScorers(match, a, b);
+
   const w = winner(match);
+  const l = loser(match);
 
   if (stage === 'cuartos') {
     const si   = idx < 2 ? 0 : 1;
@@ -1050,14 +1323,48 @@ async function confirmResult() {
   } else if (stage === 'semis') {
     state.bracket.final[idx === 0 ? 'teamA' : 'teamB'] = w;
   } else {
+    // Final
     state.bracket.champion = w;
+    state.bracket.runnerUp = l;
+    closeModal();
+    scheduleSave();
+    renderBracket();
+    toast(`🏆 ${w.nombre} es el Campeón!`);
     await archiveCopa();
+    return;
   }
 
   closeModal();
   scheduleSave();
   renderBracket();
-  toast(a === b ? `Empate ${a}-${b} — avanza ${w.nombre}` : `${w.nombre} gana ${Math.max(a,b)}-${Math.min(a,b)}`);
+  toast(a === b
+    ? `Empate ${a}-${b} — avanza ${w.nombre}`
+    : `${w.nombre} gana ${Math.max(a,b)}-${Math.min(a,b)}`);
+}
+
+function buildMatchScorers(match, goalsA, goalsB) {
+  const list = [];
+
+  const addSide = (side, team, totalGoals) => {
+    const assigned = modalScorers[side] || {};
+    const assignedTotal = Object.values(assigned).reduce((s,v)=>s+v, 0);
+    const remaining = totalGoals - assignedTotal;
+
+    // Jugadores con goles asignados
+    Object.entries(assigned).forEach(([name, goals]) => {
+      if (goals > 0) list.push({ name, team: team.nombre, goals });
+    });
+
+    // Goles sin asignar → Anónimo
+    if (remaining > 0) {
+      list.push({ name: 'Anónimo', team: team.nombre, goals: remaining });
+    }
+  };
+
+  if (match.teamA) addSide('a', match.teamA, goalsA);
+  if (match.teamB) addSide('b', match.teamB, goalsB);
+
+  return list;
 }
 
 /* ═══════════════════════════════════════════
@@ -1067,11 +1374,24 @@ async function archiveCopa() {
   const br  = state.bracket;
   const all = [...br.cuartos, ...br.semis, br.final];
   const totalGoals = all.filter(m => m.played).reduce((s, m) => s + m.scoreA + m.scoreB, 0);
-  const goleadores = buildScorers(all);
-  const edition    = historialCache.length + 1;
+
+  // Compilar goleadores de todos los partidos
+  const sc = {};
+  all.filter(m => m.played && m.scorers?.length).forEach(m => {
+    m.scorers.forEach(s => {
+      const key = `${s.name}||${s.team}`;
+      sc[key] = (sc[key] || 0) + s.goals;
+    });
+  });
+  const goleadores = Object.entries(sc)
+    .map(([k, v]) => { const [name, team] = k.split('||'); return { name, team, goals: v }; })
+    .sort((a, b) => b.goals - a.goals).slice(0, 5);
+
+  const edition = historialCache.length + 1;
 
   await archiveInDB({
-    champion  : br.champion,
+    champion  : stripTeam(br.champion),
+    runnerUp  : stripTeam(br.runnerUp),
     teams     : state.selectedTeams.map(t => t.nombre),
     totalGoals,
     matches   : all.filter(m => m.played).length,
@@ -1080,38 +1400,17 @@ async function archiveCopa() {
     date      : new Date().toLocaleDateString('es-EC', { day:'2-digit', month:'short', year:'numeric' })
   });
 
-  state.bracket = null; state.selectedTeams = []; state.players = {};
+  state.bracket = null;
+  state.selectedTeams = [];
+  state.players = {};
   await fetchHistorialFromDB();
   toast('🏆 Copa archivada en el historial!');
 }
 
-function buildScorers(matches) {
-  const sc = {};
-  matches.forEach(m => {
-    if (!m.played) return;
-    const add = (team, goals) => {
-      if (!goals) return;
-      const tp = state.players[team?._id] || [];
-      for (let g = 0; g < goals; g++) {
-        const key = tp.length
-          ? `${tp[Math.floor(Math.random()*tp.length)].name}||${team.nombre}`
-          : `Jugador Anónimo||${team?.nombre||'?'}`;
-        sc[key] = (sc[key]||0) + 1;
-      }
-    };
-    add(m.teamA, m.scoreA);
-    add(m.teamB, m.scoreB);
-  });
-  return Object.entries(sc)
-    .map(([k,v]) => { const [name,team]=k.split('||'); return {name,team,goals:v}; })
-    .sort((a,b) => b.goals-a.goals).slice(0,5);
-}
-
 /* ═══════════════════════════════════════════
-   HISTORIAL (solo admin)
+   HISTORIAL (todos pueden ver)
 ═══════════════════════════════════════════ */
 async function renderHistorial() {
-  if (!isAdmin) return;
   const c = document.getElementById('historialContainer');
   c.innerHTML = `<div class="loading-state"><div class="spinner"></div>Cargando...</div>`;
   await fetchHistorialFromDB();
@@ -1122,25 +1421,48 @@ async function renderHistorial() {
   }
 
   c.innerHTML = `<div class="history-grid">${
-    historialCache.map(h => `
+    historialCache.map(h => {
+      const champLogo = h.champion?.logo || '';
+      const ruLogo    = h.runnerUp?.logo || '';
+      return `
       <div class="history-card">
         <div class="history-card-head">
           <span class="history-edition">Copa Expresso #${h.edition||'?'}</span>
           <span class="history-date">${h.date||''}</span>
         </div>
-        <div class="history-champion">
-          <img src="${h.champion?.logo||''}" alt="${h.champion?.nombre||''}"
-               onerror="this.src='https://placehold.co/44/ddd/888?text=?'">
-          <div>
-            <div class="history-champion-label">Campeón</div>
-            <div class="history-champion-name">${h.champion?.nombre||'—'}</div>
+
+        <div class="podium">
+          <div class="podium-slot first">
+            <span class="medal">🥇</span>
+            <img src="${champLogo}" alt="${h.champion?.nombre||''}"
+                 onerror="this.src='https://placehold.co/38/222/888?text=?'">
+            <div class="p-label">Campeón</div>
+            <div class="p-name">${h.champion?.nombre||'—'}</div>
+          </div>
+          <div class="podium-slot">
+            <span class="medal">🥈</span>
+            <img src="${ruLogo}" alt="${h.runnerUp?.nombre||''}"
+                 onerror="this.src='https://placehold.co/38/222/888?text=?'">
+            <div class="p-label">Subcampeón</div>
+            <div class="p-name">${h.runnerUp?.nombre||'—'}</div>
           </div>
         </div>
+
         <div class="history-stats">
-          <div class="h-stat"><div class="h-stat-num">${h.teams?.length||8}</div><div class="h-stat-lbl">Equipos</div></div>
-          <div class="h-stat"><div class="h-stat-num">${h.matches||7}</div><div class="h-stat-lbl">Partidos</div></div>
-          <div class="h-stat"><div class="h-stat-num">${h.totalGoals||0}</div><div class="h-stat-lbl">Goles</div></div>
+          <div class="h-stat">
+            <div class="h-stat-num">${h.teams?.length||8}</div>
+            <div class="h-stat-lbl">Equipos</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">${h.matches||7}</div>
+            <div class="h-stat-lbl">Partidos</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">${h.totalGoals||0}</div>
+            <div class="h-stat-lbl">Goles</div>
+          </div>
         </div>
+
         ${h.goleadores?.length ? `
           <div class="stats-leaderboard">
             <div class="stats-lb-head">⚽ Goleadores</div>
@@ -1154,8 +1476,9 @@ async function renderHistorial() {
                 <span class="lb-val">${g.goals}</span>
               </div>`).join('')}
           </div>` : ''}
-        <button class="btn-delete" onclick="deleteHistory('${h._id}')">🗑 Eliminar registro</button>
-      </div>`).join('')
+
+        ${isAdmin ? `<button class="btn-delete" onclick="deleteHistory('${h._id}')">🗑 Eliminar registro</button>` : ''}
+      </div>`}).join('')
   }</div>`;
 }
 
@@ -1184,9 +1507,20 @@ function toast(msg, type = 'ok') {
 document.addEventListener('DOMContentLoaded', async () => {
   initUser();
   await loadFromDB();
-  fetchTeams();
-  updateSelCount();
-  if (state.bracket) renderBracket();
+
+  if (isAdmin) {
+    fetchTeams();
+    updateSelCount();
+  } else {
+    // Usuario normal: ir directo a historial o bracket
+    if (state.bracket) {
+      switchTab('bracket');
+    } else {
+      switchTab('historial');
+    }
+  }
+
+  if (state.bracket && isAdmin) renderBracket();
 });
 </script>
 </body>
