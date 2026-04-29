@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 export default async function handler(req, res) {
   try {
     const client = await clientPromise;
-    // ── Base de datos separada para Copa Expresso ──
     const db    = client.db("copa_expresso");
     const copas = db.collection("copas");
 
@@ -50,10 +49,15 @@ export default async function handler(req, res) {
           { status: "active" },
           {
             $set: {
-              status, champion, teams, totalGoals,
-              matches, goleadores, edition, date,
-              finishedAt: new Date(),
-              status: "finished"
+              status: "finished",
+              champion,
+              teams,
+              totalGoals,
+              matches,
+              goleadores,
+              edition,
+              date,
+              finishedAt: new Date()
             }
           }
         );
@@ -63,7 +67,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Acción no válida" });
     }
 
-    /* ── DELETE: eliminar copa del historial (solo admin) ───── */
+    /* ── DELETE: eliminar copa del historial ────────────────── */
     if (req.method === "DELETE") {
       const { id } = req.body;
       if (!id) return res.status(400).json({ message: "Falta el id" });
