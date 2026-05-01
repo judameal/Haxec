@@ -29,7 +29,6 @@
       font-family:var(--font-head); font-size:0.72rem; font-weight:800;
       letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin:0;
     }
-    /* Color distinto para hexagonales */
     .jornada-header.hex-final   { border-bottom-color: var(--accent); }
     .jornada-header.hex-descenso{ border-bottom-color: var(--red); }
     .jornada-header.hex-descenso h3 { color: var(--red); }
@@ -47,8 +46,8 @@
       font-family:var(--font-head); font-weight:700; font-size:0.95rem;
       letter-spacing:.3px; color:var(--black); min-width:0;
     }
-    .team-side.local     { justify-content:flex-end;   flex-direction:row;         text-align:right; }
-    .team-side.visitante { justify-content:flex-start; flex-direction:row;         text-align:left;  }
+    .team-side.local     { justify-content:flex-end;   flex-direction:row;  text-align:right; }
+    .team-side.visitante { justify-content:flex-start; flex-direction:row;  text-align:left;  }
     .team-side span      { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .team-logo { width:30px; height:30px; object-fit:contain; border-radius:5px; flex-shrink:0; }
 
@@ -73,7 +72,6 @@
     .btn-play { display:inline-flex; align-items:center; gap:5px; background:var(--accent); border:none; color:var(--black); padding:6px 15px; border-radius:8px; cursor:pointer; font-family:var(--font-head); font-size:.8rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; transition:all .18s; white-space:nowrap; }
     .btn-play:hover { background:var(--accent-dark); color:#fff; box-shadow:0 4px 14px var(--accent-glow); }
 
-    /* ── TABS ── */
     .tabs-row { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
     .tab-btn {
       padding:7px 16px; border-radius:10px; border:1.5px solid var(--border);
@@ -84,7 +82,6 @@
     .tab-btn:hover { border-color:var(--black); color:var(--black); }
     .tab-btn.active { background:var(--black); color:var(--accent); border-color:var(--black); }
 
-    /* ── BOTÓN GENERAR HEX (admin) ── */
     .btn-generar-hex {
       display:inline-flex; align-items:center; gap:7px;
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
@@ -96,7 +93,6 @@
     .btn-generar-hex:hover { transform:translateY(-1px); box-shadow:0 6px 20px var(--accent-glow); }
     .btn-generar-hex:disabled { opacity:.5; cursor:not-allowed; transform:none; }
 
-    /* ── MODAL INFORME (igual que antes) ── */
     #informeOverlay {
       display:none; position:fixed; inset:0; background:rgba(15,20,16,.82);
       backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;
@@ -169,347 +165,302 @@
 </header>
 
 <div class="admin-container">
-
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
     <h1 class="admin-title" style="margin-bottom:0;">Partidos</h1>
     <button class="back-btn" style="margin-bottom:0;" onclick="goBack()">⬅ Volver</button>
   </div>
 
-  <!-- Tabs de fase -->
   <div class="tabs-row" id="tabsRow">
-    <button class="tab-btn active" id="tabRegular"   onclick="cambiarTab('regular', this)">🏆 Fase Regular</button>
-    <button class="tab-btn"        id="tabHexFinal"  onclick="cambiarTab('hexagonal_final', this)" style="display:none;">🟢 Hex Final</button>
-    <button class="tab-btn"        id="tabHexDesc"   onclick="cambiarTab('hexagonal_descenso', this)" style="display:none;">🔴 Hex Descenso</button>
-
-    <!-- Botón admin para generar hexagonales -->
-    <button class="btn-generar-hex" id="btnGenerar" style="display:none;" onclick="generarHexagonales()">
-      ⚙️ Generar Hexagonales
-    </button>
+    <button class="tab-btn active" id="tabRegular"  onclick="cambiarTab('regular', this)">🏆 Fase Regular</button>
+    <button class="tab-btn"        id="tabHexFinal" onclick="cambiarTab('hexagonal_final', this)" style="display:none;">🟢 Hex Final</button>
+    <button class="tab-btn"        id="tabHexDesc"  onclick="cambiarTab('hexagonal_descenso', this)" style="display:none;">🔴 Hex Descenso</button>
+    <button class="btn-generar-hex" id="btnGenerar" style="display:none;" onclick="generarHexagonales()">⚙️ Generar Hexagonales</button>
   </div>
 
   <div id="partidosContainer">
     <div class="loading-state"><div class="spinner"></div>Cargando partidos...</div>
   </div>
-
 </div>
 
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
+<footer><p>© 2026 Haxec Esport — Hecho por Judameal</p></footer>
 
-<!-- MODAL INFORME -->
 <div id="informeOverlay" onclick="cerrarInformeOverlay(event)">
   <div class="informe-card" id="informeCard"></div>
 </div>
 
 <script>
-var API      = "/api";
-var user     = JSON.parse(localStorage.getItem("user") || "null");
-var esAdmin  = user && user.role === "admin";
-var ICONOS   = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
+  // ── Todas las llamadas usan /api/index?ruta=xxx ──
+  var API     = "/api/index";
+  var user    = JSON.parse(localStorage.getItem("user") || "null");
+  var esAdmin = user && user.role === "admin";
+  var ICONOS  = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
 
-var _faseActual  = "regular";
-var _tabActual   = "regular";
-var _equipos     = [];
-var _allPartidos = [];
-var _calendario  = {};   // { regular: [...], hexagonal_final: [...], hexagonal_descenso: [...] }
+  var _faseActual  = "regular";
+  var _tabActual   = "regular";
+  var _equipos     = [];
+  var _allPartidos = [];
+  var _calendario  = {};
 
-function goBack() { window.location.href = "/haxball.html"; }
+  function goBack() { window.location.href = "/haxball.html"; }
 
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
-async function init() {
-  try {
-    const [cfg, equipos, partidos] = await Promise.all([
-      fetch(API + "/config").then(r => r.json()),
-      fetch(API + "/teams").then(r => r.json()),
-      fetch(API + "/partidos").then(r => r.text().then(t => { try{return JSON.parse(t);}catch(_){return [];} }))
-    ]);
+  async function init() {
+    try {
+      const [cfg, equipos, partidos] = await Promise.all([
+        fetch(API + "?ruta=config").then(r => r.json()),
+        fetch(API + "?ruta=teams").then(r => r.json()),
+        fetch(API + "?ruta=partidos").then(r => r.text().then(t => { try{return JSON.parse(t);}catch(_){return [];} }))
+      ]);
 
-    _faseActual  = cfg.fase || "regular";
-    _equipos     = equipos;
-    _allPartidos = partidos;
+      _faseActual  = cfg.fase || "regular";
+      _equipos     = equipos;
+      _allPartidos = partidos;
 
-    // Separar partidos por fase
-    _calendario.regular            = partidos.filter(p => !p.fase || p.fase === "regular");
-    _calendario.hexagonal_final    = partidos.filter(p => p.fase === "hexagonal_final");
-    _calendario.hexagonal_descenso = partidos.filter(p => p.fase === "hexagonal_descenso");
+      _calendario.regular            = partidos.filter(p => !p.fase || p.fase === "regular");
+      _calendario.hexagonal_final    = partidos.filter(p => p.fase === "hexagonal_final");
+      _calendario.hexagonal_descenso = partidos.filter(p => p.fase === "hexagonal_descenso");
 
-    // Mostrar tabs según fase actual
-    actualizarTabs(cfg);
+      actualizarTabs(cfg);
 
-    // Mostrar fase activa por defecto
-    _tabActual = _faseActual;
+      _tabActual = _faseActual;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      const tabActivo = document.getElementById("tab" + faseAId(_faseActual));
+      if (tabActivo) tabActivo.classList.add("active");
+
+      renderPartidos(_tabActual);
+    } catch(err) {
+      console.error(err);
+      document.getElementById("partidosContainer").innerHTML =
+        "<div class='loading-state'>⚠️ Error al cargar los partidos.</div>";
+    }
+  }
+
+  function faseAId(fase) {
+    if (fase === "regular")            return "Regular";
+    if (fase === "hexagonal_final")    return "HexFinal";
+    if (fase === "hexagonal_descenso") return "HexDesc";
+    return "Regular";
+  }
+
+  function actualizarTabs(cfg) {
+    const hexGenerado = cfg.hexagonalGenerado;
+    document.getElementById("tabRegular").style.display = "";
+    if (hexGenerado) {
+      document.getElementById("tabHexFinal").style.display = "";
+      document.getElementById("tabHexDesc").style.display  = "";
+    }
+    if (esAdmin && !hexGenerado && _faseActual === "regular") {
+      document.getElementById("btnGenerar").style.display = "";
+    }
+  }
+
+  function cambiarTab(fase, btn) {
+    _tabActual = fase;
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    const tabActivo = document.getElementById("tab" + faseAId(_faseActual));
-    if (tabActivo) tabActivo.classList.add("active");
-
-    renderPartidos(_tabActual);
-
-  } catch(err) {
-    console.error(err);
-    document.getElementById("partidosContainer").innerHTML =
-      "<div class='loading-state'>⚠️ Error al cargar los partidos.</div>";
-  }
-}
-
-function faseAId(fase) {
-  if (fase === "regular")             return "Regular";
-  if (fase === "hexagonal_final")     return "HexFinal";
-  if (fase === "hexagonal_descenso")  return "HexDesc";
-  return "Regular";
-}
-
-function actualizarTabs(cfg) {
-  const hexGenerado = cfg.hexagonalGenerado;
-
-  document.getElementById("tabRegular").style.display = "";
-
-  if (hexGenerado) {
-    document.getElementById("tabHexFinal").style.display  = "";
-    document.getElementById("tabHexDesc").style.display   = "";
+    btn.classList.add("active");
+    renderPartidos(fase);
   }
 
-  // Botón generar hex: solo admin, solo si no fue generado, solo si estamos en fase regular
-  if (esAdmin && !hexGenerado && _faseActual === "regular") {
-    document.getElementById("btnGenerar").style.display = "";
-  }
-}
-
-function cambiarTab(fase, btn) {
-  _tabActual = fase;
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderPartidos(fase);
-}
-
-/* ═══════════════════════════════════════════
-   GENERAR HEXAGONALES (admin)
-═══════════════════════════════════════════ */
-async function generarHexagonales() {
-  if (!confirm("¿Generar hexagonales? Esto clasificará los equipos según la tabla actual y no se puede deshacer.")) return;
-  const btn = document.getElementById("btnGenerar");
-  btn.disabled = true;
-  btn.textContent = "⏳ Generando...";
-
-  try {
-    const res  = await fetch(API + "/hexagonal", { method: "POST" });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    alert("✅ " + data.message + "\n\nHex Final: " + data.hexFinal.join(", ") + "\nHex Descenso: " + data.hexDescenso.join(", "));
-    location.reload();
-  } catch(e) {
-    alert("❌ Error: " + e.message);
-    btn.disabled = false;
-    btn.textContent = "⚙️ Generar Hexagonales";
-  }
-}
-
-/* ═══════════════════════════════════════════
-   RENDER PARTIDOS
-═══════════════════════════════════════════ */
-function renderPartidos(fase) {
-  const container = document.getElementById("partidosContainer");
-  container.innerHTML = "";
-
-  const partidosFase = _calendario[fase] || [];
-
-  if (!partidosFase.length) {
-    container.innerHTML = "<div class='loading-state' style='padding:40px;'>Sin partidos en esta fase aún.</div>";
-    return;
+  async function generarHexagonales() {
+    if (!confirm("¿Generar hexagonales? Esto clasificará los equipos según la tabla actual y no se puede deshacer.")) return;
+    const btn = document.getElementById("btnGenerar");
+    btn.disabled = true;
+    btn.textContent = "⏳ Generando...";
+    try {
+      const res  = await fetch(API + "?ruta=hexagonal", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      alert("✅ " + data.message + "\n\nHex Final: " + data.hexFinal.join(", ") + "\nHex Descenso: " + data.hexDescenso.join(", "));
+      location.reload();
+    } catch(e) {
+      alert("❌ Error: " + e.message);
+      btn.disabled = false;
+      btn.textContent = "⚙️ Generar Hexagonales";
+    }
   }
 
-  // Agrupar por jornada
-  const porJornada = {};
-  partidosFase.forEach(p => {
-    const key = p.jornada;
-    if (!porJornada[key]) porJornada[key] = [];
-    porJornada[key].push(p);
-  });
+  function renderPartidos(fase) {
+    const container = document.getElementById("partidosContainer");
+    container.innerHTML = "";
+    const partidosFase = _calendario[fase] || [];
 
-  const jornadaKeys = Object.keys(porJornada).map(Number).sort((a,b)=>a-b);
-  const esHex = fase !== "regular";
-  const headerCls = fase === "hexagonal_descenso" ? "hex-descenso" : (esHex ? "hex-final" : "");
+    if (!partidosFase.length) {
+      container.innerHTML = "<div class='loading-state' style='padding:40px;'>Sin partidos en esta fase aún.</div>";
+      return;
+    }
 
-  jornadaKeys.forEach(function(jornadaIdx, i) {
-    const partidos = porJornada[jornadaIdx];
-    const block = document.createElement("div");
-    block.className = "jornada-block";
-    block.style.animationDelay = (i * 0.06) + "s";
-
-    let html = `<div class="jornada-header ${headerCls}"><h3>Jornada ${jornadaIdx + 1}</h3></div>`;
-
-    partidos.forEach(function(p) {
-      const idx    = p.partido;
-      const jugado = p.jugado;
-      const local     = p.local     || {};
-      const visitante = p.visitante || {};
-
-      // Logo
-      const logoL = local.logo     || ((_equipos.find(e=>e.nombre===local.nombre)||{}).logo||"");
-      const logoV = visitante.logo || ((_equipos.find(e=>e.nombre===visitante.nombre)||{}).logo||"");
-
-      // Centro
-      let centroHTML = "";
-      if (jugado) {
-        const gl = p.resultado && p.resultado.local     !== undefined ? p.resultado.local     : 0;
-        const gv = p.resultado && p.resultado.visitante !== undefined ? p.resultado.visitante : 0;
-        centroHTML = `<div class="score-badge">${gl} – ${gv}</div>`;
-      } else if (p.fecha) {
-        centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">${p.fecha}${p.hora?" · "+p.hora:""}</div>`;
-      } else {
-        centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">Sin horario</div>`;
-      }
-
-      // ID del partido para jugar/horario
-      const pid = p._id || "";
-
-      // Botones
-      const btnInforme = `<button class="btn-informe ${jugado?"jugado":""}" onclick='abrirInformePorId("${pid}")'>${jugado?"📋 Informe":"📋 Sin datos"}</button>`;
-      const adminBtns  = esAdmin
-        ? `<button class="btn-assign" onclick='abrirOpciones("${pid}")'>📅 Horario</button>
-           <button class="btn-play"   onclick='jugar("${pid}")'>▶ Jugar</button>`
-        : "";
-
-      html += `
-        <div class="partido-row">
-          <div class="team-side local">
-            <span>${local.nombre || "—"}</span>
-            <img class="team-logo" src="${logoL}" alt="${local.nombre||""}" onerror="this.style.display='none'">
-          </div>
-          <div class="match-center">${centroHTML}</div>
-          <div class="team-side visitante">
-            <img class="team-logo" src="${logoV}" alt="${visitante.nombre||""}" onerror="this.style.display='none'">
-            <span>${visitante.nombre || "—"}</span>
-          </div>
-          <div class="match-actions">${btnInforme}${adminBtns}</div>
-        </div>
-      `;
+    const porJornada = {};
+    partidosFase.forEach(p => {
+      const key = p.jornada;
+      if (!porJornada[key]) porJornada[key] = [];
+      porJornada[key].push(p);
     });
 
-    block.innerHTML = html;
-    container.appendChild(block);
-  });
+    const jornadaKeys = Object.keys(porJornada).map(Number).sort((a,b)=>a-b);
+    const esHex = fase !== "regular";
+    const headerCls = fase === "hexagonal_descenso" ? "hex-descenso" : (esHex ? "hex-final" : "");
 
-  window._allPartidosMap = {};
-  _allPartidos.forEach(p => { window._allPartidosMap[p._id] = p; });
-}
+    jornadaKeys.forEach(function(jornadaIdx, i) {
+      const partidos = porJornada[jornadaIdx];
+      const block = document.createElement("div");
+      block.className = "jornada-block";
+      block.style.animationDelay = (i * 0.06) + "s";
 
-/* ═══════════════════════════════════════════
-   INFORME
-═══════════════════════════════════════════ */
-function abrirInformePorId(pid) {
-  const info = _allPartidos.find(p => String(p._id) === String(pid));
-  if (!info) return;
+      let html = `<div class="jornada-header ${headerCls}"><h3>Jornada ${jornadaIdx + 1}</h3></div>`;
 
-  const local     = info.local     || {};
-  const visitante = info.visitante || {};
-  const jugado    = info.jugado;
-  const card      = document.getElementById("informeCard");
+      partidos.forEach(function(p) {
+        const jugado    = p.jugado;
+        const local     = p.local     || {};
+        const visitante = p.visitante || {};
+        const logoL = local.logo     || ((_equipos.find(e=>e.nombre===local.nombre)||{}).logo||"");
+        const logoV = visitante.logo || ((_equipos.find(e=>e.nombre===visitante.nombre)||{}).logo||"");
+        const pid   = p._id || "";
 
-  const jornadaLabel = `Jornada ${(info.jornada||0) + 1} · Partido ${(info.partido||0) + 1}`;
+        let centroHTML = "";
+        if (jugado) {
+          const gl = p.resultado && p.resultado.local     !== undefined ? p.resultado.local     : 0;
+          const gv = p.resultado && p.resultado.visitante !== undefined ? p.resultado.visitante : 0;
+          centroHTML = `<div class="score-badge">${gl} – ${gv}</div>`;
+        } else if (p.fecha) {
+          centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">${p.fecha}${p.hora?" · "+p.hora:""}</div>`;
+        } else {
+          centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">Sin horario</div>`;
+        }
 
-  if (!jugado) {
-    const fechaStr = info.fecha ? info.fecha + (info.hora?" · "+info.hora:"") : "Sin horario";
-    card.innerHTML = `
+        const btnInforme = `<button class="btn-informe ${jugado?"jugado":""}" onclick='abrirInformePorId("${pid}")'>${jugado?"📋 Informe":"📋 Sin datos"}</button>`;
+        const adminBtns  = esAdmin
+          ? `<button class="btn-assign" onclick='abrirOpciones("${pid}")'>📅 Horario</button>
+             <button class="btn-play"   onclick='jugar("${pid}")'>▶ Jugar</button>`
+          : "";
+
+        html += `
+          <div class="partido-row">
+            <div class="team-side local">
+              <span>${local.nombre || "—"}</span>
+              <img class="team-logo" src="${logoL}" alt="${local.nombre||""}" onerror="this.style.display='none'">
+            </div>
+            <div class="match-center">${centroHTML}</div>
+            <div class="team-side visitante">
+              <img class="team-logo" src="${logoV}" alt="${visitante.nombre||""}" onerror="this.style.display='none'">
+              <span>${visitante.nombre || "—"}</span>
+            </div>
+            <div class="match-actions">${btnInforme}${adminBtns}</div>
+          </div>`;
+      });
+
+      block.innerHTML = html;
+      container.appendChild(block);
+    });
+
+    window._allPartidosMap = {};
+    _allPartidos.forEach(p => { window._allPartidosMap[p._id] = p; });
+  }
+
+  function abrirInformePorId(pid) {
+    const info = _allPartidos.find(p => String(p._id) === String(pid));
+    if (!info) return;
+    const local     = info.local     || {};
+    const visitante = info.visitante || {};
+    const jugado    = info.jugado;
+    const card      = document.getElementById("informeCard");
+    const jornadaLabel = `Jornada ${(info.jornada||0) + 1} · Partido ${(info.partido||0) + 1}`;
+
+    if (!jugado) {
+      const fechaStr = info.fecha ? info.fecha + (info.hora?" · "+info.hora:"") : "Sin horario";
+      card.innerHTML = `
+        <div class="informe-header">
+          <button class="informe-close" onclick="cerrarInforme()">✕</button>
+          <div class="informe-jornada">${jornadaLabel}</div>
+          <div class="informe-teams">
+            <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${local.nombre||"—"}</div></div>
+            <div class="informe-score-box"><div style="font-size:1.3rem;color:var(--accent);font-weight:900;font-family:var(--font-head);letter-spacing:2px;">VS</div><div class="informe-fecha-label">${fechaStr}</div></div>
+            <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitante.nombre||"—"}</div></div>
+          </div>
+        </div>
+        <div class="informe-body"><p class="informe-empty">Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>`;
+      mostrarOverlay(); return;
+    }
+
+    const eventos   = info.eventos  || [];
+    const resultado = info.resultado || { local:0, visitante:0 };
+    const gl = Number(resultado.local     ?? 0);
+    const gv = Number(resultado.visitante ?? 0);
+    const contar = (eq, tipo) => eventos.filter(e => e.equipo===eq && e.tipo===tipo).length;
+    const localNombre     = local.nombre     || "Local";
+    const visitanteNombre = visitante.nombre || "Visitante";
+    const resultadoLabel  = gl>gv ? "Victoria "+localNombre : gv>gl ? "Victoria "+visitanteNombre : "Empate";
+    const vallaLocal      = gv === 0;
+    const vallaVisitante  = gl === 0;
+    const eventosSorted   = eventos.slice().sort((a,b) => a.minuto - b.minuto);
+
+    let html = `
       <div class="informe-header">
         <button class="informe-close" onclick="cerrarInforme()">✕</button>
         <div class="informe-jornada">${jornadaLabel}</div>
         <div class="informe-teams">
-          <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${local.nombre||"—"}</div></div>
-          <div class="informe-score-box"><div style="font-size:1.3rem;color:var(--accent);font-weight:900;font-family:var(--font-head);letter-spacing:2px;">VS</div><div class="informe-fecha-label">${fechaStr}</div></div>
-          <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitante.nombre||"—"}</div></div>
+          <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${localNombre}</div></div>
+          <div class="informe-score-box">
+            <div class="informe-score"><span>${gl}</span><span class="informe-score-sep">–</span><span>${gv}</span></div>
+            <div class="informe-resultado-label">${resultadoLabel}</div>
+            ${info.fecha ? `<div class="informe-fecha-label">${info.fecha}${info.hora?" · "+info.hora:""}</div>` : ""}
+          </div>
+          <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitanteNombre}</div></div>
         </div>
       </div>
-      <div class="informe-body"><p class="informe-empty">Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>
-    `;
-    mostrarOverlay(); return;
-  }
+      <div class="informe-body">`;
 
-  const eventos   = info.eventos  || [];
-  const resultado = info.resultado || { local:0, visitante:0 };
-  const gl = Number(resultado.local     ?? 0);
-  const gv = Number(resultado.visitante ?? 0);
-  const contar = (eq, tipo) => eventos.filter(e => e.equipo===eq && e.tipo===tipo).length;
-  const localNombre     = local.nombre     || "Local";
-  const visitanteNombre = visitante.nombre || "Visitante";
-  const resultadoLabel  = gl>gv ? "Victoria "+localNombre : gv>gl ? "Victoria "+visitanteNombre : "Empate";
-  const vallaLocal      = gv === 0;
-  const vallaVisitante  = gl === 0;
-  const eventosSorted   = eventos.slice().sort((a,b) => a.minuto - b.minuto);
+    if (info.mvp) html += `<div class="informe-section"><div class="informe-section-title">👑 MVP del partido</div><div class="mvp-card"><div style="font-size:1.5rem;">👑</div><div><div class="mvp-label">Jugador más valioso</div><div class="mvp-nombre">${info.mvp}</div></div></div></div>`;
 
-  let html = `
-    <div class="informe-header">
-      <button class="informe-close" onclick="cerrarInforme()">✕</button>
-      <div class="informe-jornada">${jornadaLabel}</div>
-      <div class="informe-teams">
-        <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${localNombre}</div></div>
-        <div class="informe-score-box">
-          <div class="informe-score"><span>${gl}</span><span class="informe-score-sep">–</span><span>${gv}</span></div>
-          <div class="informe-resultado-label">${resultadoLabel}</div>
-          ${info.fecha ? `<div class="informe-fecha-label">${info.fecha}${info.hora?" · "+info.hora:""}</div>` : ""}
-        </div>
-        <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitanteNombre}</div></div>
-      </div>
-    </div>
-    <div class="informe-body">
-  `;
+    if (vallaLocal || vallaVisitante) {
+      html += `<div class="informe-section"><div class="informe-section-title">🧤 Valla invicta</div><div style="display:flex;flex-direction:column;gap:6px;">`;
+      if (vallaLocal)     html += `<div class="valla-badge">🧤 ${localNombre} — arco a 0</div>`;
+      if (vallaVisitante) html += `<div class="valla-badge">🧤 ${visitanteNombre} — arco a 0</div>`;
+      html += `</div></div>`;
+    }
 
-  if (info.mvp) html += `<div class="informe-section"><div class="informe-section-title">👑 MVP del partido</div><div class="mvp-card"><div style="font-size:1.5rem;">👑</div><div><div class="mvp-label">Jugador más valioso</div><div class="mvp-nombre">${info.mvp}</div></div></div></div>`;
+    html += `<div class="informe-section"><div class="informe-section-title">📊 Estadísticas</div><div class="informe-stats-grid">
+      ${buildStat("⚽","Goles",gl,gv)}
+      ${buildStat("👟","Asistencias",contar("local","asistencia"),contar("visitante","asistencia"))}
+      ${buildStat("🟨","Amarillas",contar("local","amarilla"),contar("visitante","amarilla"))}
+      ${buildStat("🟥","Rojas",contar("local","roja"),contar("visitante","roja"))}
+    </div></div>`;
 
-  if (vallaLocal || vallaVisitante) {
-    html += `<div class="informe-section"><div class="informe-section-title">🧤 Valla invicta</div><div style="display:flex;flex-direction:column;gap:6px;">`;
-    if (vallaLocal)     html += `<div class="valla-badge">🧤 ${localNombre} — arco a 0</div>`;
-    if (vallaVisitante) html += `<div class="valla-badge">🧤 ${visitanteNombre} — arco a 0</div>`;
-    html += `</div></div>`;
-  }
-
-  html += `<div class="informe-section"><div class="informe-section-title">📊 Estadísticas</div><div class="informe-stats-grid">
-    ${buildStat("⚽","Goles",gl,gv)}
-    ${buildStat("👟","Asistencias",contar("local","asistencia"),contar("visitante","asistencia"))}
-    ${buildStat("🟨","Amarillas",contar("local","amarilla"),contar("visitante","amarilla"))}
-    ${buildStat("🟥","Rojas",contar("local","roja"),contar("visitante","roja"))}
-  </div></div>`;
-
-  html += `<div class="informe-section"><div class="informe-section-title">📋 Cronología</div>`;
-  if (eventosSorted.length) {
-    html += `<div class="timeline">`;
-    eventosSorted.forEach(e => {
-      const eqNom = e.equipo === "local" ? localNombre : visitanteNombre;
-      html += `<div class="timeline-item"><div class="timeline-min">${e.minuto}'</div><div class="timeline-icon">${ICONOS[e.tipo]||"•"}</div><div><div class="timeline-nombre">${e.jugador}</div><div class="timeline-sub">${eqNom} · ${e.tipo}</div></div></div>`;
-    });
+    html += `<div class="informe-section"><div class="informe-section-title">📋 Cronología</div>`;
+    if (eventosSorted.length) {
+      html += `<div class="timeline">`;
+      eventosSorted.forEach(e => {
+        const eqNom = e.equipo === "local" ? localNombre : visitanteNombre;
+        html += `<div class="timeline-item"><div class="timeline-min">${e.minuto}'</div><div class="timeline-icon">${ICONOS[e.tipo]||"•"}</div><div><div class="timeline-nombre">${e.jugador}</div><div class="timeline-sub">${eqNom} · ${e.tipo}</div></div></div>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<p class="informe-empty">Sin eventos registrados.</p>`;
+    }
     html += `</div>`;
-  } else {
-    html += `<p class="informe-empty">Sin eventos registrados.</p>`;
+
+    if (info.notas) html += `<div class="informe-section"><div class="informe-section-title">📝 Notas</div><div class="notas-box">${info.notas}</div></div>`;
+    html += `</div>`;
+    card.innerHTML = html;
+    mostrarOverlay();
   }
-  html += `</div>`;
 
-  if (info.notas) html += `<div class="informe-section"><div class="informe-section-title">📝 Notas</div><div class="notas-box">${info.notas}</div></div>`;
+  function buildStat(icono, label, vL, vV) {
+    return `<div class="informe-stat-item"><div class="informe-stat-icon">${icono}</div><div><div class="informe-stat-label">${label}</div><div class="informe-stat-val">${vL} – ${vV}</div></div></div>`;
+  }
 
-  html += `</div>`;
-  card.innerHTML = html;
-  mostrarOverlay();
-}
+  function mostrarOverlay() { document.getElementById("informeOverlay").classList.add("visible"); document.body.style.overflow="hidden"; }
+  function cerrarInforme()  { document.getElementById("informeOverlay").classList.remove("visible"); document.body.style.overflow=""; }
+  function cerrarInformeOverlay(e) { if(e.target===document.getElementById("informeOverlay")) cerrarInforme(); }
 
-function buildStat(icono, label, vL, vV) {
-  return `<div class="informe-stat-item"><div class="informe-stat-icon">${icono}</div><div><div class="informe-stat-label">${label}</div><div class="informe-stat-val">${vL} – ${vV}</div></div></div>`;
-}
+  function abrirOpciones(pid) {
+    localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
+    window.location.href = "/horarios.html";
+  }
+  function jugar(pid) {
+    localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
+    window.location.href = "/jugarpartido.html";
+  }
 
-function mostrarOverlay() { document.getElementById("informeOverlay").classList.add("visible"); document.body.style.overflow="hidden"; }
-function cerrarInforme()  { document.getElementById("informeOverlay").classList.remove("visible"); document.body.style.overflow=""; }
-function cerrarInformeOverlay(e) { if(e.target===document.getElementById("informeOverlay")) cerrarInforme(); }
-
-function abrirOpciones(pid) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
-  window.location.href = "/horarios.html";
-}
-function jugar(pid) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
-  window.location.href = "/jugarpartido.html";
-}
-
-init();
+  init();
 </script>
 </body>
 </html>
