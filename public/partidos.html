@@ -3,545 +3,194 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partidos — Haxec Esport</title>
+  <title>Partidos — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)}  to{opacity:1;transform:translateY(0)} }
+    @keyframes slideUp  { from{opacity:0;transform:translateY(28px)}  to{opacity:1;transform:translateY(0)} }
 
-    /* ══════════════════════════════════════════
-       ANIMACIONES DE ENTRADA
-    ══════════════════════════════════════════ */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .admin-title { animation: fadeDown .4s ease both; }
+    .back-btn    { animation: fadeDown .4s ease .08s both; }
 
-    .admin-title {
-      animation: fadeDown .4s ease both;
-    }
-    .back-btn {
-      animation: fadeDown .4s ease .08s both;
-    }
-
-    /* Jornadas entran escalonadas */
     .jornada-block {
-      opacity: 0;
-      animation: fadeUp .45s ease both;
+      opacity:0; animation: fadeUp .45s ease both;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:16px; margin-bottom:16px; overflow:hidden;
+      box-shadow:0 2px 12px rgba(0,0,0,.05); transition:box-shadow .2s;
     }
-
-    /* ══════════════════════════════════════════
-       JORNADA BLOCK
-    ══════════════════════════════════════════ */
-    .jornada-block {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,.05);
-      transition: box-shadow .2s;
-    }
-    .jornada-block:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,.09);
-    }
+    .jornada-block:hover { box-shadow:0 6px 24px rgba(0,0,0,.09); }
 
     .jornada-header {
-      background: var(--black);
-      border-bottom: 2.5px solid var(--accent);
-      padding: 11px 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      background:var(--black); border-bottom:2.5px solid var(--accent);
+      padding:11px 20px; display:flex; align-items:center; gap:10px;
     }
     .jornada-header h3 {
-      font-family: var(--font-head);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin: 0;
+      font-family:var(--font-head); font-size:0.72rem; font-weight:800;
+      letter-spacing:3px; text-transform:uppercase; color:var(--accent); margin:0;
     }
+    /* Color distinto para hexagonales */
+    .jornada-header.hex-final   { border-bottom-color: var(--accent); }
+    .jornada-header.hex-descenso{ border-bottom-color: var(--red); }
+    .jornada-header.hex-descenso h3 { color: var(--red); }
 
-    /* ══════════════════════════════════════════
-       PARTIDO ROW — SIMÉTRICO
-    ══════════════════════════════════════════ */
     .partido-row {
-      display: grid;
-      grid-template-columns: 1fr 130px 1fr;
-      grid-template-rows: auto auto;
-      align-items: center;
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid var(--border);
-      gap: 0 10px;
-      transition: background .15s;
+      display:grid; grid-template-columns:1fr 130px 1fr; grid-template-rows:auto auto;
+      align-items:center; padding:16px 20px 12px; border-bottom:1px solid var(--border);
+      gap:0 10px; transition:background .15s;
     }
-    .partido-row:last-of-type {
-      border-bottom: none;
-    }
-    .partido-row:hover {
-      background: var(--surface2);
-    }
+    .partido-row:last-of-type { border-bottom:none; }
+    .partido-row:hover { background:var(--surface2); }
 
-    /* EQUIPO LOCAL — alineado a la derecha */
     .team-side {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-head);
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: .3px;
-      color: var(--black);
-      min-width: 0;
+      display:flex; align-items:center; gap:10px;
+      font-family:var(--font-head); font-weight:700; font-size:0.95rem;
+      letter-spacing:.3px; color:var(--black); min-width:0;
     }
-    .team-side.local {
-      justify-content: flex-end;
-      flex-direction: row;
-      text-align: right;
-    }
-    .team-side.visitante {
-      justify-content: flex-start;
-      flex-direction: row;
-      text-align: left;
-    }
-    .team-side span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .team-logo {
-      width: 30px;
-      height: 30px;
-      object-fit: contain;
-      border-radius: 5px;
-      flex-shrink: 0;
-    }
+    .team-side.local     { justify-content:flex-end;   flex-direction:row;         text-align:right; }
+    .team-side.visitante { justify-content:flex-start; flex-direction:row;         text-align:left;  }
+    .team-side span      { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .team-logo { width:30px; height:30px; object-fit:contain; border-radius:5px; flex-shrink:0; }
 
-    /* CENTRO */
-    .match-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      text-align: center;
-    }
-    .score-badge {
-      background: var(--black);
-      color: #fff;
-      border-radius: 9px;
-      padding: 7px 14px;
-      font-family: var(--font-head);
-      font-size: 1.15rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      min-width: 82px;
-      text-align: center;
-      line-height: 1;
-    }
-    .score-badge.pendiente {
-      color: var(--muted);
-      font-size: 0.88rem;
-      letter-spacing: 1px;
-    }
-    .match-meta {
-      font-size: 0.72rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .3px;
-      white-space: nowrap;
-    }
+    .match-center { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; text-align:center; }
+    .score-badge  { background:var(--black); color:#fff; border-radius:9px; padding:7px 14px; font-family:var(--font-head); font-size:1.15rem; font-weight:900; letter-spacing:2px; min-width:82px; text-align:center; line-height:1; }
+    .score-badge.pendiente { color:var(--muted); font-size:.88rem; letter-spacing:1px; }
+    .match-meta   { font-size:.72rem; color:var(--muted); font-weight:600; letter-spacing:.3px; white-space:nowrap; }
 
-    /* ACCIONES — fila debajo, span completo */
     .match-actions {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding-top: 10px;
-      margin-top: 4px;
-      border-top: 1px dashed var(--border);
-      flex-wrap: wrap;
+      grid-column:1/-1; display:flex; align-items:center; justify-content:center;
+      gap:8px; padding-top:10px; margin-top:4px; border-top:1px dashed var(--border); flex-wrap:wrap;
     }
 
-    /* ══════════════════════════════════════════
-       BOTONES DE ACCIÓN
-    ══════════════════════════════════════════ */
-    .btn-informe {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--surface2);
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 6px 13px;
-      font-family: var(--font-body);
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .18s;
-      white-space: nowrap;
-    }
-    .btn-informe:hover {
-      border-color: var(--black);
-      color: var(--black);
-      background: var(--surface);
-    }
-    .btn-informe.jugado {
-      border-color: var(--accent);
-      color: var(--accent-dark);
-      background: var(--surface3);
-    }
-    .btn-informe.jugado:hover {
-      background: var(--accent);
-      color: var(--black);
-      border-color: var(--accent);
-    }
+    .btn-informe { display:inline-flex; align-items:center; gap:5px; background:var(--surface2); border:1.5px solid var(--border); color:var(--muted); border-radius:8px; padding:6px 13px; font-family:var(--font-body); font-size:.8rem; font-weight:600; cursor:pointer; transition:all .18s; white-space:nowrap; }
+    .btn-informe:hover { border-color:var(--black); color:var(--black); background:var(--surface); }
+    .btn-informe.jugado { border-color:var(--accent); color:var(--accent-dark); background:var(--surface3); }
+    .btn-informe.jugado:hover { background:var(--accent); color:var(--black); border-color:var(--accent); }
 
-    .btn-assign {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--text2);
-      padding: 6px 13px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: var(--font-body);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: .3px;
-      transition: all .18s;
-      white-space: nowrap;
-    }
-    .btn-assign:hover {
-      background: var(--black);
-      color: #fff;
-      border-color: var(--black);
-    }
+    .btn-assign { display:inline-flex; align-items:center; gap:5px; background:transparent; border:1.5px solid var(--border); color:var(--text2); padding:6px 13px; border-radius:8px; cursor:pointer; font-family:var(--font-body); font-size:.8rem; font-weight:600; letter-spacing:.3px; transition:all .18s; white-space:nowrap; }
+    .btn-assign:hover { background:var(--black); color:#fff; border-color:var(--black); }
 
-    .btn-play {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--accent);
-      border: none;
-      color: var(--black);
-      padding: 6px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: var(--font-head);
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: all .18s;
-      white-space: nowrap;
-    }
-    .btn-play:hover {
-      background: var(--accent-dark);
-      color: #fff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
+    .btn-play { display:inline-flex; align-items:center; gap:5px; background:var(--accent); border:none; color:var(--black); padding:6px 15px; border-radius:8px; cursor:pointer; font-family:var(--font-head); font-size:.8rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; transition:all .18s; white-space:nowrap; }
+    .btn-play:hover { background:var(--accent-dark); color:#fff; box-shadow:0 4px 14px var(--accent-glow); }
 
-    /* ══════════════════════════════════════════
-       MODAL INFORME
-    ══════════════════════════════════════════ */
+    /* ── TABS ── */
+    .tabs-row { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+    .tab-btn {
+      padding:7px 16px; border-radius:10px; border:1.5px solid var(--border);
+      background:var(--surface2); color:var(--muted); font-family:var(--font-head);
+      font-size:.72rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+      cursor:pointer; transition:all .18s;
+    }
+    .tab-btn:hover { border-color:var(--black); color:var(--black); }
+    .tab-btn.active { background:var(--black); color:var(--accent); border-color:var(--black); }
+
+    /* ── BOTÓN GENERAR HEX (admin) ── */
+    .btn-generar-hex {
+      display:inline-flex; align-items:center; gap:7px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color:var(--black); border:none; padding:10px 22px;
+      border-radius:12px; font-family:var(--font-head); font-size:.8rem;
+      font-weight:900; letter-spacing:1.5px; text-transform:uppercase;
+      cursor:pointer; transition:all .2s; box-shadow:0 4px 16px var(--accent-glow);
+    }
+    .btn-generar-hex:hover { transform:translateY(-1px); box-shadow:0 6px 20px var(--accent-glow); }
+    .btn-generar-hex:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    /* ── MODAL INFORME (igual que antes) ── */
     #informeOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15,20,16,.82);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      display:none; position:fixed; inset:0; background:rgba(15,20,16,.82);
+      backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;
     }
-    #informeOverlay.visible { display: flex; }
-
+    #informeOverlay.visible { display:flex; }
     .informe-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 18px;
-      width: 100%;
-      max-width: 540px;
-      max-height: 92vh;
-      overflow-y: auto;
-      box-shadow: 0 24px 60px rgba(0,0,0,.35);
-      animation: slideUp .25s cubic-bezier(.34,1.3,.64,1) both;
-      color: var(--text);
+      background:var(--surface); border:1.5px solid var(--border); border-radius:18px;
+      width:100%; max-width:540px; max-height:92vh; overflow-y:auto;
+      box-shadow:0 24px 60px rgba(0,0,0,.35); animation:slideUp .25s cubic-bezier(.34,1.3,.64,1) both;
+      color:var(--text);
     }
+    .informe-header { background:var(--black); border-radius:16px 16px 0 0; padding:22px 24px 20px; text-align:center; position:relative; border-bottom:2.5px solid var(--accent); }
+    .informe-close { position:absolute; top:13px; right:15px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.7); border-radius:50%; width:30px; height:30px; font-size:.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .informe-close:hover { background:var(--accent); color:var(--black); border-color:var(--accent); }
+    .informe-jornada { font-family:var(--font-head); font-size:.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); font-weight:800; margin-bottom:18px; }
+    .informe-teams { display:grid; grid-template-columns:1fr 110px 1fr; align-items:center; gap:6px; }
+    .informe-team { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .informe-team img { width:52px; height:52px; object-fit:contain; }
+    .informe-team-name { font-family:var(--font-head); font-size:.75rem; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:#fff; text-align:center; }
+    .informe-score-box { text-align:center; }
+    .informe-score { font-family:var(--font-head); font-size:2.8rem; font-weight:900; color:#fff; letter-spacing:2px; line-height:1; }
+    .informe-score-sep { color:var(--accent); margin:0 2px; }
+    .informe-resultado-label { display:inline-block; margin-top:8px; background:var(--accent); color:var(--black); font-family:var(--font-head); font-size:.65rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:3px 12px; border-radius:20px; }
+    .informe-fecha-label { font-size:.7rem; color:rgba(255,255,255,.4); margin-top:6px; font-family:var(--font-body); }
+    .informe-body { padding:22px 24px 24px; background:var(--surface); border-radius:0 0 16px 16px; }
+    .informe-section { margin-bottom:22px; }
+    .informe-section:last-child { margin-bottom:0; }
+    .informe-section-title { font-family:var(--font-head); font-size:.63rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--accent-dark); font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .informe-section-title::after { content:""; flex:1; height:1px; background:var(--border); }
+    .mvp-card { background:var(--black); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:14px; }
+    .mvp-label { font-size:.62rem; color:var(--accent); text-transform:uppercase; letter-spacing:1.5px; font-weight:700; font-family:var(--font-head); }
+    .mvp-nombre { font-size:1rem; font-weight:800; color:#fff; margin-top:3px; font-family:var(--font-head); letter-spacing:1px; }
+    .valla-badge { display:inline-flex; align-items:center; gap:10px; background:var(--surface3); border:1.5px solid var(--accent); border-radius:10px; padding:10px 16px; font-size:.88rem; font-weight:700; color:var(--accent-dark); width:100%; font-family:var(--font-body); }
+    .informe-stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .informe-stat-item { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:10px 14px; display:flex; align-items:center; gap:10px; }
+    .informe-stat-icon { font-size:1.1rem; flex-shrink:0; }
+    .informe-stat-label { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:600; font-family:var(--font-head); }
+    .informe-stat-val { font-size:.95rem; font-weight:800; color:var(--black); margin-top:2px; font-family:var(--font-head); }
+    .timeline { display:flex; flex-direction:column; gap:5px; }
+    .timeline-item { display:grid; grid-template-columns:38px 22px 1fr; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); transition:background .15s, border-color .15s; }
+    .timeline-item:hover { background:var(--surface3); border-color:var(--accent); }
+    .timeline-min { font-family:var(--font-head); font-size:.72rem; font-weight:900; color:var(--accent-dark); text-align:right; }
+    .timeline-icon { font-size:.88rem; text-align:center; }
+    .timeline-nombre { font-size:.85rem; font-weight:700; color:var(--black); font-family:var(--font-head); }
+    .timeline-sub { font-size:.7rem; color:var(--muted); margin-top:1px; }
+    .notas-box { background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:12px 16px; font-size:.88rem; color:var(--text2); line-height:1.6; font-style:italic; }
+    .informe-empty { text-align:center; color:var(--muted); font-size:.85rem; padding:16px 0; font-family:var(--font-body); }
 
-    /* Header del informe */
-    .informe-header {
-      background: var(--black);
-      border-radius: 16px 16px 0 0;
-      padding: 22px 24px 20px;
-      text-align: center;
-      position: relative;
-      border-bottom: 2.5px solid var(--accent);
-    }
-    .informe-close {
-      position: absolute;
-      top: 13px; right: 15px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.18);
-      color: rgba(255,255,255,.7);
-      border-radius: 50%;
-      width: 30px; height: 30px;
-      font-size: .85rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .15s;
-    }
-    .informe-close:hover {
-      background: var(--accent);
-      color: var(--black);
-      border-color: var(--accent);
-    }
-    .informe-jornada {
-      font-family: var(--font-head);
-      font-size: .65rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 800;
-      margin-bottom: 18px;
-    }
-
-    /* Teams en header — simétrico */
-    .informe-teams {
-      display: grid;
-      grid-template-columns: 1fr 110px 1fr;
-      align-items: center;
-      gap: 6px;
-    }
-    .informe-team {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .informe-team img {
-      width: 52px; height: 52px;
-      object-fit: contain;
-    }
-    .informe-team-name {
-      font-family: var(--font-head);
-      font-size: .75rem;
-      font-weight: 800;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-      color: #fff;
-      text-align: center;
-    }
-    .informe-score-box { text-align: center; }
-    .informe-score {
-      font-family: var(--font-head);
-      font-size: 2.8rem;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: 2px;
-      line-height: 1;
-    }
-    .informe-score-sep { color: var(--accent); margin: 0 2px; }
-    .informe-resultado-label {
-      display: inline-block;
-      margin-top: 8px;
-      background: var(--accent);
-      color: var(--black);
-      font-family: var(--font-head);
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 3px 12px;
-      border-radius: 20px;
-    }
-    .informe-fecha-label {
-      font-size: .7rem;
-      color: rgba(255,255,255,.4);
-      margin-top: 6px;
-      font-family: var(--font-body);
-    }
-
-    /* Body del informe */
-    .informe-body {
-      padding: 22px 24px 24px;
-      background: var(--surface);
-      border-radius: 0 0 16px 16px;
-    }
-    .informe-section { margin-bottom: 22px; }
-    .informe-section:last-child { margin-bottom: 0; }
-    .informe-section-title {
-      font-family: var(--font-head);
-      font-size: .63rem;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--accent-dark);
-      font-weight: 800;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .informe-section-title::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* MVP */
-    .mvp-card {
-      background: var(--black);
-      border-radius: 12px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .mvp-label { font-size: .62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; font-family: var(--font-head); }
-    .mvp-nombre { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 3px; font-family: var(--font-head); letter-spacing: 1px; }
-
-    /* Valla */
-    .valla-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--surface3);
-      border: 1.5px solid var(--accent);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: .88rem;
-      font-weight: 700;
-      color: var(--accent-dark);
-      width: 100%;
-      font-family: var(--font-body);
-    }
-
-    /* Stats */
-    .informe-stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .informe-stat-item {
-      background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .informe-stat-icon { font-size: 1.1rem; flex-shrink: 0; }
-    .informe-stat-label { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-family: var(--font-head); }
-    .informe-stat-val { font-size: .95rem; font-weight: 800; color: var(--black); margin-top: 2px; font-family: var(--font-head); }
-
-    /* Timeline */
-    .timeline { display: flex; flex-direction: column; gap: 5px; }
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 38px 22px 1fr;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      transition: background .15s, border-color .15s;
-    }
-    .timeline-item:hover {
-      background: var(--surface3);
-      border-color: var(--accent);
-    }
-    .timeline-min {
-      font-family: var(--font-head);
-      font-size: .72rem;
-      font-weight: 900;
-      color: var(--accent-dark);
-      text-align: right;
-    }
-    .timeline-icon { font-size: .88rem; text-align: center; }
-    .timeline-nombre { font-size: .85rem; font-weight: 700; color: var(--black); font-family: var(--font-head); }
-    .timeline-sub { font-size: .7rem; color: var(--muted); margin-top: 1px; }
-
-    /* Notas */
-    .notas-box {
-      background: var(--surface2);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 12px 16px;
-      font-size: .88rem;
-      color: var(--text2);
-      line-height: 1.6;
-      font-style: italic;
-    }
-
-    /* Sin datos */
-    .informe-empty {
-      text-align: center;
-      color: var(--muted);
-      font-size: .85rem;
-      padding: 16px 0;
-      font-family: var(--font-body);
-    }
-
-    /* ══════════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════════ */
-    @media (max-width: 600px) {
-      .partido-row { grid-template-columns: 1fr 80px 1fr; padding: 14px 14px 10px; }
-      .score-badge { min-width: 60px; font-size: 1rem; padding: 6px 8px; }
-      .team-side { font-size: 0.82rem; gap: 6px; }
-      .team-logo { width: 24px; height: 24px; }
-      .informe-teams { grid-template-columns: 1fr 90px 1fr; }
-      .informe-score { font-size: 2.2rem; }
-      .informe-team img { width: 40px; height: 40px; }
-      .informe-stats-grid { grid-template-columns: 1fr; }
+    @media(max-width:600px) {
+      .partido-row { grid-template-columns:1fr 80px 1fr; padding:14px 14px 10px; }
+      .score-badge { min-width:60px; font-size:1rem; padding:6px 8px; }
+      .team-side { font-size:.82rem; gap:6px; }
+      .team-logo { width:24px; height:24px; }
+      .informe-teams { grid-template-columns:1fr 90px 1fr; }
+      .informe-score { font-size:2.2rem; }
+      .informe-team img { width:40px; height:40px; }
+      .informe-stats-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
 <div class="hex-mid"></div>
-
 <header>
   <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
+    <img class="hero-logo-img"
+      src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+      alt="LigaPro Ecuabet">
     <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
     <h1 class="admin-title" style="margin-bottom:0;">Partidos</h1>
     <button class="back-btn" style="margin-bottom:0;" onclick="goBack()">⬅ Volver</button>
   </div>
 
-  <div id="partidosContainer">
-    <div class="loading-state">
-      <div class="spinner"></div>
-      Cargando partidos...
-    </div>
+  <!-- Tabs de fase -->
+  <div class="tabs-row" id="tabsRow">
+    <button class="tab-btn active" id="tabRegular"   onclick="cambiarTab('regular', this)">🏆 Fase Regular</button>
+    <button class="tab-btn"        id="tabHexFinal"  onclick="cambiarTab('hexagonal_final', this)" style="display:none;">🟢 Hex Final</button>
+    <button class="tab-btn"        id="tabHexDesc"   onclick="cambiarTab('hexagonal_descenso', this)" style="display:none;">🔴 Hex Descenso</button>
+
+    <!-- Botón admin para generar hexagonales -->
+    <button class="btn-generar-hex" id="btnGenerar" style="display:none;" onclick="generarHexagonales()">
+      ⚙️ Generar Hexagonales
+    </button>
   </div>
+
+  <div id="partidosContainer">
+    <div class="loading-state"><div class="spinner"></div>Cargando partidos...</div>
+  </div>
+
 </div>
 
 <footer>
@@ -554,257 +203,313 @@
 </div>
 
 <script>
-var API = "/api";
-var user    = JSON.parse(localStorage.getItem("user") || "null");
-var esAdmin = user && user.role === "admin";
-var ICONOS  = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
+var API      = "/api";
+var user     = JSON.parse(localStorage.getItem("user") || "null");
+var esAdmin  = user && user.role === "admin";
+var ICONOS   = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
+
+var _faseActual  = "regular";
+var _tabActual   = "regular";
+var _equipos     = [];
+var _allPartidos = [];
+var _calendario  = {};   // { regular: [...], hexagonal_final: [...], hexagonal_descenso: [...] }
 
 function goBack() { window.location.href = "/haxball.html"; }
 
-/* ── CALENDARIO ── */
-function generarCalendario(equipos) {
-  var lista = equipos.slice();
-  if (lista.length % 2 !== 0) lista.push(null);
-  var n = lista.length;
-  var jornadas = [];
-  for (var i = 0; i < n - 1; i++) {
-    var jornada = [];
-    for (var j = 0; j < n / 2; j++) {
-      var local = lista[j], visitante = lista[n - 1 - j];
-      if (local && visitante) jornada.push({ local: local, visitante: visitante });
-    }
-    jornadas.push(jornada);
-    lista.splice(1, 0, lista.pop());
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+async function init() {
+  try {
+    const [cfg, equipos, partidos] = await Promise.all([
+      fetch(API + "/config").then(r => r.json()),
+      fetch(API + "/teams").then(r => r.json()),
+      fetch(API + "/partidos").then(r => r.text().then(t => { try{return JSON.parse(t);}catch(_){return [];} }))
+    ]);
+
+    _faseActual  = cfg.fase || "regular";
+    _equipos     = equipos;
+    _allPartidos = partidos;
+
+    // Separar partidos por fase
+    _calendario.regular            = partidos.filter(p => !p.fase || p.fase === "regular");
+    _calendario.hexagonal_final    = partidos.filter(p => p.fase === "hexagonal_final");
+    _calendario.hexagonal_descenso = partidos.filter(p => p.fase === "hexagonal_descenso");
+
+    // Mostrar tabs según fase actual
+    actualizarTabs(cfg);
+
+    // Mostrar fase activa por defecto
+    _tabActual = _faseActual;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    const tabActivo = document.getElementById("tab" + faseAId(_faseActual));
+    if (tabActivo) tabActivo.classList.add("active");
+
+    renderPartidos(_tabActual);
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById("partidosContainer").innerHTML =
+      "<div class='loading-state'>⚠️ Error al cargar los partidos.</div>";
   }
-  var vuelta = jornadas.map(function(j) {
-    return j.map(function(p) { return { local: p.visitante, visitante: p.local }; });
-  });
-  return jornadas.concat(vuelta);
 }
 
-/* ── RENDER ── */
-async function cargarPartidos() {
-  var container = document.getElementById("partidosContainer");
+function faseAId(fase) {
+  if (fase === "regular")             return "Regular";
+  if (fase === "hexagonal_final")     return "HexFinal";
+  if (fase === "hexagonal_descenso")  return "HexDesc";
+  return "Regular";
+}
+
+function actualizarTabs(cfg) {
+  const hexGenerado = cfg.hexagonalGenerado;
+
+  document.getElementById("tabRegular").style.display = "";
+
+  if (hexGenerado) {
+    document.getElementById("tabHexFinal").style.display  = "";
+    document.getElementById("tabHexDesc").style.display   = "";
+  }
+
+  // Botón generar hex: solo admin, solo si no fue generado, solo si estamos en fase regular
+  if (esAdmin && !hexGenerado && _faseActual === "regular") {
+    document.getElementById("btnGenerar").style.display = "";
+  }
+}
+
+function cambiarTab(fase, btn) {
+  _tabActual = fase;
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderPartidos(fase);
+}
+
+/* ═══════════════════════════════════════════
+   GENERAR HEXAGONALES (admin)
+═══════════════════════════════════════════ */
+async function generarHexagonales() {
+  if (!confirm("¿Generar hexagonales? Esto clasificará los equipos según la tabla actual y no se puede deshacer.")) return;
+  const btn = document.getElementById("btnGenerar");
+  btn.disabled = true;
+  btn.textContent = "⏳ Generando...";
+
   try {
-    var res = await Promise.all([
-      fetch(API + "/teams").then(function(r) { return r.json(); }),
-      fetch(API + "/partidos").then(function(r) {
-        return r.text().then(function(txt) {
-          try { return JSON.parse(txt); } catch(_) { return []; }
-        });
-      }).catch(function() { return []; })
-    ]);
-    var equipos      = res[0];
-    var dataPartidos = res[1];
-    var calendario   = generarCalendario(equipos);
+    const res  = await fetch(API + "/hexagonal", { method: "POST" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    alert("✅ " + data.message + "\n\nHex Final: " + data.hexFinal.join(", ") + "\nHex Descenso: " + data.hexDescenso.join(", "));
+    location.reload();
+  } catch(e) {
+    alert("❌ Error: " + e.message);
+    btn.disabled = false;
+    btn.textContent = "⚙️ Generar Hexagonales";
+  }
+}
 
-    container.innerHTML = "";
+/* ═══════════════════════════════════════════
+   RENDER PARTIDOS
+═══════════════════════════════════════════ */
+function renderPartidos(fase) {
+  const container = document.getElementById("partidosContainer");
+  container.innerHTML = "";
 
-    calendario.forEach(function(jornada, i) {
-      var block = document.createElement("div");
-      block.className = "jornada-block";
-      block.style.animationDelay = (i * 0.06) + "s";
+  const partidosFase = _calendario[fase] || [];
 
-      var html = "<div class='jornada-header'><h3>Jornada " + (i + 1) + "</h3></div>";
+  if (!partidosFase.length) {
+    container.innerHTML = "<div class='loading-state' style='padding:40px;'>Sin partidos en esta fase aún.</div>";
+    return;
+  }
 
-      jornada.forEach(function(p, idx) {
-        var info   = dataPartidos.find(function(d) { return d.jornada === i && d.partido === idx; });
-        var jugado = info && info.jugado;
+  // Agrupar por jornada
+  const porJornada = {};
+  partidosFase.forEach(p => {
+    const key = p.jornada;
+    if (!porJornada[key]) porJornada[key] = [];
+    porJornada[key].push(p);
+  });
 
-        /* Centro */
-        var centroHTML = "";
-        if (jugado) {
-          var gl = info.resultado && info.resultado.local !== undefined ? info.resultado.local : 0;
-          var gv = info.resultado && info.resultado.visitante !== undefined ? info.resultado.visitante : 0;
-          centroHTML = "<div class='score-badge'>" + gl + " – " + gv + "</div>";
-        } else if (info && info.fecha) {
-          centroHTML = "<div class='score-badge pendiente'>VS</div><div class='match-meta'>" + info.fecha + (info.hora ? " · " + info.hora : "") + "</div>";
-        } else {
-          centroHTML = "<div class='score-badge pendiente'>VS</div><div class='match-meta'>Sin horario</div>";
-        }
+  const jornadaKeys = Object.keys(porJornada).map(Number).sort((a,b)=>a-b);
+  const esHex = fase !== "regular";
+  const headerCls = fase === "hexagonal_descenso" ? "hex-descenso" : (esHex ? "hex-final" : "");
 
-        /* Botones */
-        var btnInforme = "<button class='btn-informe " + (jugado ? "jugado" : "") + "' onclick='abrirInforme(event," + i + "," + idx + ")'>" +
-          (jugado ? "📋 Informe" : "📋 Sin datos") + "</button>";
+  jornadaKeys.forEach(function(jornadaIdx, i) {
+    const partidos = porJornada[jornadaIdx];
+    const block = document.createElement("div");
+    block.className = "jornada-block";
+    block.style.animationDelay = (i * 0.06) + "s";
 
-        var adminBtns = esAdmin
-          ? "<button class='btn-assign' onclick='abrirOpciones(" + i + "," + idx + ")'>📅 Horario</button>" +
-            "<button class='btn-play' onclick='jugar(" + i + "," + idx + ")'>▶ Jugar</button>"
-          : "";
+    let html = `<div class="jornada-header ${headerCls}"><h3>Jornada ${jornadaIdx + 1}</h3></div>`;
 
-        html += "<div class='partido-row'>";
-        /* Local — derecha */
-        html += "<div class='team-side local'><span>" + p.local.nombre + "</span><img class='team-logo' src='" + p.local.logo + "' alt='" + p.local.nombre + "'></div>";
-        /* Centro */
-        html += "<div class='match-center'>" + centroHTML + "</div>";
-        /* Visitante — izquierda */
-        html += "<div class='team-side visitante'><img class='team-logo' src='" + p.visitante.logo + "' alt='" + p.visitante.nombre + "'><span>" + p.visitante.nombre + "</span></div>";
-        /* Acciones */
-        html += "<div class='match-actions'>" + btnInforme + adminBtns + "</div>";
-        html += "</div>";
-      });
+    partidos.forEach(function(p) {
+      const idx    = p.partido;
+      const jugado = p.jugado;
+      const local     = p.local     || {};
+      const visitante = p.visitante || {};
 
-      block.innerHTML = html;
-      container.appendChild(block);
+      // Logo
+      const logoL = local.logo     || ((_equipos.find(e=>e.nombre===local.nombre)||{}).logo||"");
+      const logoV = visitante.logo || ((_equipos.find(e=>e.nombre===visitante.nombre)||{}).logo||"");
+
+      // Centro
+      let centroHTML = "";
+      if (jugado) {
+        const gl = p.resultado && p.resultado.local     !== undefined ? p.resultado.local     : 0;
+        const gv = p.resultado && p.resultado.visitante !== undefined ? p.resultado.visitante : 0;
+        centroHTML = `<div class="score-badge">${gl} – ${gv}</div>`;
+      } else if (p.fecha) {
+        centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">${p.fecha}${p.hora?" · "+p.hora:""}</div>`;
+      } else {
+        centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">Sin horario</div>`;
+      }
+
+      // ID del partido para jugar/horario
+      const pid = p._id || "";
+
+      // Botones
+      const btnInforme = `<button class="btn-informe ${jugado?"jugado":""}" onclick='abrirInformePorId("${pid}")'>${jugado?"📋 Informe":"📋 Sin datos"}</button>`;
+      const adminBtns  = esAdmin
+        ? `<button class="btn-assign" onclick='abrirOpciones("${pid}")'>📅 Horario</button>
+           <button class="btn-play"   onclick='jugar("${pid}")'>▶ Jugar</button>`
+        : "";
+
+      html += `
+        <div class="partido-row">
+          <div class="team-side local">
+            <span>${local.nombre || "—"}</span>
+            <img class="team-logo" src="${logoL}" alt="${local.nombre||""}" onerror="this.style.display='none'">
+          </div>
+          <div class="match-center">${centroHTML}</div>
+          <div class="team-side visitante">
+            <img class="team-logo" src="${logoV}" alt="${visitante.nombre||""}" onerror="this.style.display='none'">
+            <span>${visitante.nombre || "—"}</span>
+          </div>
+          <div class="match-actions">${btnInforme}${adminBtns}</div>
+        </div>
+      `;
     });
 
-    window._calendario   = calendario;
-    window._dataPartidos = dataPartidos;
+    block.innerHTML = html;
+    container.appendChild(block);
+  });
 
-  } catch (err) {
-    console.error(err);
-    container.innerHTML = "<div class='loading-state'>⚠️ Error al cargar los partidos.</div>";
-  }
+  window._allPartidosMap = {};
+  _allPartidos.forEach(p => { window._allPartidosMap[p._id] = p; });
 }
 
-/* ── INFORME ── */
-function abrirInforme(event, jornadaIdx, partidoIdx) {
-  event.stopPropagation();
-  var calendario   = window._calendario   || [];
-  var dataPartidos = window._dataPartidos || [];
-  var pCal  = calendario[jornadaIdx] && calendario[jornadaIdx][partidoIdx];
-  var info  = dataPartidos.find(function(d) { return d.jornada === jornadaIdx && d.partido === partidoIdx; });
-  var local     = pCal && pCal.local;
-  var visitante = pCal && pCal.visitante;
-  var jugado    = info && info.jugado;
-  var card = document.getElementById("informeCard");
+/* ═══════════════════════════════════════════
+   INFORME
+═══════════════════════════════════════════ */
+function abrirInformePorId(pid) {
+  const info = _allPartidos.find(p => String(p._id) === String(pid));
+  if (!info) return;
 
-  /* Sin datos */
+  const local     = info.local     || {};
+  const visitante = info.visitante || {};
+  const jugado    = info.jugado;
+  const card      = document.getElementById("informeCard");
+
+  const jornadaLabel = `Jornada ${(info.jornada||0) + 1} · Partido ${(info.partido||0) + 1}`;
+
   if (!jugado) {
-    var fechaStr = (info && info.fecha) ? info.fecha + (info.hora ? " · " + info.hora : "") : "Sin horario";
-    card.innerHTML =
-      "<div class='informe-header'>" +
-        "<button class='informe-close' onclick='cerrarInforme()'>✕</button>" +
-        "<div class='informe-jornada'>Jornada " + (jornadaIdx + 1) + " · Partido " + (partidoIdx + 1) + "</div>" +
-        "<div class='informe-teams'>" +
-          "<div class='informe-team'><img src='" + (local && local.logo || "") + "' alt=''><div class='informe-team-name'>" + (local && local.nombre || "—") + "</div></div>" +
-          "<div class='informe-score-box'><div style='font-size:1.3rem;color:var(--accent);font-weight:900;font-family:var(--font-head);letter-spacing:2px;'>VS</div><div class='informe-fecha-label'>" + fechaStr + "</div></div>" +
-          "<div class='informe-team'><img src='" + (visitante && visitante.logo || "") + "' alt=''><div class='informe-team-name'>" + (visitante && visitante.nombre || "—") + "</div></div>" +
-        "</div>" +
-      "</div>" +
-      "<div class='informe-body'><p class='informe-empty'>Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>";
+    const fechaStr = info.fecha ? info.fecha + (info.hora?" · "+info.hora:"") : "Sin horario";
+    card.innerHTML = `
+      <div class="informe-header">
+        <button class="informe-close" onclick="cerrarInforme()">✕</button>
+        <div class="informe-jornada">${jornadaLabel}</div>
+        <div class="informe-teams">
+          <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${local.nombre||"—"}</div></div>
+          <div class="informe-score-box"><div style="font-size:1.3rem;color:var(--accent);font-weight:900;font-family:var(--font-head);letter-spacing:2px;">VS</div><div class="informe-fecha-label">${fechaStr}</div></div>
+          <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitante.nombre||"—"}</div></div>
+        </div>
+      </div>
+      <div class="informe-body"><p class="informe-empty">Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>
+    `;
     mostrarOverlay(); return;
   }
 
-  /* Jugado */
-  var eventos   = info.eventos || [];
-  var resultado = info.resultado || { local: 0, visitante: 0 };
-  var gl = Number(resultado.local !== undefined ? resultado.local : 0);
-  var gv = Number(resultado.visitante !== undefined ? resultado.visitante : 0);
+  const eventos   = info.eventos  || [];
+  const resultado = info.resultado || { local:0, visitante:0 };
+  const gl = Number(resultado.local     ?? 0);
+  const gv = Number(resultado.visitante ?? 0);
+  const contar = (eq, tipo) => eventos.filter(e => e.equipo===eq && e.tipo===tipo).length;
+  const localNombre     = local.nombre     || "Local";
+  const visitanteNombre = visitante.nombre || "Visitante";
+  const resultadoLabel  = gl>gv ? "Victoria "+localNombre : gv>gl ? "Victoria "+visitanteNombre : "Empate";
+  const vallaLocal      = gv === 0;
+  const vallaVisitante  = gl === 0;
+  const eventosSorted   = eventos.slice().sort((a,b) => a.minuto - b.minuto);
 
-  function contar(equipo, tipo) {
-    return eventos.filter(function(e) { return e.equipo === equipo && e.tipo === tipo; }).length;
-  }
+  let html = `
+    <div class="informe-header">
+      <button class="informe-close" onclick="cerrarInforme()">✕</button>
+      <div class="informe-jornada">${jornadaLabel}</div>
+      <div class="informe-teams">
+        <div class="informe-team"><img src="${local.logo||""}" alt=""><div class="informe-team-name">${localNombre}</div></div>
+        <div class="informe-score-box">
+          <div class="informe-score"><span>${gl}</span><span class="informe-score-sep">–</span><span>${gv}</span></div>
+          <div class="informe-resultado-label">${resultadoLabel}</div>
+          ${info.fecha ? `<div class="informe-fecha-label">${info.fecha}${info.hora?" · "+info.hora:""}</div>` : ""}
+        </div>
+        <div class="informe-team"><img src="${visitante.logo||""}" alt=""><div class="informe-team-name">${visitanteNombre}</div></div>
+      </div>
+    </div>
+    <div class="informe-body">
+  `;
 
-  var localNombre     = local && local.nombre || "Local";
-  var visitanteNombre = visitante && visitante.nombre || "Visitante";
-  var resultadoLabel  = gl > gv ? "Victoria " + localNombre : gv > gl ? "Victoria " + visitanteNombre : "Empate";
-  var vallaLocal      = gv === 0;
-  var vallaVisitante  = gl === 0;
-  var eventosSorted   = eventos.slice().sort(function(a, b) { return a.minuto - b.minuto; });
+  if (info.mvp) html += `<div class="informe-section"><div class="informe-section-title">👑 MVP del partido</div><div class="mvp-card"><div style="font-size:1.5rem;">👑</div><div><div class="mvp-label">Jugador más valioso</div><div class="mvp-nombre">${info.mvp}</div></div></div></div>`;
 
-  var html = "";
-
-  /* Header */
-  html += "<div class='informe-header'>";
-  html += "<button class='informe-close' onclick='cerrarInforme()'>✕</button>";
-  html += "<div class='informe-jornada'>Jornada " + (jornadaIdx + 1) + " · Partido " + (partidoIdx + 1) + "</div>";
-  html += "<div class='informe-teams'>";
-  html += "<div class='informe-team'><img src='" + (local && local.logo || "") + "' alt=''><div class='informe-team-name'>" + localNombre + "</div></div>";
-  html += "<div class='informe-score-box'>";
-  html += "<div class='informe-score'><span>" + gl + "</span><span class='informe-score-sep'>–</span><span>" + gv + "</span></div>";
-  html += "<div class='informe-resultado-label'>" + resultadoLabel + "</div>";
-  if (info.fecha) html += "<div class='informe-fecha-label'>" + info.fecha + (info.hora ? " · " + info.hora : "") + "</div>";
-  html += "</div>";
-  html += "<div class='informe-team'><img src='" + (visitante && visitante.logo || "") + "' alt=''><div class='informe-team-name'>" + visitanteNombre + "</div></div>";
-  html += "</div></div>";
-
-  /* Body */
-  html += "<div class='informe-body'>";
-
-  /* MVP */
-  if (info.mvp) {
-    html += "<div class='informe-section'>";
-    html += "<div class='informe-section-title'>👑 MVP del partido</div>";
-    html += "<div class='mvp-card'><div style='font-size:1.5rem;'>👑</div><div><div class='mvp-label'>Jugador más valioso</div><div class='mvp-nombre'>" + info.mvp + "</div></div></div>";
-    html += "</div>";
-  }
-
-  /* Valla */
   if (vallaLocal || vallaVisitante) {
-    html += "<div class='informe-section'>";
-    html += "<div class='informe-section-title'>🧤 Valla invicta</div>";
-    html += "<div style='display:flex;flex-direction:column;gap:6px;'>";
-    if (vallaLocal)     html += "<div class='valla-badge'>🧤 " + localNombre + " — arco a 0</div>";
-    if (vallaVisitante) html += "<div class='valla-badge'>🧤 " + visitanteNombre + " — arco a 0</div>";
-    html += "</div></div>";
+    html += `<div class="informe-section"><div class="informe-section-title">🧤 Valla invicta</div><div style="display:flex;flex-direction:column;gap:6px;">`;
+    if (vallaLocal)     html += `<div class="valla-badge">🧤 ${localNombre} — arco a 0</div>`;
+    if (vallaVisitante) html += `<div class="valla-badge">🧤 ${visitanteNombre} — arco a 0</div>`;
+    html += `</div></div>`;
   }
 
-  /* Stats */
-  html += "<div class='informe-section'><div class='informe-section-title'>📊 Estadísticas</div>";
-  html += "<div class='informe-stats-grid'>";
-  html += buildStat("⚽", "Goles",       gl, gv);
-  html += buildStat("👟", "Asistencias", contar("local","asistencia"), contar("visitante","asistencia"));
-  html += buildStat("🟨", "Amarillas",   contar("local","amarilla"),   contar("visitante","amarilla"));
-  html += buildStat("🟥", "Rojas",       contar("local","roja"),       contar("visitante","roja"));
-  html += "</div></div>";
+  html += `<div class="informe-section"><div class="informe-section-title">📊 Estadísticas</div><div class="informe-stats-grid">
+    ${buildStat("⚽","Goles",gl,gv)}
+    ${buildStat("👟","Asistencias",contar("local","asistencia"),contar("visitante","asistencia"))}
+    ${buildStat("🟨","Amarillas",contar("local","amarilla"),contar("visitante","amarilla"))}
+    ${buildStat("🟥","Rojas",contar("local","roja"),contar("visitante","roja"))}
+  </div></div>`;
 
-  /* Cronología */
-  html += "<div class='informe-section'><div class='informe-section-title'>📋 Cronología</div>";
+  html += `<div class="informe-section"><div class="informe-section-title">📋 Cronología</div>`;
   if (eventosSorted.length) {
-    html += "<div class='timeline'>";
-    for (var k = 0; k < eventosSorted.length; k++) {
-      var e = eventosSorted[k];
-      var eqNom = e.equipo === "local" ? localNombre : visitanteNombre;
-      html += "<div class='timeline-item'>";
-      html += "<div class='timeline-min'>" + e.minuto + "'</div>";
-      html += "<div class='timeline-icon'>" + (ICONOS[e.tipo] || "•") + "</div>";
-      html += "<div><div class='timeline-nombre'>" + e.jugador + "</div><div class='timeline-sub'>" + eqNom + " · " + e.tipo + "</div></div>";
-      html += "</div>";
-    }
-    html += "</div>";
+    html += `<div class="timeline">`;
+    eventosSorted.forEach(e => {
+      const eqNom = e.equipo === "local" ? localNombre : visitanteNombre;
+      html += `<div class="timeline-item"><div class="timeline-min">${e.minuto}'</div><div class="timeline-icon">${ICONOS[e.tipo]||"•"}</div><div><div class="timeline-nombre">${e.jugador}</div><div class="timeline-sub">${eqNom} · ${e.tipo}</div></div></div>`;
+    });
+    html += `</div>`;
   } else {
-    html += "<p class='informe-empty'>Sin eventos registrados.</p>";
+    html += `<p class="informe-empty">Sin eventos registrados.</p>`;
   }
-  html += "</div>";
+  html += `</div>`;
 
-  /* Notas */
-  if (info.notas) {
-    html += "<div class='informe-section'><div class='informe-section-title'>📝 Notas</div>";
-    html += "<div class='notas-box'>" + info.notas + "</div></div>";
-  }
+  if (info.notas) html += `<div class="informe-section"><div class="informe-section-title">📝 Notas</div><div class="notas-box">${info.notas}</div></div>`;
 
-  html += "</div>";
+  html += `</div>`;
   card.innerHTML = html;
   mostrarOverlay();
 }
 
 function buildStat(icono, label, vL, vV) {
-  return "<div class='informe-stat-item'><div class='informe-stat-icon'>" + icono + "</div><div><div class='informe-stat-label'>" + label + "</div><div class='informe-stat-val'>" + vL + " – " + vV + "</div></div></div>";
+  return `<div class="informe-stat-item"><div class="informe-stat-icon">${icono}</div><div><div class="informe-stat-label">${label}</div><div class="informe-stat-val">${vL} – ${vV}</div></div></div>`;
 }
 
-function mostrarOverlay() {
-  document.getElementById("informeOverlay").classList.add("visible");
-  document.body.style.overflow = "hidden";
-}
-function cerrarInforme() {
-  document.getElementById("informeOverlay").classList.remove("visible");
-  document.body.style.overflow = "";
-}
-function cerrarInformeOverlay(e) {
-  if (e.target === document.getElementById("informeOverlay")) cerrarInforme();
-}
+function mostrarOverlay() { document.getElementById("informeOverlay").classList.add("visible"); document.body.style.overflow="hidden"; }
+function cerrarInforme()  { document.getElementById("informeOverlay").classList.remove("visible"); document.body.style.overflow=""; }
+function cerrarInformeOverlay(e) { if(e.target===document.getElementById("informeOverlay")) cerrarInforme(); }
 
-function abrirOpciones(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada: jornada, partido: partido }));
+function abrirOpciones(pid) {
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
   window.location.href = "/horarios.html";
 }
-function jugar(jornada, partido) {
-  localStorage.setItem("partidoSeleccionado", JSON.stringify({ jornada: jornada, partido: partido }));
+function jugar(pid) {
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid }));
   window.location.href = "/jugarpartido.html";
 }
 
-cargarPartidos();
+init();
 </script>
 </body>
 </html>

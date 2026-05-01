@@ -3,19 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tabla de Posiciones — Haxec Esport</title>
+  <title>Tabla de Posiciones — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── FASE BADGE ── */
+    .fase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-family: var(--font-head);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .fase-badge.regular    { background: var(--surface2); color: var(--muted); border: 1.5px solid var(--border); }
+    .fase-badge.hexfinal   { background: var(--accent); color: var(--black); }
+    .fase-badge.hexdescenso{ background: var(--red); color: #fff; }
+
+    /* ── SEPARADORES EN TABLA ── */
+    .hex-divider td {
+      padding: 0 !important;
+      height: 3px;
+    }
+    .hex-divider.final td    { background: var(--accent); }
+    .hex-divider.descenso td { background: var(--red); }
+
+    .hex-label-row td {
+      padding: 5px 12px !important;
+      font-family: var(--font-head);
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+    .hex-label-row.final td    { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+    .hex-label-row.descenso td { background: color-mix(in srgb, var(--red) 10%, transparent); color: var(--red); }
+
+    /* ── FILA CON COLOR POR ZONA ── */
+    tr.zona-final:hover    { background: color-mix(in srgb, var(--accent) 6%, transparent) !important; }
+    tr.zona-descenso:hover { background: color-mix(in srgb, var(--red) 5%, transparent) !important; }
+
+    /* ── BADGE ARRASTRE ── */
+    .pts-arrastre {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-left: 3px;
+    }
+
+    /* ── TABS ── */
+    .tabs-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 7px 16px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .tab-btn:hover { border-color: var(--black); color: var(--black); }
+    .tab-btn.active {
+      background: var(--black);
+      color: var(--accent);
+      border-color: var(--black);
+    }
+  </style>
 </head>
 <body>
 <div class="hex-mid"></div>
 
 <header>
   <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
+    <img class="hero-logo-img"
+      src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+      alt="LigaPro Ecuabet">
     <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
 </header>
@@ -23,8 +99,16 @@
 <div class="admin-container">
 
   <h1 class="admin-title">Tabla de Posiciones</h1>
-
   <button class="back-btn" onclick="goBack()">← Volver</button>
+
+  <!-- Badge de fase actual -->
+  <div id="faseBadge"></div>
+
+  <!-- Tabs solo visibles en hexagonales -->
+  <div class="tabs-row" id="tabsRow" style="display:none;">
+    <button class="tab-btn active" onclick="cambiarTab('final', this)">🟢 Hexagonal Final</button>
+    <button class="tab-btn"        onclick="cambiarTab('descenso', this)">🔴 Hexagonal Descenso</button>
+  </div>
 
   <div class="admin-card" style="padding:0;">
     <div class="tabla-wrapper">
@@ -66,110 +150,187 @@
 
 <script>
 const API = "/api";
+let _faseActual = "regular";
+let _tabActual  = "final";
+let _tablaData  = [];
+let _equipos    = [];
 
-function goBack() {
-  window.location.href = "/haxball.html";
-}
+function goBack() { window.location.href = "/haxball.html"; }
 
-async function cargarTabla() {
-  const tbody = document.getElementById("tablaBody");
-
+async function init() {
   try {
-    // Traer tabla
-    let resTabla = await fetch(API + "/tabla");
-    let data = await resTabla.json();
+    const [cfg, equipos, tabla] = await Promise.all([
+      fetch(API + "/config").then(r => r.json()),
+      fetch(API + "/teams").then(r => r.json()),
+      fetch(API + "/tabla").then(r => r.json())
+    ]);
 
-    // Si vacía → inicializar y recargar
-    if (!data.length) {
-      await fetch(API + "/tabla", { method: "POST" });
-      resTabla = await fetch(API + "/tabla");
-      data = await resTabla.json();
+    _faseActual = cfg.fase || "regular";
+    _equipos    = equipos;
+    _tablaData  = tabla;
+
+    renderFaseBadge(_faseActual);
+
+    if (_faseActual === "regular") {
+      document.getElementById("tabsRow").style.display = "none";
+      renderTablaRegular(_tablaData, _equipos);
+    } else {
+      document.getElementById("tabsRow").style.display = "flex";
+      renderTablaHex(_tabActual);
     }
-
-    // Traer equipos para logos
-    const equipos = await fetch(API + "/teams").then(r => r.json());
-
-    // Ordenar: puntos → diferencia de goles → GF
-    data.sort((a, b) =>
-      (b.PTS - a.PTS) || (b.DG - a.DG) || (b.GF - a.GF)
-    );
-
-    tbody.innerHTML = "";
-
-    if (!data.length) {
-      tbody.innerHTML = `
-        <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">
-          Sin datos aún
-        </td></tr>
-      `;
-      return;
-    }
-
-    data.forEach((t, index) => {
-      const equipo = equipos.find(e =>
-        e.nombre.toLowerCase() === t.equipo.toLowerCase()
-      );
-      const logo = equipo
-        ? `<img src="${equipo.logo}" alt="${t.equipo}" onerror="this.style.display='none'">`
-        : "";
-
-      const pj = t.PJ || 0;
-      const pts = t.PTS || 0;
-      const pct = pj > 0 ? Math.round((pts / (pj * 3)) * 100) : 0;
-
-      // Color posición
-      let posColor = "var(--muted)";
-      if (index === 0) posColor = "var(--yellow)";
-      else if (index === 1) posColor = "var(--accent)";
-      else if (index === 2) posColor = "var(--green)";
-
-      const tr = document.createElement("tr");
-      tr.style.animation = `fadeUp .3s ease ${index * 0.05}s both`;
-
-      tr.innerHTML = `
-        <td style="color:${posColor};font-family:var(--font-head);font-size:1.1rem;font-weight:900;">
-          ${index + 1}
-        </td>
-        <td>
-          <div class="equipo-cell">
-            ${logo}
-            <span style="font-weight:700;">${t.equipo}</span>
-          </div>
-        </td>
-        <td>${pj}</td>
-        <td style="color:var(--green);font-weight:700;">${t.G || 0}</td>
-        <td>${t.E || 0}</td>
-        <td style="color:var(--red);font-weight:700;">${t.P || 0}</td>
-        <td>${t.GF || 0}</td>
-        <td>${t.GC || 0}</td>
-        <td style="color:${(t.DG || 0) >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
-          ${(t.DG || 0) >= 0 ? '+' : ''}${t.DG || 0}
-        </td>
-        <td>
-          <span class="pts-badge">${pts}</span>
-        </td>
-        <td>
-          <div class="pct-bar-cell">
-            <div class="pct-bar" style="width:${pct * 0.5}px; max-width:50px;"></div>
-            <span class="pct-text">${pct}%</span>
-          </div>
-        </td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-
-  } catch (err) {
-    console.error(err);
-    tbody.innerHTML = `
-      <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">
-        ⚠️ Error al cargar la tabla
-      </td></tr>
-    `;
+  } catch(e) {
+    console.error(e);
+    document.getElementById("tablaBody").innerHTML =
+      `<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">⚠️ Error al cargar</td></tr>`;
   }
 }
 
-cargarTabla();
+function cambiarTab(tab, btn) {
+  _tabActual = tab;
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderTablaHex(tab);
+}
+
+/* ── BADGE DE FASE ── */
+function renderFaseBadge(fase) {
+  const badges = {
+    regular:             { cls: "regular",     icon: "🏆", texto: "Fase Regular" },
+    hexagonal_final:     { cls: "hexfinal",    icon: "🟢", texto: "Hexagonal Final" },
+    hexagonal_descenso:  { cls: "hexdescenso", icon: "🔴", texto: "Hexagonal Descenso" }
+  };
+  const b = badges[fase] || badges.regular;
+  document.getElementById("faseBadge").innerHTML =
+    `<div class="fase-badge ${b.cls}">${b.icon} ${b.texto}</div>`;
+}
+
+/* ── TABLA FASE REGULAR ── */
+function renderTablaRegular(data, equipos) {
+  const tbody = document.getElementById("tablaBody");
+  const sorted = [...data].sort((a,b) => (b.PTS-a.PTS)||(b.DG-a.DG)||(b.GF-a.GF));
+
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">Sin datos aún</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  sorted.forEach((t, index) => {
+    const pj  = t.PJ  || 0;
+    const pts = t.PTS || 0;
+    const pct = pj > 0 ? Math.round((pts / (pj * 3)) * 100) : 0;
+
+    // Colores de posición
+    let posColor = "var(--muted)";
+    if (index === 0) posColor = "var(--yellow)";
+    else if (index < 6) posColor = "var(--accent)";
+    else posColor = "var(--red)";
+
+    // Separadores visuales
+    if (index === 6) {
+      // Línea divisoria → Top 6 clasifican al hexagonal final
+      const div = document.createElement("tr");
+      div.className = "hex-divider final";
+      div.innerHTML = `<td colspan="11"></td>`;
+      tbody.appendChild(div);
+
+      const lbl = document.createElement("tr");
+      lbl.className = "hex-label-row final";
+      lbl.innerHTML = `<td colspan="11">🟢 Clasifican a Hexagonal Final los puestos 1-6 · Zona de Descenso desde aquí</td>`;
+      tbody.appendChild(lbl);
+    }
+
+    const equipo = equipos.find(e => e.nombre.toLowerCase() === t.equipo.toLowerCase());
+    const logo   = equipo
+      ? `<img src="${equipo.logo}" alt="${t.equipo}" onerror="this.style.display='none'">`
+      : "";
+
+    const tr = document.createElement("tr");
+    tr.style.animation = `fadeUp .3s ease ${index * 0.05}s both`;
+    if (index < 6) tr.className = "zona-final";
+    else           tr.className = "zona-descenso";
+
+    tr.innerHTML = `
+      <td style="color:${posColor};font-family:var(--font-head);font-size:1.1rem;font-weight:900;">${index + 1}</td>
+      <td><div class="equipo-cell">${logo}<span style="font-weight:700;">${t.equipo}</span></div></td>
+      <td>${pj}</td>
+      <td style="color:var(--green);font-weight:700;">${t.G  || 0}</td>
+      <td>${t.E || 0}</td>
+      <td style="color:var(--red);font-weight:700;">${t.P   || 0}</td>
+      <td>${t.GF || 0}</td>
+      <td>${t.GC || 0}</td>
+      <td style="color:${(t.DG||0)>=0?'var(--green)':'var(--red)'};font-weight:700;">${(t.DG||0)>=0?'+':''}${t.DG||0}</td>
+      <td><span class="pts-badge">${pts}</span></td>
+      <td>
+        <div class="pct-bar-cell">
+          <div class="pct-bar" style="width:${pct*0.5}px;max-width:50px;"></div>
+          <span class="pct-text">${pct}%</span>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── TABLA HEXAGONAL ── */
+function renderTablaHex(hex) {
+  const tbody   = document.getElementById("tablaBody");
+  const filtrada = _tablaData.filter(t => t.hex === hex);
+  const sorted   = [...filtrada].sort((a,b) => (b.PTS-a.PTS)||(b.DG-a.DG)||(b.GF-a.GF));
+
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">Sin datos aún</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  sorted.forEach((t, index) => {
+    const pj  = t.PJ  || 0;
+    const pts = t.PTS || 0;
+    const pct = pj > 0 ? Math.round((pts / (pj * 3)) * 100) : 0;
+    const pts1 = t.PTS_fase1 || 0; // Puntos arrastrados
+
+    let posColor = "var(--muted)";
+    if (index === 0) posColor = "var(--yellow)";
+    else if (index === 1) posColor = "var(--accent)";
+    else if (index === 2) posColor = "var(--green)";
+
+    const equipo = _equipos.find(e => e.nombre.toLowerCase() === t.equipo.toLowerCase());
+    const logo   = equipo
+      ? `<img src="${equipo.logo}" alt="${t.equipo}" onerror="this.style.display='none'">`
+      : "";
+
+    const tr = document.createElement("tr");
+    tr.style.animation = `fadeUp .3s ease ${index * 0.05}s both`;
+
+    tr.innerHTML = `
+      <td style="color:${posColor};font-family:var(--font-head);font-size:1.1rem;font-weight:900;">${index + 1}</td>
+      <td><div class="equipo-cell">${logo}<span style="font-weight:700;">${t.equipo}</span></div></td>
+      <td>${pj}</td>
+      <td style="color:var(--green);font-weight:700;">${t.G  || 0}</td>
+      <td>${t.E || 0}</td>
+      <td style="color:var(--red);font-weight:700;">${t.P   || 0}</td>
+      <td>${t.GF || 0}</td>
+      <td>${t.GC || 0}</td>
+      <td style="color:${(t.DG||0)>=0?'var(--green)':'var(--red)'};font-weight:700;">${(t.DG||0)>=0?'+':''}${t.DG||0}</td>
+      <td>
+        <span class="pts-badge">${pts}</span>
+        ${pts1 > 0 ? `<span class="pts-arrastre">(+${pts1} F1)</span>` : ""}
+      </td>
+      <td>
+        <div class="pct-bar-cell">
+          <div class="pct-bar" style="width:${pct*0.5}px;max-width:50px;"></div>
+          <span class="pct-text">${pct}%</span>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+init();
 </script>
 
 </body>

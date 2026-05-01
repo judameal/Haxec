@@ -1,3 +1,4 @@
+// api/tabla.js  (reemplaza el existente)
 import clientPromise from "../lib/mongodb.js";
 
 export default async function handler(req, res) {
@@ -8,11 +9,17 @@ export default async function handler(req, res) {
     const tabla = db.collection("tabla");
     const teams = db.collection("teams");
 
+    /* ── GET: obtener tabla ── */
     if (req.method === "GET") {
-      const data = await tabla.find().toArray();
+      const { hex } = req.query;
+
+      // Filtrar por hexagonal si se pasa ?hex=final o ?hex=descenso
+      const filtro = hex ? { hex } : {};
+      const data = await tabla.find(filtro).toArray();
       return res.status(200).json(data);
     }
 
+    /* ── POST: inicializar tabla desde equipos registrados ── */
     if (req.method === "POST") {
       const equipos = await teams.find().toArray();
 
@@ -20,6 +27,7 @@ export default async function handler(req, res) {
 
       const base = equipos.map(e => ({
         equipo: e.nombre,
+        logo: e.logo || "",
         PJ: 0,
         G: 0,
         E: 0,
@@ -27,7 +35,9 @@ export default async function handler(req, res) {
         GF: 0,
         GC: 0,
         DG: 0,
-        PTS: 0
+        PTS: 0,
+        hex: null,        // null = fase regular | "final" | "descenso"
+        PTS_fase1: 0      // puntos arrastrados de la fase regular
       }));
 
       if (base.length) {
