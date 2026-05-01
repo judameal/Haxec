@@ -174,6 +174,7 @@
     <button class="tab-btn active" id="tabRegular"  onclick="cambiarTab('regular', this)">🏆 Fase Regular</button>
     <button class="tab-btn"        id="tabHexFinal" onclick="cambiarTab('hexagonal_final', this)" style="display:none;">🟢 Hex Final</button>
     <button class="tab-btn"        id="tabHexDesc"  onclick="cambiarTab('hexagonal_descenso', this)" style="display:none;">🔴 Hex Descenso</button>
+    <button class="btn-generar-hex" id="btnGenerarRegular" style="display:none;" onclick="generarFaseRegular()">⚙️ Generar Fase Regular</button>
     <button class="btn-generar-hex" id="btnGenerar" style="display:none;" onclick="generarHexagonales()">⚙️ Generar Hexagonales</button>
   </div>
 
@@ -249,7 +250,11 @@
       document.getElementById("tabHexDesc").style.display  = "";
     }
     if (esAdmin && !hexGenerado && _faseActual === "regular") {
-      document.getElementById("btnGenerar").style.display = "";
+      if (_calendario.regular.length === 0) {
+        document.getElementById("btnGenerarRegular").style.display = "";
+      } else {
+        document.getElementById("btnGenerar").style.display = "";
+      }
     }
   }
 
@@ -258,6 +263,76 @@
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     renderPartidos(fase);
+  }
+
+  async function generarFaseRegular() {
+    if (!confirm("¿Generar calendario de la Fase Regular? Esto borrará los partidos actuales y reiniciará la tabla.")) return;
+    const btn = document.getElementById("btnGenerarRegular");
+    btn.disabled = true;
+    btn.textContent = "⏳ Generando...";
+    try {
+      // 1. Obtener equipos
+      const resTeams = await fetch(API + "?ruta=teams");
+      const equipos = await resTeams.json();
+      if (equipos.length < 2) throw new Error("Se necesitan al menos 2 equipos para generar el calendario.");
+
+      // 2. Algoritmo Round Robin (Ida y Vuelta)
+      const lista = [...equipos];
+      if (lista.length % 2 !== 0) lista.push(null);
+      const n = lista.length;
+      const jornadas = [];
+
+      for (let i = 0; i < n - 1; i++) {
+        const jornada = [];
+        for (let j = 0; j < n / 2; j++) {
+          const local = lista[j];
+          const visitante = lista[n - 1 - j];
+          if (local && visitante) {
+            jornada.push({ local, visitante });
+          }
+        }
+        jornadas.push(jornada);
+        lista.splice(1, 0, lista.pop());
+      }
+
+      // Vuelta
+      const vuelta = jornadas.map(j => j.map(p => ({ local: p.visitante, visitante: p.local })));
+      const todas  = [...jornadas, ...vuelta];
+
+      const calendarioFinal = [];
+      todas.forEach((jornada, jIdx) => {
+        jornada.forEach((p, pIdx) => {
+          calendarioFinal.push({
+            fase: "regular",
+            jornada: jIdx,
+            partido: pIdx,
+            local: { nombre: p.local.nombre, logo: p.local.logo || "" },
+            visitante: { nombre: p.visitante.nombre, logo: p.visitante.logo || "" },
+            jugado: false,
+            fecha: "",
+            hora: ""
+          });
+        });
+      });
+
+      // 3. Guardar en API
+      const resP = await fetch(API + "?ruta=partidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ calendario: calendarioFinal })
+      });
+      if (!resP.ok) throw new Error("Error al guardar partidos.");
+
+      // 4. Reiniciar Tabla
+      await fetch(API + "?ruta=tabla", { method: "POST" });
+
+      alert("✅ ¡Fase Regular generada con éxito!");
+      location.reload();
+    } catch(e) {
+      alert("❌ Error: " + e.message);
+      btn.disabled = false;
+      btn.textContent = "⚙️ Generar Fase Regular";
+    }
   }
 
   async function generarHexagonales() {
