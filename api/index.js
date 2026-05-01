@@ -25,19 +25,19 @@ export default async function handler(req, res) {
   const ruta = (req.query.ruta || "").toLowerCase();
 
   try {
-    if (ruta === "login")          return await handleLogin(req, res);
-    if (ruta === "register")       return await handleRegister(req, res);
-    if (ruta === "users")          return await handleUsers(req, res);
-    if (ruta === "deleteuser")     return await handleDeleteUser(req, res);
-    if (ruta === "setrole")        return await handleSetRole(req, res);
-    if (ruta === "teams")          return await handleTeams(req, res);
-    if (ruta === "tabla")          return await handleTabla(req, res);
-    if (ruta === "partidos")       return await handlePartidos(req, res);
-    if (ruta === "jugadores")      return await handleJugadores(req, res);
-    if (ruta === "reset")          return await handleReset(req, res);
-    if (ruta === "config")         return await handleConfig(req, res);
-    if (ruta === "hexagonal")      return await handleHexagonal(req, res);
-    if (ruta === "copas")          return await handleCopas(req, res);
+    if (ruta === "login") return await handleLogin(req, res);
+    if (ruta === "register") return await handleRegister(req, res);
+    if (ruta === "users") return await handleUsers(req, res);
+    if (ruta === "deleteuser") return await handleDeleteUser(req, res);
+    if (ruta === "setrole") return await handleSetRole(req, res);
+    if (ruta === "teams") return await handleTeams(req, res);
+    if (ruta === "tabla") return await handleTabla(req, res);
+    if (ruta === "partidos") return await handlePartidos(req, res);
+    if (ruta === "jugadores") return await handleJugadores(req, res);
+    if (ruta === "reset") return await handleReset(req, res);
+    if (ruta === "config") return await handleConfig(req, res);
+    if (ruta === "hexagonal") return await handleHexagonal(req, res);
+    if (ruta === "copas") return await handleCopas(req, res);
 
     return res.status(404).json({ message: "Ruta no encontrada: " + ruta });
   } catch (error) {
@@ -54,7 +54,7 @@ async function handleLogin(req, res) {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ message: "Faltan datos" });
 
-  const db   = await getDb("haxball");
+  const db = await getDb("haxball");
   const user = await db.collection("users").findOne({ username, password });
   if (!user) return res.status(401).json({ message: "Credenciales incorrectas" });
 
@@ -66,7 +66,7 @@ async function handleRegister(req, res) {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ message: "Datos incompletos" });
 
-  const db       = await getDb("haxball");
+  const db = await getDb("haxball");
   const existing = await db.collection("users").findOne({ username });
   if (existing) return res.status(400).json({ message: "Usuario ya existe" });
 
@@ -77,7 +77,7 @@ async function handleRegister(req, res) {
 
 async function handleUsers(req, res) {
   if (req.method !== "GET") return res.status(405).end();
-  const db    = await getDb("haxball");
+  const db = await getDb("haxball");
   const users = await db.collection("users").find().toArray();
   return res.status(200).json(users);
 }
@@ -106,7 +106,7 @@ async function handleSetRole(req, res) {
    TEAMS
 ════════════════════════════════════════════════════ */
 async function handleTeams(req, res) {
-  const db    = await getDb("haxball");
+  const db = await getDb("haxball");
   const teams = db.collection("teams");
 
   if (req.method === "GET") {
@@ -133,14 +133,14 @@ async function handleTeams(req, res) {
    TABLA
 ════════════════════════════════════════════════════ */
 async function handleTabla(req, res) {
-  const db    = await getDb("haxball");
+  const db = await getDb("haxball");
   const tabla = db.collection("tabla");
   const teams = db.collection("teams");
 
   if (req.method === "GET") {
     const { hex } = req.query;
-    const filtro  = hex ? { hex } : {};
-    const data    = await tabla.find(filtro).toArray();
+    const filtro = hex ? { hex } : {};
+    const data = await tabla.find(filtro).toArray();
     return res.status(200).json(data);
   }
 
@@ -149,10 +149,10 @@ async function handleTabla(req, res) {
     await tabla.deleteMany({});
 
     const base = equipos.map(e => ({
-      equipo:    e.nombre,
-      logo:      e.logo || "",
+      equipo: e.nombre,
+      logo: e.logo || "",
       PJ: 0, G: 0, E: 0, P: 0, GF: 0, GC: 0, DG: 0, PTS: 0,
-      hex:       null,
+      hex: null,
       PTS_fase1: 0
     }));
 
@@ -167,9 +167,9 @@ async function handleTabla(req, res) {
    PARTIDOS
 ════════════════════════════════════════════════════ */
 async function handlePartidos(req, res) {
-  const db        = await getDb("haxball");
-  const partidos  = db.collection("partidos");
-  const tabla     = db.collection("tabla");
+  const db = await getDb("haxball");
+  const partidos = db.collection("partidos");
+  const tabla = db.collection("tabla");
   const jugadores = db.collection("jugadores");
 
   /* GET */
@@ -194,7 +194,7 @@ async function handlePartidos(req, res) {
 
     await partidos.updateOne(
       { jornada, partido },
-      { $set: { jornada, partido, fecha: fecha||"", hora: hora||"", local: local||null, visitante: visitante||null, jugado: false } },
+      { $set: { jornada, partido, fecha: fecha || "", hora: hora || "", local: local || null, visitante: visitante || null, jugado: false } },
       { upsert: true }
     );
     return res.status(200).json({ message: "Horario guardado" });
@@ -217,7 +217,7 @@ async function handlePartidos(req, res) {
       await revertirJugadores(jugadores, partido.eventos || [], partido.mvp);
     }
 
-    const equipoLocal     = local     || partido.local;
+    const equipoLocal = local || partido.local;
     const equipoVisitante = visitante || partido.visitante;
 
     if (!equipoLocal?.nombre || !equipoVisitante?.nombre)
@@ -225,7 +225,7 @@ async function handlePartidos(req, res) {
 
     await partidos.updateOne(
       { _id: objectId },
-      { $set: { jugado: true, local: equipoLocal, visitante: equipoVisitante, resultado, eventos, mvp: mvp||"", notas: notas||"" } }
+      { $set: { jugado: true, local: equipoLocal, visitante: equipoVisitante, resultado, eventos, mvp: mvp || "", notas: notas || "" } }
     );
 
     await actualizarTabla(tabla, equipoLocal, equipoVisitante, resultado);
@@ -241,7 +241,7 @@ async function handlePartidos(req, res) {
    JUGADORES
 ════════════════════════════════════════════════════ */
 async function handleJugadores(req, res) {
-  const db        = await getDb("haxball");
+  const db = await getDb("haxball");
   const jugadores = db.collection("jugadores");
 
   if (req.method === "GET") {
@@ -256,7 +256,7 @@ async function handleJugadores(req, res) {
     await jugadores.insertOne({
       dorsal, nombre,
       equipo: equipo || "Sin equipo",
-      foto:   foto   || "",
+      foto: foto || "",
       goles: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0, vallas_imbatidas: 0, grl: null
     });
     return res.status(200).json({ message: "Jugador creado" });
@@ -300,7 +300,7 @@ async function handleReset(req, res) {
    CONFIG
 ════════════════════════════════════════════════════ */
 async function handleConfig(req, res) {
-  const db     = await getDb("haxball");
+  const db = await getDb("haxball");
   const config = db.collection("config");
 
   if (req.method === "GET") {
@@ -329,13 +329,13 @@ async function handleConfig(req, res) {
    HEXAGONAL
 ════════════════════════════════════════════════════ */
 async function handleHexagonal(req, res) {
-  const db          = await getDb("haxball");
-  const tablaCol    = db.collection("tabla");
+  const db = await getDb("haxball");
+  const tablaCol = db.collection("tabla");
   const partidosCol = db.collection("partidos");
-  const configCol   = db.collection("config");
+  const configCol = db.collection("config");
 
   if (req.method === "GET") {
-    const hexFinal    = await tablaCol.find({ hex: "final" }).toArray();
+    const hexFinal = await tablaCol.find({ hex: "final" }).toArray();
     const hexDescenso = await tablaCol.find({ hex: "descenso" }).toArray();
     return res.status(200).json({ hexFinal, hexDescenso });
   }
@@ -351,14 +351,14 @@ async function handleHexagonal(req, res) {
     if (tabla.length < 6)
       return res.status(400).json({ message: "Se necesitan al menos 6 equipos" });
 
-    const hexFinal    = tabla.slice(0, 6);
+    const hexFinal = tabla.slice(0, 6);
     const hexDescenso = tabla.slice(6);
 
-    for (const e of hexFinal)    await tablaCol.updateOne({ equipo: e.equipo }, { $set: { hex: "final",    PTS_fase1: e.PTS } });
+    for (const e of hexFinal) await tablaCol.updateOne({ equipo: e.equipo }, { $set: { hex: "final", PTS_fase1: e.PTS } });
     for (const e of hexDescenso) await tablaCol.updateOne({ equipo: e.equipo }, { $set: { hex: "descenso", PTS_fase1: e.PTS } });
 
     const todosPartidos = [
-      ...generarCalendarioHex(hexFinal,    "hexagonal_final"),
+      ...generarCalendarioHex(hexFinal, "hexagonal_final"),
       ...generarCalendarioHex(hexDescenso, "hexagonal_descenso")
     ];
 
@@ -372,7 +372,7 @@ async function handleHexagonal(req, res) {
 
     return res.status(200).json({
       message: "Hexagonales generados correctamente",
-      hexFinal:    hexFinal.map(e => e.equipo),
+      hexFinal: hexFinal.map(e => e.equipo),
       hexDescenso: hexDescenso.map(e => e.equipo),
       partidosGenerados: todosPartidos.length
     });
@@ -390,7 +390,7 @@ function generarCalendarioHex(equipos, fase) {
   for (let i = 0; i < n - 1; i++) {
     const jornada = [];
     for (let j = 0; j < n / 2; j++) {
-      const local     = lista[j];
+      const local = lista[j];
       const visitante = lista[n - 1 - j];
       if (local && visitante) jornada.push({ local, visitante });
     }
@@ -399,17 +399,17 @@ function generarCalendarioHex(equipos, fase) {
   }
 
   const vuelta = jornadas.map(j => j.map(p => ({ local: p.visitante, visitante: p.local })));
-  const todas  = [...jornadas, ...vuelta];
+  const todas = [...jornadas, ...vuelta];
   const result = [];
 
   todas.forEach((jornada, jornadaIdx) => {
     jornada.forEach((p, partidoIdx) => {
       result.push({
         fase,
-        jornada:   jornadaIdx,
-        partido:   partidoIdx,
-        local:     { nombre: p.local.equipo,     logo: p.local.logo     || "" },
-        visitante: { nombre: p.visitante.equipo, logo: p.visitante.logo || "" },
+        jornada: jornadaIdx,
+        partido: partidoIdx,
+        local: { nombre: p.local.equipo },
+        visitante: { nombre: p.visitante.equipo },
         fecha: "", hora: "", jugado: false
       });
     });
@@ -422,7 +422,7 @@ function generarCalendarioHex(equipos, fase) {
    COPAS
 ════════════════════════════════════════════════════ */
 async function handleCopas(req, res) {
-  const db    = await getDb("copa_expresso");
+  const db = await getDb("copa_expresso");
   const copas = db.collection("copas");
 
   if (req.method === "GET") {
@@ -483,33 +483,33 @@ async function handleCopas(req, res) {
    HELPERS TABLA
 ════════════════════════════════════════════════════ */
 async function actualizarTabla(tabla, local, visitante, resultado) {
-  const gl = Number(resultado?.local     ?? 0);
+  const gl = Number(resultado?.local ?? 0);
   const gv = Number(resultado?.visitante ?? 0);
 
   const upd = async (nombre, gf, gc, pts, g, e, p) =>
-    tabla.updateOne({ equipo: nombre }, { $inc: { PJ:1, G:g, E:e, P:p, GF:gf, GC:gc, DG:gf-gc, PTS:pts } }, { upsert:true });
+    tabla.updateOne({ equipo: nombre }, { $inc: { PJ: 1, G: g, E: e, P: p, GF: gf, GC: gc, DG: gf - gc, PTS: pts } }, { upsert: true });
 
-  if      (gl > gv) { await upd(local.nombre, gl, gv, 3,1,0,0); await upd(visitante.nombre, gv, gl, 0,0,0,1); }
-  else if (gl < gv) { await upd(local.nombre, gl, gv, 0,0,0,1); await upd(visitante.nombre, gv, gl, 3,1,0,0); }
-  else              { await upd(local.nombre, gl, gv, 1,0,1,0); await upd(visitante.nombre, gv, gl, 1,0,1,0); }
+  if (gl > gv) { await upd(local.nombre, gl, gv, 3, 1, 0, 0); await upd(visitante.nombre, gv, gl, 0, 0, 0, 1); }
+  else if (gl < gv) { await upd(local.nombre, gl, gv, 0, 0, 0, 1); await upd(visitante.nombre, gv, gl, 3, 1, 0, 0); }
+  else { await upd(local.nombre, gl, gv, 1, 0, 1, 0); await upd(visitante.nombre, gv, gl, 1, 0, 1, 0); }
 }
 
 async function revertirTabla(tabla, local, visitante, resultado) {
   if (!local || !visitante || !resultado) return;
-  const gl = Number(resultado?.local     ?? 0);
+  const gl = Number(resultado?.local ?? 0);
   const gv = Number(resultado?.visitante ?? 0);
 
   const rev = async (nombre, gf, gc, pts, g, e, p) =>
-    tabla.updateOne({ equipo: nombre }, { $inc: { PJ:-1, G:-g, E:-e, P:-p, GF:-gf, GC:-gc, DG:-(gf-gc), PTS:-pts } });
+    tabla.updateOne({ equipo: nombre }, { $inc: { PJ: -1, G: -g, E: -e, P: -p, GF: -gf, GC: -gc, DG: -(gf - gc), PTS: -pts } });
 
-  if      (gl > gv) { await rev(local.nombre, gl, gv, 3,1,0,0); await rev(visitante.nombre, gv, gl, 0,0,0,1); }
-  else if (gl < gv) { await rev(local.nombre, gl, gv, 0,0,0,1); await rev(visitante.nombre, gv, gl, 3,1,0,0); }
-  else              { await rev(local.nombre, gl, gv, 1,0,1,0); await rev(visitante.nombre, gv, gl, 1,0,1,0); }
+  if (gl > gv) { await rev(local.nombre, gl, gv, 3, 1, 0, 0); await rev(visitante.nombre, gv, gl, 0, 0, 0, 1); }
+  else if (gl < gv) { await rev(local.nombre, gl, gv, 0, 0, 0, 1); await rev(visitante.nombre, gv, gl, 3, 1, 0, 0); }
+  else { await rev(local.nombre, gl, gv, 1, 0, 1, 0); await rev(visitante.nombre, gv, gl, 1, 0, 1, 0); }
 }
 
 async function actualizarJugadores(jugadores, eventos, mvp) {
   for (const e of eventos) {
-    const campo = { gol:"goles", asistencia:"asistencias", amarilla:"amarillas", roja:"rojas" }[e.tipo];
+    const campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
     if (campo) await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1 } });
   }
   if (mvp) await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: 1 } });
@@ -517,7 +517,7 @@ async function actualizarJugadores(jugadores, eventos, mvp) {
 
 async function revertirJugadores(jugadores, eventos, mvp) {
   for (const e of eventos) {
-    const campo = { gol:"goles", asistencia:"asistencias", amarilla:"amarillas", roja:"rojas" }[e.tipo];
+    const campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
     if (campo) await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: -1 } });
   }
   if (mvp) await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: -1 } });
