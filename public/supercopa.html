@@ -179,9 +179,14 @@
 
     let _partidos = [];
 
+    let _teams = [];
     async function init() {
-      const res = await fetch(API);
-      _partidos = await res.json();
+      const [resP, resT] = await Promise.all([
+        fetch(API).then(r => r.json()),
+        fetch(API_TABLA).then(r => r.json())
+      ]);
+      _partidos = Array.isArray(resP) ? resP : [];
+      _teams = Array.isArray(resT) ? resT : [];
       render();
     }
 
@@ -211,8 +216,8 @@
       const shuffled = clasificados.sort(() => 0.5 - Math.random());
 
       const bracket = [
-        { round: "semis", local: shuffled[0], visitante: shuffled[1], resultado: { local:0, visitante:0 }, jugado: false },
-        { round: "semis", local: shuffled[2], visitante: shuffled[3], resultado: { local:0, visitante:0 }, jugado: false },
+        { round: "semis", local: { nombre: shuffled[0].nombre }, visitante: { nombre: shuffled[1].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
+        { round: "semis", local: { nombre: shuffled[2].nombre }, visitante: { nombre: shuffled[3].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
         { round: "final", local: { nombre: "—", logo: "" }, visitante: { nombre: "—", logo: "" }, resultado: { local:0, visitante:0 }, jugado: false }
       ];
 
@@ -255,19 +260,22 @@
           const wl = m.jugado && m.resultado.local > m.resultado.visitante ? "winner" : "";
           const wv = m.jugado && m.resultado.visitante > m.resultado.local ? "winner" : "";
           
+          const teamL = _teams.find(t => t.equipo === m.local?.nombre) || { logo: 'img/logo.png' };
+          const teamV = _teams.find(t => t.equipo === m.visitante?.nombre) || { logo: 'img/logo.png' };
+          
           const card = document.createElement("div");
           card.className = "match-card";
           card.innerHTML = `
             <div class="team ${wl}">
               <div style="display:flex;align-items:center;gap:15px;">
-                  <img src="${m.local.logo || 'img/logo.png'}">
+                  <img src="${teamL.logo}">
                   <span class="team-name">${m.local.nombre}</span>
               </div>
               <div class="score">${m.jugado ? m.resultado.local : ""}</div>
             </div>
             <div class="team ${wv}">
               <div style="display:flex;align-items:center;gap:15px;">
-                  <img src="${m.visitante.logo || 'img/logo.png'}">
+                  <img src="${teamV.logo}">
                   <span class="team-name">${m.visitante.nombre}</span>
               </div>
               <div class="score">${m.jugado ? m.resultado.visitante : ""}</div>

@@ -231,8 +231,8 @@
 
         allMatches.push({
           round: "octavos",
-          local: { nombre: local.nombre, logo: local.logo },
-          visitante: { nombre: visit.nombre, logo: visit.logo },
+          local: { nombre: local.nombre },
+          visitante: { nombre: visit.nombre },
           resultado: { local: 0, visitante: 0 },
           jugado: false
         });
@@ -306,17 +306,20 @@
           const wl = m.jugado && gl > gv ? "winner" : "";
           const wv = m.jugado && gv > gl ? "winner" : "";
 
+          const teamL = _teams.find(t => t.nombre === m.local?.nombre) || { logo: 'img/logo.png' };
+          const teamV = _teams.find(t => t.nombre === m.visitante?.nombre) || { logo: 'img/logo.png' };
+
           matchDiv.innerHTML = `
             <div class="team-row ${wl}">
               <div class="team-info">
-                  <img class="team-logo" src="${m.local?.logo || 'img/logo.png'}">
+                  <img class="team-logo" src="${teamL.logo}">
                   <span>${m.local?.nombre || "—"}</span>
               </div>
               <div class="score">${m.jugado ? gl : ""}</div>
             </div>
             <div class="team-row ${wv}">
               <div class="team-info">
-                  <img class="team-logo" src="${m.visitante?.logo || 'img/logo.png'}">
+                  <img class="team-logo" src="${teamV.logo}">
                   <span>${m.visitante?.nombre || "—"}</span>
               </div>
               <div class="score">${m.jugado ? gv : ""}</div>
