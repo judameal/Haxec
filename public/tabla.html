@@ -245,18 +245,25 @@
   </style>
 </head>
 <body>
-  <div class="admin-container">
-    
-    <div class="header-box">
-      <div>
-        <h1 class="admin-title">Tabla de Posiciones</h1>
-        <p style="color:#64748b; margin:5px 0 0; font-size:0.9rem;">Temporada 2025 — LigaPro Ecuabet</p>
-      </div>
-      <div class="fase-indicator" id="faseBadge"></div>
-      <button class="back-btn" onclick="goBack()">← Volver</button>
-    </div>
+<header>
+  <div class="logo">
+    <img class="hero-logo-img"
+      src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+      alt="LigaPro Ecuabet">
+    <h1>LigaPro <span>Ecuabet</span></h1>
+  </div>
+</header>
 
-    <div class="tabs-row" id="tabsRow" style="display:none;">
+<div class="admin-container">
+  
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:25px;">
+    <h1 class="admin-title">Tabla de Posiciones</h1>
+    <button class="back-btn" onclick="goBack()">← Volver</button>
+  </div>
+
+  <div id="faseBadge" style="margin-bottom:20px;"></div>
+
+  <div class="tabs-row" id="tabsRow" style="display:none;">
       <button class="tab-btn active" id="btnHexFinal" onclick="cambiarTab('final', this)">🟢 Hexagonal Final</button>
       <button class="tab-btn"        id="btnHexDesc"  onclick="cambiarTab('descenso', this)">🔴 Hexagonal Descenso</button>
     </div>
