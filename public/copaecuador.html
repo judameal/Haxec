@@ -253,8 +253,13 @@
 
           const matchDiv = document.createElement("div");
           matchDiv.className = "match";
+          
+          const fechaTexto = m.fecha ? `📅 ${m.fecha} — ${m.hora || ''}` : "⏳ PENDIENTE";
+
           matchDiv.innerHTML = `
-            <div class="match-date">${m.fecha || 'TBD'} — ${m.hora || ''}</div>
+            <div class="match-date" style="background:var(--surface2); padding:4px; border-radius:6px; margin-bottom:8px; border:1px solid var(--border); color:var(--black); font-size:0.75rem;">
+                ${fechaTexto}
+            </div>
             <div class="team-row ${wl}"><div class="team-info"><img class="team-logo" src="${teamL.logo}"> ${m.local.nombre}</div><div class="score">${m.jugado?m.resultado.local:''}</div></div>
             <div class="team-row ${wv}"><div class="team-info"><img class="team-logo" src="${teamV.logo}"> ${m.visitante.nombre}</div><div class="score">${m.jugado?m.resultado.visitante:''}</div></div>
             ${!m.jugado && m.local.nombre !== "—" ? `<button class="btn-play-cup" onclick="jugarCopa('${m._id}')">▶</button>` : ""}

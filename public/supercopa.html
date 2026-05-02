@@ -193,8 +193,12 @@
           
           const card = document.createElement("div");
           card.className = "match-card";
+          const fechaTexto = m.fecha ? `📅 ${m.fecha} — ${m.hora || ''}` : "⏳ PENDIENTE";
+
           card.innerHTML = `
-            <div class="match-date">${m.fecha || 'PENDIENTE'} — ${m.hora || ''}</div>
+            <div class="match-date" style="background:var(--surface2); padding:6px; border-radius:8px; margin-bottom:12px; border:1px solid var(--border); color:var(--black); font-size:0.8rem;">
+                ${fechaTexto}
+            </div>
             <div class="team ${wl}"><div style="display:flex;align-items:center;gap:15px;"><img src="${teamL.logo}"> <span class="team-name">${m.local.nombre}</span></div><div class="score">${m.jugado ? m.resultado.local : ''}</div></div>
             <div class="team ${wv}"><div style="display:flex;align-items:center;gap:15px;"><img src="${teamV.logo}"> <span class="team-name">${m.visitante.nombre}</span></div><div class="score">${m.jugado ? m.resultado.visitante : ''}</div></div>
             ${!m.jugado && m.local.nombre !== "—" ? `<div class="play-icon" onclick="jugar('${m._id}')">▶</div>` : ""}

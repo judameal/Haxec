@@ -967,10 +967,12 @@
             const gl = p.resultado && p.resultado.local !== undefined ? p.resultado.local : 0;
             const gv = p.resultado && p.resultado.visitante !== undefined ? p.resultado.visitante : 0;
             centroHTML = `<div class="score-badge">${gl} – ${gv}</div>`;
-          } else if (p.fecha) {
-            centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">${p.fecha}${p.hora ? " · " + p.hora : ""}</div>`;
           } else {
-            centroHTML = `<div class="score-badge pendiente">VS</div><div class="match-meta">Sin horario</div>`;
+            const statusLabel = p.fecha ? "VS" : "PENDIENTE";
+            centroHTML = `
+              <div class="score-badge pendiente">${statusLabel}</div>
+              <div class="match-meta">${p.fecha || 'Por programar'} ${p.hora || ''}</div>
+            `;
           }
 
           const btnInforme = `<button class="btn-informe ${jugado ? "jugado" : ""}" onclick='abrirInformePorId("${pid}")'>${jugado ? "📋 Informe" : "📋 Sin datos"}</button>`;
