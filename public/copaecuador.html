@@ -226,8 +226,8 @@
       
       // Octavos (8 partidos, 16 espacios)
       for (let i = 0; i < 8; i++) {
-        const local = shuffled[i*2] || { nombre: "—", logo: "img/logo.png" };
-        const visit = shuffled[i*2+1] || { nombre: "—", logo: "img/logo.png" };
+        const local = shuffled[i*2] || { nombre: "—", logo: "img/copaecuadorlogo.png" };
+        const visit = shuffled[i*2+1] || { nombre: "—", logo: "img/copaecuadorlogo.png" };
 
         allMatches.push({
           round: "octavos",
@@ -306,8 +306,8 @@
           const wl = m.jugado && gl > gv ? "winner" : "";
           const wv = m.jugado && gv > gl ? "winner" : "";
 
-          const teamL = _teams.find(t => t.nombre === m.local?.nombre) || { logo: 'img/logo.png' };
-          const teamV = _teams.find(t => t.nombre === m.visitante?.nombre) || { logo: 'img/logo.png' };
+          const teamL = _teams.find(t => t.nombre === m.local?.nombre) || { logo: 'img/copaecuadorlogo.png' };
+          const teamV = _teams.find(t => t.nombre === m.visitante?.nombre) || { logo: 'img/copaecuadorlogo.png' };
 
           matchDiv.innerHTML = `
             <div class="team-row ${wl}">
