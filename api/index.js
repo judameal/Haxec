@@ -351,8 +351,8 @@ async function handleHexagonal(req, res) {
     if (tabla.length < 6)
       return res.status(400).json({ message: "Se necesitan al menos 6 equipos" });
 
-    const hexFinal = tabla.slice(0, 6);
-    const hexDescenso = tabla.slice(6);
+    const hexFinal = tabla.slice(0, 6); // Puestos 1-6
+    const hexDescenso = tabla.slice(9); // Puestos 10-16
 
     for (const e of hexFinal) await tablaCol.updateOne({ equipo: e.equipo }, { $set: { hex: "final", PTS_fase1: e.PTS } });
     for (const e of hexDescenso) await tablaCol.updateOne({ equipo: e.equipo }, { $set: { hex: "descenso", PTS_fase1: e.PTS } });

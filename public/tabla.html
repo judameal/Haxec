@@ -263,8 +263,9 @@
 
   <div id="faseBadge" style="margin-bottom:20px;"></div>
 
-  <div class="tabs-row" id="tabsRow" style="display:none;">
-      <button class="tab-btn active" id="btnHexFinal" onclick="cambiarTab('final', this)">🟢 Hexagonal Final</button>
+    <div class="tabs-row" id="tabsRow" style="display:none;">
+      <button class="tab-btn active" id="btnRegular"  onclick="cambiarTab('regular', this)">🏆 Fase Regular</button>
+      <button class="tab-btn"        id="btnHexFinal" onclick="cambiarTab('final', this)">🟢 Hexagonal Final</button>
       <button class="tab-btn"        id="btnHexDesc"  onclick="cambiarTab('descenso', this)">🔴 Hexagonal Descenso</button>
     </div>
 
@@ -300,37 +301,49 @@
   <script>
     const API = "/api/index";
     let _faseActual = "regular";
-    let _tabActual  = "final";
+    let _tabActual  = "regular";
     let _tablaData  = [];
     let _equipos    = [];
+    let _allPartidos = [];
 
     function goBack() { window.location.href = "/haxball.html"; }
 
     async function init() {
       try {
-        const [cfg, equipos, tabla] = await Promise.all([
+        const [cfg, equipos, tabla, partidos] = await Promise.all([
           fetch(API + "?ruta=config").then(r => r.json()),
           fetch(API + "?ruta=teams").then(r => r.json()),
-          fetch(API + "?ruta=tabla").then(r => r.json())
+          fetch(API + "?ruta=tabla").then(r => r.json()),
+          fetch(API + "?ruta=partidos").then(r => r.json())
         ]);
 
-        _faseActual = cfg.fase || "regular";
-        _equipos    = equipos;
-        _tablaData  = tabla;
+        _faseActual  = cfg.fase || "regular";
+        _equipos     = equipos;
+        _tablaData   = tabla;
+        _allPartidos = partidos;
 
         renderFaseBadge(_faseActual);
 
-        if (_faseActual === "regular") {
-          document.getElementById("tabsRow").style.display = "none";
-          renderTablaRegular(_tablaData, _equipos);
-        } else {
+        if (cfg.hexagonalGenerado || _faseActual !== "regular") {
           document.getElementById("tabsRow").style.display = "flex";
-          renderTablaHex(_tabActual);
+          _tabActual = _faseActual === "regular" ? "regular" : (_faseActual.includes("final") ? "final" : "descenso");
+        } else {
+          document.getElementById("tabsRow").style.display = "none";
+          _tabActual = "regular";
         }
+
+        cambiarTab(_tabActual, document.getElementById("btn" + faseAId(_tabActual)));
       } catch(e) {
         console.error(e);
         document.getElementById("tablaBody").innerHTML = `<tr><td colspan="11" style="padding:50px;">⚠️ Error al cargar datos</td></tr>`;
       }
+    }
+
+    function faseAId(fase) {
+      if (fase === "regular") return "Regular";
+      if (fase === "final")   return "HexFinal";
+      if (fase === "descenso") return "HexDesc";
+      return "Regular";
     }
 
     function renderFaseBadge(fase) {
@@ -412,8 +425,43 @@
     function cambiarTab(tab, btn) {
       _tabActual = tab;
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderTablaHex(tab);
+      if (btn) btn.classList.add("active");
+      
+      if (tab === "regular") {
+        const tablaCalculada = calcularTablaFase(_allPartidos, "regular");
+        renderTablaRegular(tablaCalculada, _equipos);
+      } else {
+        renderTablaHex(tab);
+      }
+    }
+
+    function calcularTablaFase(partidos, fase) {
+      const stats = {};
+      _equipos.forEach(e => {
+        stats[e.nombre] = { equipo: e.nombre, PJ:0, G:0, E:0, P:0, GF:0, GC:0, DG:0, PTS:0 };
+      });
+
+      partidos.filter(p => (fase === "regular" ? (!p.fase || p.fase === "regular") : p.fase === fase) && p.jugado).forEach(p => {
+        const res = p.resultado || { local:0, visitante:0 };
+        const gl = res.local;
+        const gv = res.visitante;
+        const el = p.local.nombre;
+        const ev = p.visitante.nombre;
+
+        if (!stats[el] || !stats[ev]) return;
+
+        stats[el].PJ++; stats[ev].PJ++;
+        stats[el].GF += gl; stats[el].GC += gv;
+        stats[ev].GF += gv; stats[ev].GC += gl;
+        stats[el].DG = stats[el].GF - stats[el].GC;
+        stats[ev].DG = stats[ev].GF - stats[ev].GC;
+
+        if (gl > gv) { stats[el].G++; stats[el].PTS += 3; stats[ev].P++; }
+        else if (gv > gl) { stats[ev].G++; stats[ev].PTS += 3; stats[el].P++; }
+        else { stats[el].E++; stats[ev].E++; stats[el].PTS += 1; stats[ev].PTS += 1; }
+      });
+
+      return Object.values(stats);
     }
 
     function renderTablaHex(hex) {
