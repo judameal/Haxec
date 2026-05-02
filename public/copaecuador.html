@@ -6,150 +6,154 @@
   <title>Copa Ecuador — Haxec Esport</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --copa-gold: #fbbf24;
-      --copa-blue: #1e3a8a;
-      --copa-accent: #3b82f6;
+      --copa-gold: var(--accent);
+      --copa-bg: var(--bg);
     }
 
     body {
-      background: #0f172a;
-      color: white;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .admin-container {
-      max-width: 1400px;
-      margin: 40px auto;
-      padding: 0 20px;
+      background: var(--copa-bg);
+      color: var(--text);
     }
 
     .hero-cup {
       text-align: center;
       padding: 40px 0;
-      background: linear-gradient(180deg, rgba(59, 130, 246, 0.2) 0%, transparent 100%);
-      border-radius: 30px;
+      background: var(--black);
+      border-radius: 20px;
       margin-bottom: 40px;
+      border-bottom: 4px solid var(--copa-gold);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .cup-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 4rem;
+      font-family: var(--font-head);
+      font-size: 3.5rem;
+      font-weight: 900;
       letter-spacing: 4px;
       margin: 0;
-      background: linear-gradient(90deg, #fff, var(--copa-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    .cup-title span { color: var(--copa-gold); }
+
+    .actions-bar {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
     }
 
-    .btn-generate {
-      background: var(--copa-gold);
-      color: #000;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 12px;
+    .btn-action {
+      font-family: var(--font-head);
       font-weight: 800;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.2rem;
+      text-transform: uppercase;
       letter-spacing: 1px;
+      padding: 12px 25px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
-      margin-top: 20px;
+      border: none;
     }
-    .btn-generate:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
+
+    .btn-generate { background: var(--copa-gold); color: var(--black); }
+    .btn-generate:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+    .btn-reset { background: #ef4444; color: #fff; }
+    .btn-reset:hover { transform: scale(1.05); background: #dc2626; }
 
     /* BRACKET SYSTEM */
     .bracket-container {
       display: flex;
       justify-content: space-between;
       gap: 20px;
-      margin-top: 50px;
+      margin-top: 30px;
       overflow-x: auto;
-      padding-bottom: 40px;
+      padding: 20px 0 60px;
     }
 
     .round {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      min-width: 220px;
+      min-width: 240px;
     }
 
     .round-title {
       text-align: center;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      color: var(--copa-gold);
-      margin-bottom: 20px;
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--black);
+      margin-bottom: 25px;
       letter-spacing: 2px;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--copa-gold);
+      padding-bottom: 8px;
     }
 
     .match {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
       border-radius: 12px;
       margin: 15px 0;
-      padding: 10px;
+      padding: 12px;
       position: relative;
       transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .match:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--copa-accent); }
+    .match:hover { border-color: var(--copa-gold); transform: translateX(5px); }
 
     .team-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 0;
+      padding: 8px 0;
     }
-    .team-info { display: flex; align-items: center; gap: 10px; }
-    .team-logo { width: 24px; height: 24px; object-fit: contain; }
-    .team-name { font-weight: 600; font-size: 0.9rem; }
-    .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--copa-gold); }
+    .team-info { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .team-logo { width: 28px; height: 28px; object-fit: contain; }
+    .score { font-family: var(--font-head); font-size: 1.3rem; font-weight: 900; color: var(--copa-gold); min-width: 25px; text-align: center; }
 
     .btn-play-cup {
       position: absolute;
-      right: -10px;
+      right: -15px;
       top: 50%;
       transform: translateY(-50%);
-      background: var(--copa-accent);
-      color: white;
-      border: none;
-      width: 30px;
-      height: 30px;
+      background: var(--black);
+      color: var(--copa-gold);
+      border: 2px solid var(--copa-gold);
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       opacity: 0;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
+      z-index: 10;
     }
-    .match:hover .btn-play-cup { opacity: 1; }
+    .match:hover .btn-play-cup { opacity: 1; right: -17px; }
+    .btn-play-cup:hover { background: var(--copa-gold); color: var(--black); }
 
-    .winner { color: var(--copa-gold); }
+    .winner { color: var(--accent-dark); }
+    .winner .team-info { color: var(--accent-dark); }
+    .winner .score { color: var(--accent-dark); text-shadow: 0 0 10px rgba(184, 134, 11, 0.2); }
 
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 24px;
-      width: 100%;
-      max-width: 500px;
-      border: 1px solid rgba(255,255,255,0.1);
+    /* LINEAS DE CONEXIÓN (SUBTILE) */
+    .round:not(:last-child) .match::after {
+      content: '';
+      position: absolute;
+      right: -21px;
+      top: 50%;
+      width: 20px;
+      height: 2px;
+      background: var(--border);
+      z-index: -1;
     }
   </style>
 </head>
@@ -157,22 +161,33 @@
 
   <header>
     <div class="logo">
-      <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Copa Ecuador">
+      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Copa Ecuador">
       <h1>Copa <span>Ecuador</span></h1>
+    </div>
+    <div class="nav-buttons">
+        <button onclick="window.location.href='/haxball.html'">Menú Principal</button>
     </div>
   </header>
 
   <div class="admin-container">
     <div class="hero-cup">
-      <h1 class="cup-title">Copa Ecuador 2026</h1>
-      <p style="color:rgba(255,255,255,0.6);">Eliminación directa · 16 Equipos · El camino a la gloria</p>
-      <button class="btn-generate" id="btnGen" onclick="generarCopa()">⚙️ Generar Brackets (Octavos)</button>
+      <h1 class="cup-title">Copa <span>Ecuador</span> 2026</h1>
+      <p style="color:rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 1px;">EL CAMINO A LA GLORIA ETERNA</p>
+      
+      <div class="actions-bar">
+          <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
+          <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar Copa</button>
+      </div>
     </div>
 
     <div class="bracket-container" id="bracket">
       <!-- Brackets se cargan aquí -->
     </div>
   </div>
+
+  <footer>
+    <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+  </footer>
 
   <script>
     const API = "/api/index?ruta=copa_partidos";
@@ -191,14 +206,17 @@
     }
 
     async function generarCopa() {
-      if (!confirm("¿Generar nueva Copa? Esto borrará el progreso actual.")) return;
-      if (_teams.length < 16) { alert("Necesitas 16 equipos."); return; }
+      if (_bracketData.length > 0) {
+          if (!confirm("Ya hay una copa en curso. ¿Generar una nueva?")) return;
+      }
+      if (_teams.length < 16) { alert("Se necesitan al menos 16 equipos registrados."); return; }
 
       const shuffled = [..._teams].sort(() => 0.5 - Math.random());
-      const octavos = [];
+      const allMatches = [];
+      
+      // Octavos (8 partidos)
       for (let i = 0; i < 8; i++) {
-        octavos.push({
-          id: "octavos_" + i,
+        allMatches.push({
           round: "octavos",
           local: { nombre: shuffled[i*2].nombre, logo: shuffled[i*2].logo },
           visitante: { nombre: shuffled[i*2+1].nombre, logo: shuffled[i*2+1].logo },
@@ -207,15 +225,12 @@
         });
       }
       
-      // Crear placeholders para siguientes rondas
+      // Placeholders
       const rounds = ["cuartos", "semis", "final"];
       const counts = [4, 2, 1];
-      const allMatches = [...octavos];
-
       rounds.forEach((r, idx) => {
         for (let i = 0; i < counts[idx]; i++) {
           allMatches.push({
-            id: r + "_" + i,
             round: r,
             local: { nombre: "—", logo: "" },
             visitante: { nombre: "—", logo: "" },
@@ -225,22 +240,34 @@
         }
       });
 
-      const res = await fetch(API, {
+      await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bracket: allMatches })
       });
+      location.reload();
+    }
 
-      if (res.ok) location.reload();
+    async function resetCopa() {
+        if (!confirm("¿Estás seguro de que quieres borrar todo el progreso de la Copa Ecuador?")) return;
+        await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bracket: [] })
+        });
+        location.reload();
     }
 
     function renderBracket() {
       const container = document.getElementById("bracket");
       container.innerHTML = "";
-      if (!_bracketData.length) { container.innerHTML = "<p style='text-align:center; width:100%; opacity:0.5;'>Presiona Generar para iniciar el torneo</p>"; return; }
+      if (!_bracketData.length) { 
+          container.innerHTML = "<div style='text-align:center; width:100%; padding: 40px; background: var(--surface); border-radius: 15px; border: 2px dashed var(--border); color: var(--muted); font-weight: 700;'>No hay ningún torneo activo. Presiona 'Generar Brackets' para comenzar.</div>"; 
+          return; 
+      }
 
       const rounds = ["octavos", "cuartos", "semis", "final"];
-      const roundLabels = ["Octavos", "Cuartos", "Semis", "Gran Final"];
+      const roundLabels = ["Octavos", "Cuartos", "Semifinales", "Gran Final"];
 
       rounds.forEach((r, idx) => {
         const div = document.createElement("div");
@@ -258,14 +285,20 @@
 
           matchDiv.innerHTML = `
             <div class="team-row ${wl}">
-              <div class="team-info"><img class="team-logo" src="${m.local.logo}">${m.local.nombre}</div>
+              <div class="team-info">
+                  <img class="team-logo" src="${m.local.logo || 'img/logo.png'}">
+                  <span>${m.local.nombre}</span>
+              </div>
               <div class="score">${m.jugado ? gl : ""}</div>
             </div>
             <div class="team-row ${wv}">
-              <div class="team-info"><img class="team-logo" src="${m.visitante.logo}">${m.visitante.nombre}</div>
+              <div class="team-info">
+                  <img class="team-logo" src="${m.visitante.logo || 'img/logo.png'}">
+                  <span>${m.visitante.nombre}</span>
+              </div>
               <div class="score">${m.jugado ? gv : ""}</div>
             </div>
-            ${!m.jugado && m.local.nombre !== "—" && m.visitante.nombre !== "—" ? `<button class="btn-play-cup" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
+            ${!m.jugado && m.local.nombre !== "—" && m.visitante.nombre !== "—" ? `<button class="btn-play-cup" title="Jugar Partido" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
           `;
           div.appendChild(matchDiv);
         });
