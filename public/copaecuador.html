@@ -161,11 +161,11 @@
 
   <header>
     <div class="logo">
-      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Copa Ecuador">
+      <img src="file:///C:/Users/judam/OneDrive/Descargas/Ligapro/copaecuadorlogo.png" alt="Copa Ecuador">
       <h1>Copa <span>Ecuador</span></h1>
     </div>
     <div class="nav-buttons">
-        <button onclick="window.location.href='/haxball.html'">Menú Principal</button>
+        <button onclick="window.location.href='/haxball.html'">Atrás</button>
     </div>
   </header>
 
@@ -196,56 +196,74 @@
     let _teams = [];
 
     async function init() {
-      const [resB, resT] = await Promise.all([
-        fetch(API).then(r => r.json()),
-        fetch(API_TEAMS).then(r => r.json())
-      ]);
-      _bracketData = resB;
-      _teams = resT;
-      renderBracket();
+      try {
+          const [resB, resT] = await Promise.all([
+            fetch(API).then(r => r.json()),
+            fetch(API_TEAMS).then(r => r.json())
+          ]);
+          _bracketData = Array.isArray(resB) ? resB : [];
+          _teams = Array.isArray(resT) ? resT : [];
+          renderBracket();
+      } catch (e) {
+          console.error("Error cargando Copa:", e);
+          renderBracket();
+      }
     }
 
     async function generarCopa() {
       if (_bracketData.length > 0) {
           if (!confirm("Ya hay una copa en curso. ¿Generar una nueva?")) return;
       }
-      if (_teams.length < 16) { alert("Se necesitan al menos 16 equipos registrados."); return; }
+      
+      if (!_teams || _teams.length === 0) {
+          alert("No se detectaron equipos. Asegúrate de registrar equipos en la sección correspondiente.");
+          return;
+      }
 
+      // Mezclar equipos
       const shuffled = [..._teams].sort(() => 0.5 - Math.random());
       const allMatches = [];
       
-      // Octavos (8 partidos)
+      // Octavos (8 partidos, 16 espacios)
       for (let i = 0; i < 8; i++) {
+        const local = shuffled[i*2] || { nombre: "—", logo: "img/logo.png" };
+        const visit = shuffled[i*2+1] || { nombre: "—", logo: "img/logo.png" };
+
         allMatches.push({
           round: "octavos",
-          local: { nombre: shuffled[i*2].nombre, logo: shuffled[i*2].logo },
-          visitante: { nombre: shuffled[i*2+1].nombre, logo: shuffled[i*2+1].logo },
+          local: { nombre: local.nombre, logo: local.logo },
+          visitante: { nombre: visit.nombre, logo: visit.logo },
           resultado: { local: 0, visitante: 0 },
           jugado: false
         });
       }
       
-      // Placeholders
+      // Placeholders para el resto de rondas
       const rounds = ["cuartos", "semis", "final"];
       const counts = [4, 2, 1];
       rounds.forEach((r, idx) => {
         for (let i = 0; i < counts[idx]; i++) {
           allMatches.push({
             round: r,
-            local: { nombre: "—", logo: "" },
-            visitante: { nombre: "—", logo: "" },
+            local: { nombre: "—", logo: "img/logo.png" },
+            visitante: { nombre: "—", logo: "img/logo.png" },
             resultado: { local: 0, visitante: 0 },
             jugado: false
           });
         }
       });
 
-      await fetch(API, {
+      const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bracket: allMatches })
       });
-      location.reload();
+
+      if (res.ok) {
+          location.reload();
+      } else {
+          alert("Error al guardar el torneo en el servidor.");
+      }
     }
 
     async function resetCopa() {
@@ -261,8 +279,13 @@
     function renderBracket() {
       const container = document.getElementById("bracket");
       container.innerHTML = "";
-      if (!_bracketData.length) { 
-          container.innerHTML = "<div style='text-align:center; width:100%; padding: 40px; background: var(--surface); border-radius: 15px; border: 2px dashed var(--border); color: var(--muted); font-weight: 700;'>No hay ningún torneo activo. Presiona 'Generar Brackets' para comenzar.</div>"; 
+      
+      if (!_bracketData || _bracketData.length === 0) { 
+          container.innerHTML = `<div style='text-align:center; width:100%; padding: 40px; background: var(--surface); border-radius: 15px; border: 2px dashed var(--border); color: var(--muted); font-weight: 700;'>
+            No hay ningún torneo activo.<br>
+            <span style="font-size:0.8rem; font-weight:400;">Equipos detectados: ${_teams.length}</span><br><br>
+            <button class="btn-action btn-generate" style="padding:8px 16px; font-size:0.8rem;" onclick="generarCopa()">Generar ahora</button>
+          </div>`; 
           return; 
       }
 
@@ -278,27 +301,27 @@
         matches.forEach(m => {
           const matchDiv = document.createElement("div");
           matchDiv.className = "match";
-          const gl = m.resultado.local || 0;
-          const gv = m.resultado.visitante || 0;
+          const gl = m.resultado?.local || 0;
+          const gv = m.resultado?.visitante || 0;
           const wl = m.jugado && gl > gv ? "winner" : "";
           const wv = m.jugado && gv > gl ? "winner" : "";
 
           matchDiv.innerHTML = `
             <div class="team-row ${wl}">
               <div class="team-info">
-                  <img class="team-logo" src="${m.local.logo || 'img/logo.png'}">
-                  <span>${m.local.nombre}</span>
+                  <img class="team-logo" src="${m.local?.logo || 'img/logo.png'}">
+                  <span>${m.local?.nombre || "—"}</span>
               </div>
               <div class="score">${m.jugado ? gl : ""}</div>
             </div>
             <div class="team-row ${wv}">
               <div class="team-info">
-                  <img class="team-logo" src="${m.visitante.logo || 'img/logo.png'}">
-                  <span>${m.visitante.nombre}</span>
+                  <img class="team-logo" src="${m.visitante?.logo || 'img/logo.png'}">
+                  <span>${m.visitante?.nombre || "—"}</span>
               </div>
               <div class="score">${m.jugado ? gv : ""}</div>
             </div>
-            ${!m.jugado && m.local.nombre !== "—" && m.visitante.nombre !== "—" ? `<button class="btn-play-cup" title="Jugar Partido" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
+            ${!m.jugado && m.local?.nombre !== "—" && m.visitante?.nombre !== "—" ? `<button class="btn-play-cup" title="Jugar Partido" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
           `;
           div.appendChild(matchDiv);
         });
