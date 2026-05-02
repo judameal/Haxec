@@ -328,8 +328,14 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
   }
 
   if (req.method === "PUT") {
-    const { id, resultado, eventos = [], mvp, local, visitante } = req.body;
+    const { id, resultado, eventos = [], mvp, local, visitante, fecha, hora, soloHorario } = req.body;
     const objectId = new ObjectId(id);
+    
+    if (soloHorario) {
+      await col.updateOne({ _id: objectId }, { $set: { fecha, hora } });
+      return res.status(200).json({ message: "Horario actualizado" });
+    }
+
     const partido = await col.findOne({ _id: objectId });
     if (!partido) return res.status(404).json({ message: "Partido no encontrado" });
 

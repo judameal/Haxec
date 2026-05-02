@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horarios Supercopa — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <h1>Horarios <span>Supercopa</span></h1>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    <h1 class="admin-title">Programar Supercopa</h1>
+    <button class="back-btn" onclick="window.location.href='/supercopa.html'">← Volver a Supercopa</button>
+
+    <div id="listaPartidos"></div>
+  </div>
+
+  <script>
+    const API = "/api/index?ruta=supercopa_partidos";
+
+    async function cargar() {
+      const res = await fetch(API);
+      const partidos = await res.json();
+      const container = document.getElementById("listaPartidos");
+      container.innerHTML = "";
+
+      ["semis", "final"].forEach(r => {
+          const rPartidos = partidos.filter(p => p.round === r);
+          if (!rPartidos.length) return;
+
+          const section = document.createElement("div");
+          section.className = "jornada-block";
+          section.innerHTML = `<div class="jornada-header"><h3>${r.toUpperCase()}</h3></div>`;
+
+          rPartidos.forEach(p => {
+              const row = document.createElement("div");
+              row.className = "partido-row";
+              row.style.gridTemplateColumns = "1fr 2fr 1fr";
+              row.innerHTML = `
+                <div class="team-side">${p.local.nombre} vs ${p.visitante.nombre}</div>
+                <div class="match-center">
+                    <div style="display:flex; gap:10px;">
+                        <input type="date" id="f-${p._id}" value="${p.fecha || ''}" style="margin:0; padding:5px;">
+                        <input type="time" id="h-${p._id}" value="${p.hora || ''}" style="margin:0; padding:5px;">
+                    </div>
+                </div>
+                <div class="match-actions">
+                    <button class="btn-play" onclick="guardar('${p._id}')">💾</button>
+                </div>
+              `;
+              section.appendChild(row);
+          });
+          container.appendChild(section);
+      });
+    }
+
+    async function guardar(id) {
+      const fecha = document.getElementById(`f-${id}`).value;
+      const hora = document.getElementById(`h-${id}`).value;
+      await fetch(API, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, fecha, hora, soloHorario: true })
+      });
+      alert("Horario guardado");
+    }
+    cargar();
+  </script>
+</body>
+</html>

@@ -12,11 +12,7 @@
       --copa-gold: var(--accent);
       --copa-bg: var(--bg);
     }
-
-    body {
-      background: var(--copa-bg);
-      color: var(--text);
-    }
+    body { background: var(--copa-bg); color: var(--text); }
 
     .hero-cup {
       text-align: center;
@@ -44,6 +40,7 @@
       justify-content: center;
       gap: 15px;
       margin-top: 25px;
+      flex-wrap: wrap;
     }
 
     .btn-action {
@@ -59,10 +56,10 @@
     }
 
     .btn-generate { background: var(--copa-gold); color: var(--black); }
-    .btn-generate:hover { transform: scale(1.05); filter: brightness(1.1); }
-
+    .btn-schedule { background: var(--surface); color: var(--black); border: 2px solid var(--black); }
     .btn-reset { background: #ef4444; color: #fff; }
-    .btn-reset:hover { transform: scale(1.05); background: #dc2626; }
+
+    .btn-action:hover { transform: scale(1.05); filter: brightness(1.1); }
 
     /* BRACKET SYSTEM */
     .bracket-container {
@@ -74,13 +71,7 @@
       padding: 20px 0 60px;
     }
 
-    .round {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      min-width: 240px;
-    }
-
+    .round { display: flex; flex-direction: column; justify-content: space-around; min-width: 260px; }
     .round-title {
       text-align: center;
       font-family: var(--font-head);
@@ -104,57 +95,65 @@
       transition: all 0.2s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .match:hover { border-color: var(--copa-gold); transform: translateX(5px); }
+    .match:hover { border-color: var(--copa-gold); }
 
-    .team-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
+    .match-date {
+        font-size: 0.65rem;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 5px;
+        font-weight: 700;
+        text-transform: uppercase;
     }
-    .team-info { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 0.95rem; color: var(--text); }
-    .team-logo { width: 28px; height: 28px; object-fit: contain; }
-    .score { font-family: var(--font-head); font-size: 1.3rem; font-weight: 900; color: var(--copa-gold); min-width: 25px; text-align: center; }
 
-    .btn-play-cup {
+    .team-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+    .team-info { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.9rem; }
+    .team-logo { width: 24px; height: 24px; object-fit: contain; }
+    .score { font-family: var(--font-head); font-size: 1.2rem; font-weight: 900; color: var(--copa-gold); }
+
+    .btn-play-cup, .btn-report-cup {
       position: absolute;
       right: -15px;
-      top: 50%;
-      transform: translateY(-50%);
       background: var(--black);
       color: var(--copa-gold);
       border: 2px solid var(--copa-gold);
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      opacity: 0;
       transition: all 0.2s;
       z-index: 10;
     }
-    .match:hover .btn-play-cup { opacity: 1; right: -17px; }
-    .btn-play-cup:hover { background: var(--copa-gold); color: var(--black); }
+    .btn-play-cup { top: 30%; }
+    .btn-report-cup { top: 60%; background: var(--surface); color: var(--black); border-color: var(--black); }
 
     .winner { color: var(--accent-dark); }
-    .winner .team-info { color: var(--accent-dark); }
-    .winner .score { color: var(--accent-dark); text-shadow: 0 0 10px rgba(184, 134, 11, 0.2); }
 
-    /* LINEAS DE CONEXIÓN (SUBTILE) */
-    .round:not(:last-child) .match::after {
-      content: '';
-      position: absolute;
-      right: -21px;
-      top: 50%;
-      width: 20px;
-      height: 2px;
-      background: var(--border);
-      z-index: -1;
+    /* MODAL INFORME */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
     }
+    .modal-content {
+      background-color: var(--surface);
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      border: 3px solid var(--copa-gold);
+    }
+    .report-grid { margin-top: 20px; }
+    .report-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -172,22 +171,24 @@
   <div class="admin-container">
     <div class="hero-cup">
       <h1 class="cup-title">Copa <span>Ecuador</span> 2026</h1>
-      <p style="color:rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 1px;">EL CAMINO A LA GLORIA ETERNA</p>
-      
-      <div class="actions-bar">
+      <div class="actions-bar" id="adminActions" style="display:none;">
           <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
-          <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar Copa</button>
+          <button class="btn-action btn-schedule" onclick="window.location.href='/copahorario.html'">📅 Horarios</button>
+          <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar</button>
       </div>
     </div>
 
-    <div class="bracket-container" id="bracket">
-      <!-- Brackets se cargan aquí -->
-    </div>
+    <div class="bracket-container" id="bracket"></div>
   </div>
 
-  <footer>
-    <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-  </footer>
+  <!-- MODAL INFORME -->
+  <div id="modalReporte" class="modal">
+    <div class="modal-content">
+      <h2 id="reporteTitulo" style="font-family:var(--font-head); text-transform:uppercase; margin-bottom:15px;"></h2>
+      <div id="reporteBody" class="report-grid"></div>
+      <button class="add-btn" onclick="cerrarReporte()" style="margin-top:20px;">Cerrar</button>
+    </div>
+  </div>
 
   <script>
     const API = "/api/index?ruta=copa_partidos";
@@ -196,6 +197,9 @@
     let _teams = [];
 
     async function init() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.role === "admin") document.getElementById("adminActions").style.display = "flex";
+
       try {
           const [resB, resT] = await Promise.all([
             fetch(API).then(r => r.json()),
@@ -204,129 +208,57 @@
           _bracketData = Array.isArray(resB) ? resB : [];
           _teams = Array.isArray(resT) ? resT : [];
           renderBracket();
-      } catch (e) {
-          console.error("Error cargando Copa:", e);
-          renderBracket();
-      }
+      } catch (e) { console.error(e); renderBracket(); }
     }
 
     async function generarCopa() {
-      if (_bracketData.length > 0) {
-          if (!confirm("Ya hay una copa en curso. ¿Generar una nueva?")) return;
-      }
-      
-      if (!_teams || _teams.length === 0) {
-          alert("No se detectaron equipos. Asegúrate de registrar equipos en la sección correspondiente.");
-          return;
-      }
-
-      // Mezclar equipos
+      if (_bracketData.length && !confirm("¿Generar nueva copa?")) return;
       const shuffled = [..._teams].sort(() => 0.5 - Math.random());
-      const allMatches = [];
-      
-      // Octavos (8 partidos, 16 espacios)
-      for (let i = 0; i < 8; i++) {
-        const local = shuffled[i*2] || { nombre: "—", logo: "img/copaecuadorlogo.png" };
-        const visit = shuffled[i*2+1] || { nombre: "—", logo: "img/copaecuadorlogo.png" };
-
-        allMatches.push({
-          round: "octavos",
-          pos: i,
-          local: { nombre: local.nombre },
-          visitante: { nombre: visit.nombre },
-          resultado: { local: 0, visitante: 0 },
-          jugado: false
-        });
+      const all = [];
+      for (let i=0; i<8; i++) {
+          const l = shuffled[i*2] || {nombre:"—"};
+          const v = shuffled[i*2+1] || {nombre:"—"};
+          all.push({ round:"octavos", pos:i, local:{nombre:l.nombre}, visitante:{nombre:v.nombre}, resultado:{local:0, visitante:0}, jugado:false });
       }
-      
-      // Placeholders para el resto de rondas
-      const rounds = ["cuartos", "semis", "final"];
-      const counts = [4, 2, 1];
-      rounds.forEach((r, idx) => {
-        for (let i = 0; i < counts[idx]; i++) {
-          allMatches.push({
-            round: r,
-            pos: i,
-            local: { nombre: "—", logo: "img/copaecuadorlogo.png" },
-            visitante: { nombre: "—", logo: "img/copaecuadorlogo.png" },
-            resultado: { local: 0, visitante: 0 },
-            jugado: false
-          });
-        }
+      ["cuartos","semis","final"].forEach((r, idx) => {
+          const c = [4, 2, 1][idx];
+          for (let i=0; i<c; i++) all.push({ round:r, pos:i, local:{nombre:"—"}, visitante:{nombre:"—"}, resultado:{local:0, visitante:0}, jugado:false });
       });
-
-      const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bracket: allMatches })
-      });
-
-      if (res.ok) {
-          location.reload();
-      } else {
-          alert("Error al guardar el torneo en el servidor.");
-      }
+      await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:all}) });
+      location.reload();
     }
 
     async function resetCopa() {
-        if (!confirm("¿Estás seguro de que quieres borrar todo el progreso de la Copa Ecuador?")) return;
-        await fetch(API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ bracket: [] })
-        });
-        location.reload();
+        if (confirm("¿Borrar todo?")) {
+            await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:[]}) });
+            location.reload();
+        }
     }
 
     function renderBracket() {
       const container = document.getElementById("bracket");
       container.innerHTML = "";
-      
-      if (!_bracketData || _bracketData.length === 0) { 
-          container.innerHTML = `<div style='text-align:center; width:100%; padding: 40px; background: var(--surface); border-radius: 15px; border: 2px dashed var(--border); color: var(--muted); font-weight: 700;'>
-            No hay ningún torneo activo.<br>
-            <span style="font-size:0.8rem; font-weight:400;">Equipos detectados: ${_teams.length}</span><br><br>
-            <button class="btn-action btn-generate" style="padding:8px 16px; font-size:0.8rem;" onclick="generarCopa()">Generar ahora</button>
-          </div>`; 
-          return; 
-      }
+      if (!_bracketData.length) { container.innerHTML = "<p>No hay torneo activo.</p>"; return; }
 
-      const rounds = ["octavos", "cuartos", "semis", "final"];
-      const roundLabels = ["Octavos", "Cuartos", "Semifinales", "Gran Final"];
-
-      rounds.forEach((r, idx) => {
+      ["octavos","cuartos","semis","final"].forEach((r, idx) => {
         const div = document.createElement("div");
         div.className = "round";
-        div.innerHTML = `<div class="round-title">${roundLabels[idx]}</div>`;
+        div.innerHTML = `<div class="round-title">${["Octavos","Cuartos","Semis","Final"][idx]}</div>`;
         
-        const matches = _bracketData.filter(m => m.round === r);
-        matches.forEach(m => {
+        _bracketData.filter(m => m.round === r).forEach(m => {
+          const teamL = _teams.find(t => t.nombre === m.local?.nombre) || {logo:'img/copaecuadorlogo.png'};
+          const teamV = _teams.find(t => t.nombre === m.visitante?.nombre) || {logo:'img/copaecuadorlogo.png'};
+          const wl = m.jugado && m.resultado.local > m.resultado.visitante ? "winner" : "";
+          const wv = m.jugado && m.resultado.visitante > m.resultado.local ? "winner" : "";
+
           const matchDiv = document.createElement("div");
           matchDiv.className = "match";
-          const gl = m.resultado?.local || 0;
-          const gv = m.resultado?.visitante || 0;
-          const wl = m.jugado && gl > gv ? "winner" : "";
-          const wv = m.jugado && gv > gl ? "winner" : "";
-
-          const teamL = _teams.find(t => t.nombre === m.local?.nombre) || { logo: 'img/copaecuadorlogo.png' };
-          const teamV = _teams.find(t => t.nombre === m.visitante?.nombre) || { logo: 'img/copaecuadorlogo.png' };
-
           matchDiv.innerHTML = `
-            <div class="team-row ${wl}">
-              <div class="team-info">
-                  <img class="team-logo" src="${teamL.logo}">
-                  <span>${m.local?.nombre || "—"}</span>
-              </div>
-              <div class="score">${m.jugado ? gl : ""}</div>
-            </div>
-            <div class="team-row ${wv}">
-              <div class="team-info">
-                  <img class="team-logo" src="${teamV.logo}">
-                  <span>${m.visitante?.nombre || "—"}</span>
-              </div>
-              <div class="score">${m.jugado ? gv : ""}</div>
-            </div>
-            ${!m.jugado && m.local?.nombre !== "—" && m.visitante?.nombre !== "—" ? `<button class="btn-play-cup" title="Jugar Partido" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
+            <div class="match-date">${m.fecha || 'TBD'} — ${m.hora || ''}</div>
+            <div class="team-row ${wl}"><div class="team-info"><img class="team-logo" src="${teamL.logo}"> ${m.local.nombre}</div><div class="score">${m.jugado?m.resultado.local:''}</div></div>
+            <div class="team-row ${wv}"><div class="team-info"><img class="team-logo" src="${teamV.logo}"> ${m.visitante.nombre}</div><div class="score">${m.jugado?m.resultado.visitante:''}</div></div>
+            ${!m.jugado && m.local.nombre !== "—" ? `<button class="btn-play-cup" onclick="jugarCopa('${m._id}')">▶</button>` : ""}
+            ${m.jugado ? `<button class="btn-report-cup" onclick="verInforme('${m._id}')">📝</button>` : ""}
           `;
           div.appendChild(matchDiv);
         });
@@ -334,6 +266,21 @@
       });
     }
 
+    function verInforme(id) {
+        const p = _bracketData.find(x => x._id === id);
+        if (!p) return;
+        document.getElementById("reporteTitulo").innerText = `${p.local.nombre} vs ${p.visitante.nombre}`;
+        let html = `<div><strong>MVP:</strong> ${p.mvp || '—'}</div><hr>`;
+        if (p.eventos && p.eventos.length) {
+            p.eventos.forEach(e => {
+                html += `<div class="report-item"><span>${e.minuto}' ${e.tipo.toUpperCase()}</span> <span>${e.jugador}</span></div>`;
+            });
+        } else { html += "<div>No hay eventos registrados.</div>"; }
+        document.getElementById("reporteBody").innerHTML = html;
+        document.getElementById("modalReporte").style.display = "block";
+    }
+
+    function cerrarReporte() { document.getElementById("modalReporte").style.display = "none"; }
     function jugarCopa(id) {
       localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "copa" }));
       window.location.href = "/jugarpartidocopa.html";

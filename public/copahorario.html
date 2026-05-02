@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horarios Copa — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <h1>Horarios <span>Copa</span></h1>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    <h1 class="admin-title">Programar Copa Ecuador</h1>
+    <button class="back-btn" onclick="window.location.href='/copaecuador.html'">← Volver al Bracket</button>
+
+    <div id="listaPartidos">
+      <!-- Cargando partidos... -->
+    </div>
+  </div>
+
+  <script>
+    const API = "/api/index?ruta=copa_partidos";
+
+    async function cargar() {
+      const res = await fetch(API);
+      const partidos = await res.json();
+      const container = document.getElementById("listaPartidos");
+      container.innerHTML = "";
+
+      if (!partidos.length) {
+          container.innerHTML = "<p>No hay partidos generados aún.</p>";
+          return;
+      }
+
+      // Agrupar por ronda
+      const rounds = ["octavos", "cuartos", "semis", "final"];
+      rounds.forEach(r => {
+          const rPartidos = partidos.filter(p => p.round === r);
+          if (!rPartidos.length) return;
+
+          const section = document.createElement("div");
+          section.className = "jornada-block";
+          section.innerHTML = `<div class="jornada-header"><h3>Ronda: ${r.toUpperCase()}</h3></div>`;
+
+          rPartidos.forEach(p => {
+              const row = document.createElement("div");
+              row.className = "partido-row";
+              row.style.gridTemplateColumns = "1fr 2fr 1fr";
+              row.innerHTML = `
+                <div class="team-side">${p.local.nombre} vs ${p.visitante.nombre}</div>
+                <div class="match-center">
+                    <div style="display:flex; gap:10px;">
+                        <input type="date" id="f-${p._id}" value="${p.fecha || ''}" style="margin:0; padding:5px;">
+                        <input type="time" id="h-${p._id}" value="${p.hora || ''}" style="margin:0; padding:5px;">
+                    </div>
+                </div>
+                <div class="match-actions">
+                    <button class="btn-play" onclick="guardar('${p._id}')">💾</button>
+                </div>
+              `;
+              section.appendChild(row);
+          });
+          container.appendChild(section);
+      });
+    }
+
+    async function guardar(id) {
+      const fecha = document.getElementById(`f-${id}`).value;
+      const hora = document.getElementById(`h-${id}`).value;
+
+      const res = await fetch(API, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+              id, 
+              fecha, 
+              hora,
+              soloHorario: true // Flag para que el servidor sepa que solo cambiamos fecha/hora
+          })
+      });
+
+      if (res.ok) alert("Horario actualizado");
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
