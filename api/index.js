@@ -43,8 +43,12 @@ export default async function handler(req, res) {
 
     return res.status(404).json({ message: "Ruta no encontrada: " + ruta });
   } catch (error) {
-    console.error("ERROR /api [" + ruta + "]:", error);
-    return res.status(500).json({ message: "Error interno", error: error.message });
+    console.error("CRITICAL ERROR /api [" + ruta + "]:", error);
+    return res.status(500).json({ 
+      message: "Error interno del servidor", 
+      error: error.message,
+      path: ruta 
+    });
   }
 }
 
