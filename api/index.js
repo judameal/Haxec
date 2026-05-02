@@ -289,6 +289,7 @@ async function handleReset(req, res) {
 
   await db.collection("partidos").deleteMany({});
   await db.collection("tabla").deleteMany({});
+  await db.collection("config").updateOne({ tipo: "liga" }, { $set: { fase: "regular", hexagonalGenerado: false } });
   await db.collection("jugadores").updateMany({}, {
     $set: { goles: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0 }
   });

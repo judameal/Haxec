@@ -22,7 +22,7 @@
 </style>
 
 <script>
-const API = "/api";
+const API = "/api/index";
 
 /* 👤 USER */
 const user = JSON.parse(localStorage.getItem("user"));
@@ -44,7 +44,7 @@ async function resetearTodo() {
   if (!confirmacion) return;
 
   try {
-    const res = await fetch(API + "/reset", {
+    const res = await fetch(API + "?ruta=reset", {
       method: "POST"
     });
 
