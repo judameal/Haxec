@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jugar Supercopa — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="hex-mid"></div>
+
+<header>
+  <div class="logo">
+    <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Supercopa">
+    <h1>Super<span>copa</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+  <h1 class="admin-title">Jugar Finales — Supercopa</h1>
+  <button class="back-btn" onclick="volver()">← Volver a Supercopa</button>
+
+  <div id="infoPartido" class="match-header-card">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="form-card">
+    <h3>Resultado Final</h3>
+    <div class="score-inputs">
+      <input type="number" id="golesLocal" placeholder="0" min="0" value="0">
+      <div class="score-sep">–</div>
+      <input type="number" id="golesVisitante" placeholder="0" min="0" value="0">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;margin-top:6px;">
+      <div id="labelLocal" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
+      <div></div>
+      <div id="labelVisitante" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
+    </div>
+  </div>
+
+  <div class="teams-container">
+    <div class="team-box">
+      <h3 id="nombreLocal">Local</h3>
+      <div id="jugadoresLocal"></div>
+    </div>
+    <div class="team-box">
+      <h3 id="nombreVisitante">Visitante</h3>
+      <div id="jugadoresVisitante"></div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>Estadísticas Individuales</h3>
+    <div id="eventos">
+      <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">Registra los eventos de la Supercopa</div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>MVP del Torneo</h3>
+    <select id="mvp"><option value="">— Elegir MVP —</option></select>
+  </div>
+
+  <button class="add-btn" onclick="guardar()">🏆 Guardar y Avanzar Supercopa</button>
+</div>
+
+<div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="cerrarModalSiOverlay(event)">
+  <div class="modal-box">
+    <h3 id="modalTitulo">Evento Supercopa</h3>
+    <div id="pasoAccion">
+      <div class="action-grid">
+        <button class="action-btn" onclick="selAccion('gol')">⚽ Gol</button>
+        <button class="action-btn" onclick="selAccion('asistencia')">👟 Asist</button>
+        <button class="action-btn" onclick="selAccion('amarilla')">🟨 Amarilla</button>
+        <button class="action-btn" onclick="selAccion('roja')">🟥 Roja</button>
+      </div>
+      <button class="modal-cancel" onclick="cerrarModal()">Cerrar</button>
+    </div>
+    <div id="pasoMinuto" style="display:none;">
+      <input type="number" id="minutoInput" class="modal-input" placeholder="Minuto">
+      <div class="modal-actions">
+        <button class="modal-confirm" onclick="confirmarEvento()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "/api/index";
+let match = null;
+let eventos = [];
+let eventoActual = {};
+const ICONOS = { gol: '⚽', asistencia: '👟', amarilla: '🟨', roja: '🟥' };
+
+function volver() { window.location.href = "/supercopa.html"; }
+
+async function cargar() {
+  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado") || "null");
+  if (!sel) { volver(); return; }
+
+  const [jugadores, partidos] = await Promise.all([
+    fetch(API + "?ruta=jugadores").then(r => r.json()),
+    fetch(API + "?ruta=supercopa_partidos").then(r => r.json())
+  ]);
+
+  match = partidos.find(p => p._id === sel.pid);
+  if (!match) { volver(); return; }
+
+  document.getElementById("infoPartido").innerHTML = `
+    <div style="color:var(--accent); font-weight:900; letter-spacing:2px; margin-bottom:10px;">SUPERCOPA ECUADOR</div>
+    <h3>${match.local.nombre} vs ${match.visitante.nombre}</h3>
+  `;
+
+  document.getElementById("nombreLocal").innerText = match.local.nombre;
+  document.getElementById("nombreVisitante").innerText = match.visitante.nombre;
+  document.getElementById("labelLocal").innerText = match.local.nombre;
+  document.getElementById("labelVisitante").innerText = match.visitante.nombre;
+
+  renderJugadores(jugadores.filter(j => j.equipo === match.local.nombre), "jugadoresLocal", "local");
+  renderJugadores(jugadores.filter(j => j.equipo === match.visitante.nombre), "jugadoresVisitante", "visitante");
+
+  const mvpSel = document.getElementById("mvp");
+  jugadores.forEach(j => {
+    mvpSel.innerHTML += `<option value="${j.nombre}">${j.nombre} (${j.equipo})</option>`;
+  });
+}
+
+function renderJugadores(lista, id, equipo) {
+  const cont = document.getElementById(id);
+  cont.innerHTML = "";
+  lista.forEach(j => {
+    const div = document.createElement("div");
+    div.className = "jugador-item";
+    div.innerHTML = `<span>${j.nombre}</span>`;
+    div.onclick = () => abrirModal(j.nombre, equipo);
+    cont.appendChild(div);
+  });
+}
+
+function abrirModal(jugador, equipo) {
+  eventoActual = { jugador, equipo };
+  document.getElementById("pasoAccion").style.display = "block";
+  document.getElementById("pasoMinuto").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+function cerrarModal() { document.getElementById("modalOverlay").style.display = "none"; }
+function cerrarModalSiOverlay(e) { if (e.target === document.getElementById("modalOverlay")) cerrarModal(); }
+function selAccion(tipo) {
+  eventoActual.tipo = tipo;
+  document.getElementById("pasoAccion").style.display = "none";
+  document.getElementById("pasoMinuto").style.display = "block";
+}
+function confirmarEvento() {
+  const min = parseInt(document.getElementById("minutoInput").value);
+  if (!min) return;
+  eventos.push({ ...eventoActual, minuto: min });
+  cerrarModal();
+  renderEventos();
+}
+function renderEventos() {
+  const cont = document.getElementById("eventos");
+  cont.innerHTML = eventos.map(e => `<div>${e.minuto}' ${ICONOS[e.tipo]} ${e.jugador}</div>`).join("");
+}
+
+async function guardar() {
+  const gl = parseInt(document.getElementById("golesLocal").value) || 0;
+  const gv = parseInt(document.getElementById("golesVisitante").value) || 0;
+  
+  const res = await fetch(API + "?ruta=supercopa_partidos", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: match._id, local: match.local, visitante: match.visitante, resultado: { local: gl, visitante: gv }, eventos, mvp: document.getElementById("mvp").value })
+  });
+
+  if (res.ok) window.location.href = "/supercopa.html";
+}
+cargar();
+</script>
+</body>
+</html>

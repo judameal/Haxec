@@ -216,9 +216,9 @@
       const shuffled = clasificados.sort(() => 0.5 - Math.random());
 
       const bracket = [
-        { round: "semis", local: { nombre: shuffled[0].nombre }, visitante: { nombre: shuffled[1].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
-        { round: "semis", local: { nombre: shuffled[2].nombre }, visitante: { nombre: shuffled[3].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
-        { round: "final", local: { nombre: "—", logo: "" }, visitante: { nombre: "—", logo: "" }, resultado: { local:0, visitante:0 }, jugado: false }
+        { round: "semis", pos: 0, local: { nombre: shuffled[0].nombre }, visitante: { nombre: shuffled[1].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
+        { round: "semis", pos: 1, local: { nombre: shuffled[2].nombre }, visitante: { nombre: shuffled[3].nombre }, resultado: { local:0, visitante:0 }, jugado: false },
+        { round: "final", pos: 0, local: { nombre: "—", logo: "" }, visitante: { nombre: "—", logo: "" }, resultado: { local:0, visitante:0 }, jugado: false }
       ];
 
       await fetch(API, {
@@ -290,7 +290,7 @@
 
     function jugar(id) {
       localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "supercopa" }));
-      window.location.href = "/jugarpartido.html";
+      window.location.href = "/jugarpartidosupercopa.html";
     }
 
     init();

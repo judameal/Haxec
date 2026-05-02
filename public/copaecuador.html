@@ -231,6 +231,7 @@
 
         allMatches.push({
           round: "octavos",
+          pos: i,
           local: { nombre: local.nombre },
           visitante: { nombre: visit.nombre },
           resultado: { local: 0, visitante: 0 },
@@ -245,8 +246,9 @@
         for (let i = 0; i < counts[idx]; i++) {
           allMatches.push({
             round: r,
-            local: { nombre: "—", logo: "img/logo.png" },
-            visitante: { nombre: "—", logo: "img/logo.png" },
+            pos: i,
+            local: { nombre: "—", logo: "img/copaecuadorlogo.png" },
+            visitante: { nombre: "—", logo: "img/copaecuadorlogo.png" },
             resultado: { local: 0, visitante: 0 },
             jugado: false
           });
@@ -334,7 +336,7 @@
 
     function jugarCopa(id) {
       localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "copa" }));
-      window.location.href = "/jugarpartido.html";
+      window.location.href = "/jugarpartidocopa.html";
     }
 
     init();

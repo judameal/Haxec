@@ -343,7 +343,29 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
     );
 
     await actualizarJugadores(jugCol, eventos, mvp, torneoKey);
-    return res.status(200).json({ message: "Resultado guardado" });
+
+    // --- LÓGICA DE AVANCE (Sólo si hay ganador claro) ---
+    const gl = Number(resultado.local);
+    const gv = Number(resultado.visitante);
+    if (gl !== gv) {
+      const ganador = gl > gv ? local : visitante;
+      let siguienteRonda = "";
+      if (partido.round === "octavos") siguienteRonda = "cuartos";
+      else if (partido.round === "cuartos") siguienteRonda = "semis";
+      else if (partido.round === "semis") siguienteRonda = "final";
+
+      if (siguienteRonda) {
+        const siguientePos = Math.floor(partido.pos / 2);
+        const campoEquipo = (partido.pos % 2 === 0) ? "local" : "visitante";
+        
+        await col.updateOne(
+          { round: siguienteRonda, pos: siguientePos },
+          { $set: { [campoEquipo]: { nombre: ganador.nombre } } }
+        );
+      }
+    }
+
+    return res.status(200).json({ message: "Resultado guardado y bracket actualizado" });
   }
 
   return res.status(405).end();
