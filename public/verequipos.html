@@ -265,8 +265,8 @@
 <script>
 async function cargarVista() {
   const [resTeams, resJug] = await Promise.all([
-    fetch("/api/teams"),
-    fetch("/api/jugadores")
+    fetch("/api/index?ruta=teams"),
+    fetch("/api/index?ruta=jugadores")
   ]);
 
   const teams     = await resTeams.json();

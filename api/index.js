@@ -33,6 +33,8 @@ export default async function handler(req, res) {
     if (ruta === "teams") return await handleTeams(req, res);
     if (ruta === "tabla") return await handleTabla(req, res);
     if (ruta === "partidos") return await handlePartidos(req, res);
+    if (ruta === "copa_partidos") return await handleTournamentPartidos(req, res, "copa_ecuador_partidos", "copa");
+    if (ruta === "supercopa_partidos") return await handleTournamentPartidos(req, res, "supercopa_partidos", "supercopa");
     if (ruta === "jugadores") return await handleJugadores(req, res);
     if (ruta === "reset") return await handleReset(req, res);
     if (ruta === "config") return await handleConfig(req, res);
@@ -229,7 +231,7 @@ async function handlePartidos(req, res) {
     );
 
     await actualizarTabla(tabla, equipoLocal, equipoVisitante, resultado);
-    await actualizarJugadores(jugadores, eventos, mvp);
+    await actualizarJugadores(jugadores, eventos, mvp, "liga");
 
     return res.status(200).json({ message: "Partido guardado correctamente" });
   }
@@ -257,7 +259,11 @@ async function handleJugadores(req, res) {
       dorsal, nombre,
       equipo: equipo || "Sin equipo",
       foto: foto || "",
-      goles: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0, vallas_imbatidas: 0, grl: null
+      goles: 0, 
+      goles_liga: 0, 
+      goles_copa: 0, 
+      goles_supercopa: 0,
+      asistencias: 0, amarillas: 0, rojas: 0, mvp: 0, vallas_imbatidas: 0, grl: null
     });
     return res.status(200).json({ message: "Jugador creado" });
   }
@@ -288,13 +294,55 @@ async function handleReset(req, res) {
   const db = await getDb("haxball");
 
   await db.collection("partidos").deleteMany({});
+  await db.collection("copa_ecuador_partidos").deleteMany({});
+  await db.collection("supercopa_partidos").deleteMany({});
   await db.collection("tabla").deleteMany({});
   await db.collection("config").updateOne({ tipo: "liga" }, { $set: { fase: "regular", hexagonalGenerado: false } });
   await db.collection("jugadores").updateMany({}, {
-    $set: { goles: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0 }
+    $set: { goles: 0, goles_liga: 0, goles_copa: 0, goles_supercopa: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0 }
   });
 
-  return res.status(200).json({ message: "Liga reiniciada correctamente" });
+  return res.status(200).json({ message: "Liga y Torneos reiniciados correctamente" });
+}
+
+async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
+  const db = await getDb("haxball");
+  const col = db.collection(collectionName);
+  const jugCol = db.collection("jugadores");
+
+  if (req.method === "GET") {
+    const data = await col.find().toArray();
+    return res.status(200).json(data);
+  }
+
+  if (req.method === "POST") {
+    if (req.body.bracket) {
+      await col.deleteMany({});
+      if (req.body.bracket.length) await col.insertMany(req.body.bracket);
+      return res.status(200).json({ message: "Torneo generado" });
+    }
+  }
+
+  if (req.method === "PUT") {
+    const { id, resultado, eventos = [], mvp, local, visitante } = req.body;
+    const objectId = new ObjectId(id);
+    const partido = await col.findOne({ _id: objectId });
+    if (!partido) return res.status(404).json({ message: "Partido no encontrado" });
+
+    if (partido.jugado) {
+      await revertirJugadores(jugCol, partido.eventos || [], partido.mvp);
+    }
+
+    await col.updateOne(
+      { _id: objectId },
+      { $set: { jugado: true, resultado, eventos, mvp: mvp || "", local, visitante } }
+    );
+
+    await actualizarJugadores(jugCol, eventos, mvp, torneoKey);
+    return res.status(200).json({ message: "Resultado guardado" });
+  }
+
+  return res.status(405).end();
 }
 
 /* ════════════════════════════════════════════════════
@@ -511,10 +559,18 @@ async function revertirTabla(tabla, local, visitante, resultado) {
   else { await rev(local.nombre, gl, gv, 1, 0, 1, 0); await rev(visitante.nombre, gv, gl, 1, 0, 1, 0); }
 }
 
-async function actualizarJugadores(jugadores, eventos, mvp) {
+async function actualizarJugadores(jugadores, eventos, mvp, torneo = "liga") {
   for (const e of eventos) {
-    const campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
-    if (campo) await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1 } });
+    let campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
+    if (campo) {
+      // Si es gol, sumamos al global y al específico del torneo
+      if (e.tipo === "gol") {
+        const campoTorneo = `goles_${torneo}`;
+        await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1, [campoTorneo]: 1 } });
+      } else {
+        await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1 } });
+      }
+    }
   }
   if (mvp) await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: 1 } });
 }

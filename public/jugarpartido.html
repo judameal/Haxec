@@ -126,7 +126,7 @@
 </div>
 
 <script>
-const API = "/api";
+const API = "/api/index";
 let match = null;
 let eventos = [];
 let eventoActual = { jugador: null, equipo: null, tipo: null };
@@ -164,16 +164,31 @@ async function cargar() {
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado") || "null");
   if (!sel) { volver(); return; }
 
-  const [equipos, jugadores] = await Promise.all([
-    fetch(API + "/teams").then(r => r.json()),
-    fetch(API + "/jugadores").then(r => r.json())
+  const torneo = sel.torneo || "liga";
+  const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
+
+  const [equipos, jugadores, partidos] = await Promise.all([
+    fetch(API + "?ruta=teams").then(r => r.json()),
+    fetch(API + "?ruta=jugadores").then(r => r.json()),
+    fetch(API + "?ruta=" + rutaPartidos).then(r => r.json())
   ]);
 
-  const calendario = generarCalendario(equipos);
-  match = calendario[sel.jornada][sel.partido];
+  // Buscar el partido por ID
+  match = partidos.find(p => p._id === sel.pid);
+
+  if (!match) {
+    // Fallback para ligas antiguas que no usan pid
+    const calendario = generarCalendario(equipos);
+    if (sel.jornada !== undefined) match = calendario[sel.jornada][sel.partido];
+  }
+
+  if (!match) { alert("Partido no encontrado"); volver(); return; }
 
   // Info partido
   document.getElementById("infoPartido").innerHTML = `
+    <div style="font-size:0.8rem; text-transform:uppercase; color:var(--accent); margin-bottom:10px; letter-spacing:2px; font-weight:800;">
+      ${torneo === "liga" ? "LigaPro Ecuabet" : (torneo === "copa" ? "Copa Ecuador" : "Supercopa")}
+    </div>
     <h3>
       <img src="${match.local.logo}" alt="${match.local.nombre}">
       ${match.local.nombre}
@@ -291,8 +306,9 @@ async function guardar() {
   const notas = document.getElementById("notas").value;
 
   const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+  const torneo = sel.torneo || "liga";
+  const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
 
-  // match siempre tiene local/visitante correctos desde el calendario
   if (!match) {
     showToast("⚠️ Error: partido no cargado", true);
     return;
@@ -303,82 +319,31 @@ async function guardar() {
   btn.textContent = "Guardando...";
 
   try {
-    // Buscar si existe registro en BD (necesitamos el _id)
-    let data = [];
-    try {
-      const r = await fetch("/api/partidos");
-      if (r.ok) data = await r.json();
-    } catch (_) {}
-
-    const partidoBD = data.find(p =>
-      p.jornada === sel.jornada && p.partido === sel.partido
-    );
-
-    let res;
-
-    if (partidoBD) {
-      // Ya existe → PUT con _id
-      res = await fetch("/api/partidos", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id:        partidoBD._id,
-          // Siempre usamos match (del calendario) para tener logo + nombre seguros
-          local:     { nombre: match.local.nombre,     logo: match.local.logo },
-          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo },
-          resultado: { local: golesLocal, visitante: golesVisitante },
-          eventos,
-          mvp,
-          notas
-        })
-      });
-    } else {
-      // No existe horario → creamos el registro y luego lo jugamos
-      // Primero POST para crear
-      await fetch("/api/partidos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jornada:   sel.jornada,
-          partido:   sel.partido,
-          fecha:     "",
-          hora:      "",
-          local:     { nombre: match.local.nombre,     logo: match.local.logo },
-          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo }
-        })
-      });
-
-      // Volver a buscar para obtener el _id recién creado
-      const r2 = await fetch("/api/partidos");
-      const data2 = await r2.json();
-      const nuevo = data2.find(p =>
-        p.jornada === sel.jornada && p.partido === sel.partido
-      );
-
-      if (!nuevo) throw new Error("No se pudo crear el registro");
-
-      res = await fetch("/api/partidos", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id:        nuevo._id,
-          local:     { nombre: match.local.nombre,     logo: match.local.logo },
-          visitante: { nombre: match.visitante.nombre, logo: match.visitante.logo },
-          resultado: { local: golesLocal, visitante: golesVisitante },
-          eventos,
-          mvp,
-          notas
-        })
-      });
-    }
+    const res = await fetch(API + "?ruta=" + rutaPartidos, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id:        match._id,
+        local:     { nombre: match.local.nombre },
+        visitante: { nombre: match.visitante.nombre },
+        resultado: { local: golesLocal, visitante: golesVisitante },
+        eventos,
+        mvp,
+        notas
+      })
+    });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.message || res.status);
     }
 
-    showToast("✅ Partido guardado correctamente");
-    setTimeout(() => window.location.href = "/partidos.html", 1400);
+    showToast("✅ Resultado guardado correctamente");
+    setTimeout(() => {
+        if (torneo === "liga") window.location.href = "/partidos.html";
+        else if (torneo === "copa") window.location.href = "/copaecuador.html";
+        else window.location.href = "/supercopa.html";
+    }, 1400);
 
   } catch (e) {
     console.error("Error guardando partido:", e);

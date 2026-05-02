@@ -591,8 +591,8 @@ function checkAdmin() {
 async function init() {
   checkAdmin();
   const [jugadores, equipos] = await Promise.all([
-    fetch("/api/jugadores").then(r => r.json()),
-    fetch("/api/teams").then(r => r.json())
+    fetch("/api/index?ruta=jugadores").then(r => r.json()),
+    fetch("/api/index?ruta=teams").then(r => r.json())
   ]);
   todosLosJugadores = jugadores;
   todosLosEquipos   = equipos;
@@ -760,7 +760,7 @@ function cerrarGrlModal() {
 async function guardarGrl() {
   const val = parseInt(document.getElementById("grlInput").value);
   if (isNaN(val) || val < 1 || val > 99) { alert("El GRL debe ser entre 1 y 99"); return; }
-  const res = await fetch("/api/jugadores-grl", {
+  const res = await fetch("/api/index?ruta=jugadores-grl", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: jugadorActivo._id, grl: val })

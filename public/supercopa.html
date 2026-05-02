@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supercopa Ecuador — Haxec Esport</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --super-gold: #fbbf24;
+      --super-purple: #4c1d95;
+      --super-accent: #8b5cf6;
+    }
+
+    body { background: #0a0a0a; color: white; font-family: 'Outfit', sans-serif; }
+
+    .hero-super {
+      text-align: center;
+      padding: 60px 0;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    }
+
+    .super-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      letter-spacing: 6px;
+      margin: 0;
+      background: linear-gradient(180deg, #fff 0%, var(--super-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
+    }
+
+    .btn-super {
+      background: linear-gradient(90deg, var(--super-gold), #f59e0b);
+      color: #000;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 30px;
+    }
+    .btn-super:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4); }
+
+    .bracket-wrap {
+      max-width: 1000px;
+      margin: 50px auto;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    .round { display: flex; flex-direction: column; justify-content: center; gap: 40px; min-width: 280px; }
+    .round-label {
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--super-gold);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .match-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .match-card:hover { border-color: var(--super-accent); background: rgba(255, 255, 255, 0.06); }
+
+    .team { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+    .team img { width: 35px; height: 35px; object-fit: contain; }
+    .team-name { font-weight: 700; font-size: 1.1rem; }
+    .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--super-gold); }
+
+    .play-icon {
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--super-accent);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+    .match-card:hover .play-icon { opacity: 1; transform: translateY(-50%) scale(1.1); }
+
+    .winner { color: var(--super-gold); text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Supercopa">
+      <h1>Supercopa <span>Ecuador</span></h1>
+    </div>
+  </header>
+
+  <div class="hero-super">
+    <h1 class="super-title">Supercopa 2026</h1>
+    <p style="opacity:0.6;">Duelo de Titanes · LigaPro vs Copa Ecuador</p>
+    <button class="btn-super" onclick="generarSupercopa()">⚙️ Generar Supercopa</button>
+  </div>
+
+  <div class="bracket-wrap" id="bracket">
+    <!-- Partidos aquí -->
+  </div>
+
+  <script>
+    const API = "/api/index?ruta=supercopa_partidos";
+    const API_COPA = "/api/index?ruta=copa_partidos";
+    const API_TABLA = "/api/index?ruta=tabla";
+
+    let _partidos = [];
+
+    async function init() {
+      const res = await fetch(API);
+      _partidos = await res.json();
+      render();
+    }
+
+    async function generarSupercopa() {
+      if (!confirm("¿Generar Supercopa? Necesitas que la Liga y la Copa hayan terminado.")) return;
+
+      const [resCopa, resTabla] = await Promise.all([
+        fetch(API_COPA).then(r => r.json()),
+        fetch(API_TABLA).then(r => r.json())
+      ]);
+
+      // Obtener finalistas de copa
+      const finalCopa = resCopa.find(m => m.round === "final");
+      if (!finalCopa || !finalCopa.jugado) { alert("La Copa Ecuador aún no ha terminado."); return; }
+      
+      const campeonCopa = finalCopa.resultado.local > finalCopa.resultado.visitante ? finalCopa.local : finalCopa.visitante;
+      const subcampeonCopa = finalCopa.resultado.local > finalCopa.resultado.visitante ? finalCopa.visitante : finalCopa.local;
+
+      // Obtener top 2 de tabla
+      const tablaSorted = resTabla.sort((a,b) => (b.PTS-a.PTS) || (b.DG-a.DG));
+      const campeonLiga = { nombre: tablaSorted[0].equipo, logo: tablaSorted[0].logo };
+      const subcampeonLiga = { nombre: tablaSorted[1].equipo, logo: tablaSorted[1].logo };
+
+      const clasificados = [campeonCopa, subcampeonCopa, campeonLiga, subcampeonLiga];
+      const shuffled = clasificados.sort(() => 0.5 - Math.random());
+
+      const bracket = [
+        { id: "semi_0", round: "semis", local: shuffled[0], visitante: shuffled[1], resultado: { local:0, visitante:0 }, jugado: false },
+        { id: "semi_1", round: "semis", local: shuffled[2], visitante: shuffled[3], resultado: { local:0, visitante:0 }, jugado: false },
+        { id: "final_0", round: "final", local: { nombre: "—", logo: "" }, visitante: { nombre: "—", logo: "" }, resultado: { local:0, visitante:0 }, jugado: false }
+      ];
+
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bracket })
+      });
+
+      if (res.ok) location.reload();
+    }
+
+    function render() {
+      const container = document.getElementById("bracket");
+      container.innerHTML = "";
+      if (!_partidos.length) { container.innerHTML = "<p style='opacity:0.5;'>Presiona Generar para ver los cruces</p>"; return; }
+
+      const rounds = ["semis", "final"];
+      const labels = ["Semifinales", "Gran Final"];
+
+      rounds.forEach((r, idx) => {
+        const div = document.createElement("div");
+        div.className = "round";
+        div.innerHTML = `<div class="round-label">${labels[idx]}</div>`;
+
+        const matches = _partidos.filter(m => m.round === r);
+        matches.forEach(m => {
+          const wl = m.jugado && m.resultado.local > m.resultado.visitante ? "winner" : "";
+          const wv = m.jugado && m.resultado.visitante > m.resultado.local ? "winner" : "";
+          
+          const card = document.createElement("div");
+          card.className = "match-card";
+          card.innerHTML = `
+            <div class="team ${wl}">
+              <div style="display:flex;align-items:center;gap:12px;"><img src="${m.local.logo}">${m.local.nombre}</div>
+              <div class="score">${m.jugado ? m.resultado.local : ""}</div>
+            </div>
+            <div class="team ${wv}">
+              <div style="display:flex;align-items:center;gap:12px;"><img src="${m.visitante.logo}">${m.visitante.nombre}</div>
+              <div class="score">${m.jugado ? m.resultado.visitante : ""}</div>
+            </div>
+            ${!m.jugado && m.local.nombre !== "—" && m.visitante.nombre !== "—" ? `<div class="play-icon" onclick="jugar('${m._id}')">▶</div>` : ""}
+          `;
+          div.appendChild(card);
+        });
+        container.appendChild(div);
+      });
+    }
+
+    function jugar(id) {
+      localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "supercopa" }));
+      window.location.href = "/jugarpartido.html";
+    }
+
+    init();
+  </script>
+</body>
+</html>
