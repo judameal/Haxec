@@ -7,6 +7,84 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── MATCH HEADER CARD ── */
+    .match-header-card {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+      border: 1.5px solid rgba(245,197,24,0.25);
+      border-radius: 20px;
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .match-header-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% -30%, rgba(245,197,24,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .match-vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .team-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      min-width: 100px;
+    }
+    .team-escudo-big {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      padding: 6px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .team-name-header {
+      font-family: var(--font-head);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .vs-badge {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 2px;
+    }
+
+    .round-badge {
+      display: inline-block;
+      background: rgba(245,197,24,0.15);
+      color: #f5c518;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(245,197,24,0.3);
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 <div class="hex-mid"></div>
@@ -107,6 +185,12 @@ let eventos = [];
 let eventoActual = { jugador: null, equipo: null, tipo: null };
 const ICONOS = { gol: '⚽', asistencia: '👟', amarilla: '🟨', roja: '🟥' };
 
+// Logos guardados al cargar
+let logoLocal = "";
+let logoVisitante = "";
+
+const ROUND_NAMES = { octavos: "Octavos de Final", cuartos: "Cuartos de Final", semis: "Semifinales", final: "Gran Final" };
+
 function volver() { window.location.href = "/copaecuador.html"; }
 
 async function cargar() {
@@ -122,9 +206,30 @@ async function cargar() {
   match = partidos.find(p => p._id === sel.pid);
   if (!match) { alert("Partido no encontrado"); volver(); return; }
 
+  // Obtener logos de los equipos
+  const teamL = equipos.find(t => t.nombre === match.local?.nombre);
+  const teamV = equipos.find(t => t.nombre === match.visitante?.nombre);
+
+  // Prioridad: logo guardado en el partido > logo del equipo en BD
+  logoLocal    = match.local?.logo    || teamL?.logo    || "img/copaecuadorlogo.png";
+  logoVisitante = match.visitante?.logo || teamV?.logo  || "img/copaecuadorlogo.png";
+
+  const roundLabel = ROUND_NAMES[match.round] || match.round || "Partido";
+
+  // Header del partido con escudos
   document.getElementById("infoPartido").innerHTML = `
-    <div style="font-size:0.8rem; text-transform:uppercase; color:var(--accent); margin-bottom:10px; letter-spacing:2px; font-weight:800;">Copa Ecuador 2026</div>
-    <h3>${match.local.nombre} <span style="color:var(--muted);font-size:1.2rem;margin:0 10px;">vs</span> ${match.visitante.nombre}</h3>
+    <div class="round-badge">Copa Ecuador 2026 · ${roundLabel}</div>
+    <div class="match-vs-row">
+      <div class="team-card-header">
+        <img class="team-escudo-big" src="${logoLocal}" onerror="this.src='img/copaecuadorlogo.png'" alt="${match.local.nombre}">
+        <div class="team-name-header">${match.local.nombre}</div>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="team-card-header">
+        <img class="team-escudo-big" src="${logoVisitante}" onerror="this.src='img/copaecuadorlogo.png'" alt="${match.visitante.nombre}">
+        <div class="team-name-header">${match.visitante.nombre}</div>
+      </div>
+    </div>
   `;
 
   document.getElementById("nombreLocal").innerText = match.local.nombre;
@@ -208,11 +313,23 @@ async function guardar() {
   btn.disabled = true;
   btn.textContent = "Guardando...";
 
+  // Incluir logos en los objetos de equipo para que se guarden en BD y se reflejen en el bracket
+  const localConLogo = { ...match.local, logo: logoLocal };
+  const visitanteConLogo = { ...match.visitante, logo: logoVisitante };
+
   try {
     const res = await fetch(API + "?ruta=copa_partidos", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: match._id, local: match.local, visitante: match.visitante, resultado: { local: gl, visitante: gv }, eventos, mvp, notas })
+      body: JSON.stringify({
+        id: match._id,
+        local: localConLogo,
+        visitante: visitanteConLogo,
+        resultado: { local: gl, visitante: gv },
+        eventos,
+        mvp,
+        notas
+      })
     });
 
     if (!res.ok) throw new Error("Fallo al guardar");
@@ -220,8 +337,10 @@ async function guardar() {
   } catch (e) {
     alert("Error: " + e.message);
     btn.disabled = false;
+    btn.textContent = "⚽ Guardar Resultado Copa";
   }
 }
+
 cargar();
 </script>
 </body>

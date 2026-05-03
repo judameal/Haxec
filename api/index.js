@@ -267,7 +267,23 @@ async function handleJugadores(req, res) {
       goles_liga: 0, 
       goles_copa: 0, 
       goles_supercopa: 0,
-      asistencias: 0, amarillas: 0, rojas: 0, mvp: 0, vallas_imbatidas: 0, grl: null
+      asistencias: 0,
+      asistencias_liga: 0,
+      asistencias_copa: 0,
+      asistencias_supercopa: 0,
+      amarillas: 0,
+      amarillas_liga: 0,
+      amarillas_copa: 0,
+      amarillas_supercopa: 0,
+      rojas: 0,
+      rojas_liga: 0,
+      rojas_copa: 0,
+      rojas_supercopa: 0,
+      mvp: 0,
+      mvp_liga: 0,
+      mvp_copa: 0,
+      mvp_supercopa: 0,
+      vallas_imbatidas: 0, grl: null
     });
     return res.status(200).json({ message: "Jugador creado" });
   }
@@ -303,7 +319,13 @@ async function handleReset(req, res) {
   await db.collection("tabla").deleteMany({});
   await db.collection("config").updateOne({ tipo: "liga" }, { $set: { fase: "regular", hexagonalGenerado: false } });
   await db.collection("jugadores").updateMany({}, {
-    $set: { goles: 0, goles_liga: 0, goles_copa: 0, goles_supercopa: 0, asistencias: 0, amarillas: 0, rojas: 0, mvp: 0 }
+    $set: {
+      goles: 0, goles_liga: 0, goles_copa: 0, goles_supercopa: 0,
+      asistencias: 0, asistencias_liga: 0, asistencias_copa: 0, asistencias_supercopa: 0,
+      amarillas: 0, amarillas_liga: 0, amarillas_copa: 0, amarillas_supercopa: 0,
+      rojas: 0, rojas_liga: 0, rojas_copa: 0, rojas_supercopa: 0,
+      mvp: 0, mvp_liga: 0, mvp_copa: 0, mvp_supercopa: 0
+    }
   });
 
   return res.status(200).json({ message: "Liga y Torneos reiniciados correctamente" });
@@ -340,7 +362,7 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
     if (!partido) return res.status(404).json({ message: "Partido no encontrado" });
 
     if (partido.jugado) {
-      await revertirJugadores(jugCol, partido.eventos || [], partido.mvp);
+      await revertirJugadores(jugCol, partido.eventos || [], partido.mvp, torneoKey);
     }
 
     await col.updateOne(
@@ -363,10 +385,11 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
       if (siguienteRonda) {
         const siguientePos = Math.floor(partido.pos / 2);
         const campoEquipo = (partido.pos % 2 === 0) ? "local" : "visitante";
-        
+        // Propagar nombre Y logo del ganador al siguiente partido
+        const ganadorData = { nombre: ganador.nombre, logo: ganador.logo || "" };
         await col.updateOne(
           { round: siguienteRonda, pos: siguientePos },
-          { $set: { [campoEquipo]: { nombre: ganador.nombre } } }
+          { $set: { [campoEquipo]: ganadorData } }
         );
       }
     }
@@ -592,27 +615,40 @@ async function revertirTabla(tabla, local, visitante, resultado) {
 }
 
 async function actualizarJugadores(jugadores, eventos, mvp, torneo = "liga") {
+  const TORNEO_CAMPOS = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" };
   for (const e of eventos) {
-    let campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
+    const campo = TORNEO_CAMPOS[e.tipo];
     if (campo) {
-      // Si es gol, sumamos al global y al específico del torneo
-      if (e.tipo === "gol") {
-        const campoTorneo = `goles_${torneo}`;
-        await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1, [campoTorneo]: 1 } });
-      } else {
-        await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: 1 } });
-      }
+      // Siempre sumamos al global y al específico del torneo
+      const campoTorneo = `${campo}_${torneo}`;
+      await jugadores.updateOne(
+        { nombre: e.jugador },
+        { $inc: { [campo]: 1, [campoTorneo]: 1 } }
+      );
     }
   }
-  if (mvp) await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: 1 } });
+  if (mvp) {
+    const campoMvpTorneo = `mvp_${torneo}`;
+    await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: 1, [campoMvpTorneo]: 1 } });
+  }
 }
 
-async function revertirJugadores(jugadores, eventos, mvp) {
+async function revertirJugadores(jugadores, eventos, mvp, torneo = "liga") {
+  const TORNEO_CAMPOS = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" };
   for (const e of eventos) {
-    const campo = { gol: "goles", asistencia: "asistencias", amarilla: "amarillas", roja: "rojas" }[e.tipo];
-    if (campo) await jugadores.updateOne({ nombre: e.jugador }, { $inc: { [campo]: -1 } });
+    const campo = TORNEO_CAMPOS[e.tipo];
+    if (campo) {
+      const campoTorneo = `${campo}_${torneo}`;
+      await jugadores.updateOne(
+        { nombre: e.jugador },
+        { $inc: { [campo]: -1, [campoTorneo]: -1 } }
+      );
+    }
   }
-  if (mvp) await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: -1 } });
+  if (mvp) {
+    const campoMvpTorneo = `mvp_${torneo}`;
+    await jugadores.updateOne({ nombre: mvp }, { $inc: { mvp: -1, [campoMvpTorneo]: -1 } });
+  }
 }
 
 /* ════════════════════════════════════════════════════
