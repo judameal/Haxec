@@ -289,11 +289,14 @@ async function handleJugadores(req, res) {
   }
 
   if (req.method === "PUT") {
-    const { id, nombre, dorsal, equipo, foto } = req.body;
-    await jugadores.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { nombre, dorsal, equipo, foto } }
-    );
+    const { id, nombre, dorsal, equipo, foto, grl } = req.body;
+    const update = {};
+    if (nombre !== undefined) update.nombre = nombre;
+    if (dorsal !== undefined) update.dorsal = dorsal;
+    if (equipo !== undefined) update.equipo = equipo;
+    if (foto   !== undefined) update.foto   = foto;
+    if (grl    !== undefined) update.grl    = Number(grl);
+    await jugadores.updateOne({ _id: new ObjectId(id) }, { $set: update });
     return res.status(200).json({ message: "Jugador actualizado" });
   }
 
