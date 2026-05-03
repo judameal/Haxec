@@ -314,19 +314,24 @@
       pointer-events:none;
     }
 
-    /* ── GOLD CARD — deep black + true gold ── */
+    /* ── GOLD CARD — pure yellow gold ── */
     .card-gold {
-      background:
-        radial-gradient(ellipse at 40% 15%, #3d2600 0%, transparent 55%),
-        radial-gradient(ellipse at 70% 80%, #2a1a00 0%, transparent 50%),
-        linear-gradient(160deg, #0a0500, #1f1000, #0a0500);
-      border:2px solid var(--gold-light);
+      background: linear-gradient(160deg, #ffe066, #ffb300, #ffe066);
+      border:2px solid #fff;
       box-shadow:
-        0 0 0 1px rgba(212,160,23,0.2) inset,
+        0 0 0 1px rgba(255,255,255,0.4) inset,
         0 20px 70px rgba(0,0,0,.75),
-        0 0 50px var(--gold-glow);
+        0 0 50px rgba(255,215,0,0.6);
       animation: goldSpin 1.2s cubic-bezier(0.1,0.8,0.2,1) both;
     }
+    .card-gold .card-tier-label, .card-gold .card-grl, .card-gold .stat-val, .card-gold .card-pos, .card-gold .card-name { color:var(--gold-dark) !important; text-shadow:none !important; }
+    .card-gold .card-team { color:rgba(18,9,0,.7) !important; }
+    .card-gold .card-avatar-wrap { border-color:var(--gold-dark) !important; box-shadow:0 6px 20px rgba(0,0,0,0.2) !important; }
+    .card-gold .card-divider { background:linear-gradient(90deg,transparent,var(--gold-dark),transparent) !important; opacity:.3; }
+    .card-gold .stat-item { border-color:rgba(18,9,0,0.2) !important; background:rgba(0,0,0,0.05); }
+    .card-gold .card-close { background:rgba(0,0,0,.1) !important; border-color:rgba(0,0,0,.2) !important; color:rgba(0,0,0,.7) !important; }
+    .card-gold .card-close:hover { background:rgba(0,0,0,.25) !important; color:#000 !important; }
+    .card-gold .btn-set-grl { background:rgba(0,0,0,.08) !important; border-color:rgba(0,0,0,.2) !important; color:var(--gold-dark) !important; }
     .card-gold::before {
       content:'';
       position:absolute; top:0; left:-60%;
