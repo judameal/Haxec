@@ -366,7 +366,7 @@ async function crearJugador() {
 
   const foto = file ? await convertirBase64(file) : "";
 
-  await fetch("/api/jugadores", {
+  await fetch("/api/index?ruta=jugadores", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -383,7 +383,7 @@ async function crearJugador() {
 // ——— Cargar tabla ———
 async function cargarJugadores() {
   const [jugadores, teams] = await Promise.all([
-    fetch("/api/jugadores").then(r => r.json()),
+    fetch("/api/index?ruta=jugadores").then(r => r.json()),
     fetchTeams()
   ]);
 
@@ -481,7 +481,7 @@ async function guardarEdicion() {
   const body = { id, nombre, dorsal, equipo: equipoFinal };
   if (fotoEditBase64) body.foto = fotoEditBase64;
 
-  await fetch("/api/jugadores", {
+  await fetch("/api/index?ruta=jugadores", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -493,7 +493,7 @@ async function guardarEdicion() {
 // ——— Eliminar ———
 async function eliminarJugador(id) {
   if (!confirm("¿Eliminar jugador?")) return;
-  await fetch("/api/jugadores", {
+  await fetch("/api/index?ruta=jugadores", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })
@@ -504,7 +504,7 @@ async function eliminarJugador(id) {
 // ——— Utilidades ———
 async function fetchTeams() {
   if (_teamsCache) return _teamsCache;
-  _teamsCache = await fetch("/api/teams").then(r => r.json());
+  _teamsCache = await fetch("/api/index?ruta=teams").then(r => r.json());
   return _teamsCache;
 }
 

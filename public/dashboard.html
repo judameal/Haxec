@@ -84,7 +84,7 @@ if (!user || user.role !== "admin") {
 }
 
 async function cargarUsuarios() {
-  const res = await fetch(API + "/users");
+  const res = await fetch("/api/index?ruta=users");
   const users = await res.json();
 
   const tbody = document.querySelector("#tablaUsuarios tbody");
@@ -112,16 +112,18 @@ async function cargarUsuarios() {
 }
 
 async function hacerAdmin(username) {
-  await fetch(API + "/setRole", {
+  await fetch("/api/index?ruta=setRole", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, role: "admin" })
   });
   location.reload();
 }
 
 async function quitarAdmin(username) {
-  await fetch(API + "/setRole", {
+  await fetch("/api/index?ruta=setRole", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, role: "user" })
   });
   location.reload();
@@ -129,8 +131,9 @@ async function quitarAdmin(username) {
 
 async function eliminar(username) {
   if (!confirm(`¿Eliminar a ${username}?`)) return;
-  await fetch(API + "/deleteUser", {
+  await fetch("/api/index?ruta=deleteUser", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username })
   });
   location.reload();

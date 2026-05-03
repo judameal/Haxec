@@ -196,7 +196,7 @@ async function crearEquipo() {
 
   const logo = await convertirBase64(file);
 
-  await fetch(API + "/teams", {
+  await fetch("/api/index?ruta=teams", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nombre, logo, local, visitante })
@@ -206,11 +206,10 @@ async function crearEquipo() {
 }
 
 async function cargarTeams() {
-  const res = await fetch(API + "/teams");
-  const teams = await res.json();
-
-  const resJug = await fetch("/api/jugadores");
-  const jugadores = await resJug.json();
+  const [teams, jugadores] = await Promise.all([
+    fetch("/api/index?ruta=teams").then(r => r.json()),
+    fetch("/api/index?ruta=jugadores").then(r => r.json())
+  ]);
 
   const tbody = document.querySelector("#tablaTeams tbody");
 
@@ -285,8 +284,9 @@ function toggleEquipo(id) {
 
 async function eliminar(id) {
   if (!confirm("¿Eliminar este equipo?")) return;
-  await fetch(API + "/teams", {
+  await fetch("/api/index?ruta=teams", {
     method: "DELETE",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })
   });
   location.reload();
