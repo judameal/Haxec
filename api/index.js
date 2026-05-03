@@ -386,8 +386,8 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
       if (siguienteRonda) {
         const siguientePos = Math.floor(partido.pos / 2);
         const campoEquipo = (partido.pos % 2 === 0) ? "local" : "visitante";
-        // Propagar nombre Y logo del ganador al siguiente partido
-        const ganadorData = { nombre: ganador.nombre, logo: ganador.logo || "" };
+        // Solo propagar el nombre (sin logo, para no inflar el payload)
+        const ganadorData = { nombre: ganador.nombre };
         await col.updateOne(
           { round: siguienteRonda, pos: siguientePos },
           { $set: { [campoEquipo]: ganadorData } }

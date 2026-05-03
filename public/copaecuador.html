@@ -499,12 +499,12 @@
         const numPartidosPrimerRound = Math.floor(Math.min(shuffled.length, 16) / 2);
 
         for (let i = 0; i < numPartidosPrimerRound; i++) {
-          const l = shuffled[i * 2]     || { nombre: "—", logo: "" };
-          const v = shuffled[i * 2 + 1] || { nombre: "—", logo: "" };
+          const l = shuffled[i * 2]     || { nombre: "—" };
+          const v = shuffled[i * 2 + 1] || { nombre: "—" };
           all.push({
             round: primerRound, pos: i,
-            local:     { nombre: l.nombre, logo: l.logo || "" },
-            visitante: { nombre: v.nombre, logo: v.logo || "" },
+            local:     { nombre: l.nombre },
+            visitante: { nombre: v.nombre },
             resultado: { local: 0, visitante: 0 }, jugado: false
           });
         }
@@ -521,8 +521,8 @@
           for (let p = 0; p < siguientesCantidades[idx]; p++) {
             all.push({
               round: r, pos: p,
-              local:     { nombre: "—", logo: "" },
-              visitante: { nombre: "—", logo: "" },
+              local:     { nombre: "—" },
+              visitante: { nombre: "—" },
               resultado: { local: 0, visitante: 0 }, jugado: false
             });
           }

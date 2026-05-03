@@ -313,9 +313,9 @@ async function guardar() {
   btn.disabled = true;
   btn.textContent = "Guardando...";
 
-  // Incluir logos en los objetos de equipo para que se guarden en BD y se reflejen en el bracket
-  const localConLogo = { ...match.local, logo: logoLocal };
-  const visitanteConLogo = { ...match.visitante, logo: logoVisitante };
+  // Solo enviamos nombre (sin logo) para no superar límite de payload
+  const localSave     = { nombre: match.local.nombre };
+  const visitanteSave = { nombre: match.visitante.nombre };
 
   try {
     const res = await fetch(API + "?ruta=copa_partidos", {
@@ -323,8 +323,8 @@ async function guardar() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: match._id,
-        local: localConLogo,
-        visitante: visitanteConLogo,
+        local: localSave,
+        visitante: visitanteSave,
         resultado: { local: gl, visitante: gv },
         eventos,
         mvp,
