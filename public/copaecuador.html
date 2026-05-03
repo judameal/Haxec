@@ -11,44 +11,33 @@
     /* ── HERO ── */
     .hero-cup {
       text-align: center;
-      padding: 48px 24px 36px;
+      padding: 44px 24px 32px;
       background: var(--black);
       border-radius: 16px;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       border-bottom: 3px solid var(--accent);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
     }
-
     .cup-title {
       font-family: var(--font-head);
-      font-size: clamp(2rem, 5vw, 3rem);
+      font-size: clamp(1.8rem, 4vw, 3rem);
       font-weight: 900;
       letter-spacing: 5px;
-      margin: 0 0 6px;
+      margin: 0 0 4px;
       color: #fff;
       text-transform: uppercase;
     }
     .cup-title span { color: var(--accent); }
-
     .cup-subtitle {
-      color: rgba(255,255,255,0.4);
-      font-size: 0.78rem;
+      font-family: var(--font-head);
+      color: rgba(255,255,255,0.35);
+      font-size: 0.72rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 24px;
-      font-family: var(--font-head);
+      font-weight: 700;
+      margin-bottom: 22px;
     }
-
-    .actions-bar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .actions-bar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
     .btn-action {
       font-family: var(--font-head);
       font-weight: 800;
@@ -59,286 +48,248 @@
       cursor: pointer;
       transition: all 0.2s;
       border: none;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
     }
     .btn-generate { background: var(--accent); color: var(--black); }
     .btn-schedule { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2) !important; }
     .btn-reset    { background: #dc2626; color: #fff; }
-    .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-    /* ── BRACKET SCROLL ── */
-    .bracket-scroll {
+    /* ── BRACKET ── */
+    .bracket-outer {
       overflow-x: auto;
-      padding-bottom: 16px;
+      overflow-y: visible;
+      padding: 10px 0 30px;
     }
-    .bracket-container {
+    .bracket-grid {
       display: flex;
-      align-items: flex-start;
-      gap: 0;
-      min-width: fit-content;
-      padding: 8px 0 16px;
+      align-items: stretch;
+      min-width: max-content;
+      position: relative;
     }
 
-    /* ── ROUND ── */
-    .round {
+    /* ── ROUND COLUMN ── */
+    .round-col {
       display: flex;
       flex-direction: column;
-      min-width: 220px;
+      min-width: 200px;
+      position: relative;
+      z-index: 1;
     }
-    .round-header {
-      text-align: center;
+    .round-label {
       font-family: var(--font-head);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 900;
       color: var(--accent);
       letter-spacing: 3px;
       text-transform: uppercase;
-      padding: 0 0 10px;
+      text-align: center;
+      padding-bottom: 10px;
       border-bottom: 2px solid var(--accent);
-      margin: 0 14px 0;
+      margin: 0 8px 0;
     }
-
     .matches-col {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
       flex: 1;
-      padding: 6px 0;
+      padding: 12px 0;
     }
 
-    /* ── MATCH WRAPPER ── */
-    .match-wrapper {
+    /* ── SPACER (holds SVG lines) ── */
+    .round-spacer {
+      width: 52px;
+      flex-shrink: 0;
       position: relative;
-      display: flex;
-      align-items: center;
-      padding: 8px 14px;
+      z-index: 0;
     }
 
     /* ── MATCH CARD ── */
-    .match {
-      flex: 1;
+    .match-wrap {
+      position: relative;
+      padding: 7px 8px;
+    }
+    .match-card {
       background: var(--surface);
       border: 1.5px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      position: relative;
+      z-index: 1;
     }
-    .match:hover {
+    .match-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 6px 22px var(--accent-glow);
+      box-shadow: 0 5px 18px var(--accent-glow);
       transform: translateY(-1px);
     }
-    .match.jugado {
-      background: var(--surface2);
-    }
+    .match-card.jugado { background: var(--surface2); }
 
-    /* ── DATE BAR ── */
+    /* DATE BAR */
     .match-date-bar {
       background: var(--black);
       border-bottom: 2px solid var(--accent);
-      padding: 5px 10px;
+      padding: 4px 10px;
       font-family: var(--font-head);
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: rgba(255,255,255,0.5);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* ── TEAM ROWS ── */
+    /* TEAM ROW */
     .team-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
-      gap: 8px;
+      padding: 8px 10px;
+      gap: 7px;
       transition: background 0.15s;
     }
-    .team-row:first-of-type { border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .team-row.winner { background: rgba(245,197,24,0.07); }
-
+    .team-row + .team-row { border-top: 1px solid var(--border); }
+    .team-row.winner { background: var(--surface3); }
     .team-info {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
+      font-family: var(--font-head);
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
+      color: var(--text);
       flex: 1;
       min-width: 0;
     }
-    .team-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .team-row.winner .team-info { color: var(--accent-dark); }
+    .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .team-row.tbd .team-name { color: var(--muted); font-style: italic; font-weight: 400; }
+
     .team-logo {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       object-fit: contain;
-      border-radius: 4px;
+      border-radius: 3px;
       flex-shrink: 0;
+      background: var(--surface3);
     }
-    .team-logo.placeholder {
-      background: rgba(255,255,255,0.08);
-      border: 1px dashed rgba(255,255,255,0.15);
-    }
+    .team-row.tbd .team-logo { opacity: 0.25; }
 
     .score-box {
       font-family: var(--font-head);
-      font-size: 1.15rem;
+      font-size: 1rem;
       font-weight: 900;
-      color: var(--copa-gold);
-      min-width: 28px;
+      color: var(--muted);
+      min-width: 22px;
       text-align: center;
     }
-    .score-box.winner-score {
-      color: #fff;
-      background: var(--copa-gold);
-      border-radius: 6px;
-      width: 28px;
-      height: 28px;
+    .score-box.win {
+      background: var(--black);
+      color: var(--accent);
+      border-radius: 5px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
-    }
-    .team-row.winner .team-name { color: #fff; }
-
-    /* ── TBD styling ── */
-    .tbd .team-name { color: rgba(255,255,255,0.25); font-style: italic; font-weight: 400; }
-    .tbd .team-logo { opacity: 0.2; }
-
-    /* ── CONNECTOR lines ── */
-    .connector {
-      width: 20px;
-      flex-shrink: 0;
-      align-self: stretch;
-      position: relative;
-    }
-    .connector::before,
-    .connector::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      width: 10px;
-      border-color: rgba(245,197,24,0.2);
-      border-style: solid;
+      font-size: 0.88rem;
     }
 
-    /* ── PLAY / REPORT BUTTONS ── */
+    /* REPORT BTN */
+    .btn-report-cup {
+      display: block;
+      margin: 0 10px 8px;
+      width: calc(100% - 20px);
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px;
+      font-size: 0.65rem;
+      font-family: var(--font-head);
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-report-cup:hover { background: var(--black); color: var(--accent); border-color: var(--black); }
+
+    /* PLAY BTN */
     .btn-play-cup {
       position: absolute;
-      right: 4px;
+      right: -4px;
       top: 50%;
       transform: translateY(-50%);
-      background: var(--copa-gold);
-      color: #111;
+      background: var(--accent);
+      color: var(--black);
       border: none;
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      box-shadow: 0 4px 14px rgba(245,197,24,0.4);
+      font-size: 0.68rem;
+      font-weight: 900;
+      box-shadow: 0 3px 10px var(--accent-glow);
       transition: all 0.2s;
       z-index: 10;
     }
-    .btn-play-cup:hover {
-      transform: translateY(-50%) scale(1.15);
-      box-shadow: 0 6px 20px rgba(245,197,24,0.6);
-    }
+    .btn-play-cup:hover { transform: translateY(-50%) scale(1.2); background: var(--accent-dark); }
 
-    .btn-report-cup {
-      margin: 0 14px 10px;
-      width: calc(100% - 28px);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 5px 8px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .btn-report-cup:hover {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-    }
+    /* EMPTY */
+    .empty-bracket { text-align: center; padding: 70px 20px; color: var(--muted); width: 100%; }
+    .empty-bracket .trophy { font-size: 3.5rem; margin-bottom: 12px; }
 
-    /* ── EMPTY STATE ── */
-    .empty-bracket {
-      text-align: center;
-      padding: 80px 20px;
-      color: rgba(255,255,255,0.25);
+    /* SVG lines overlay */
+    .bracket-svg {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
     }
-    .empty-bracket .trophy { font-size: 4rem; margin-bottom: 16px; }
-    .empty-bracket p { font-size: 1rem; }
 
     /* ── MODAL ── */
     .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
+      display: none; position: fixed; z-index: 1000;
       left: 0; top: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
     }
     .modal-content {
-      background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
-      margin: 8% auto;
-      padding: 32px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 480px;
-      border: 2px solid rgba(245,197,24,0.4);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      margin: 8% auto; padding: 28px;
+      border-radius: 16px; width: 90%; max-width: 440px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.14);
+      animation: fadeUp .2s ease both;
     }
     .modal-title {
-      font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 20px;
-      color: var(--copa-gold);
+      font-family: var(--font-head); font-size: 0.9rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 18px; color: var(--black);
+      border-bottom: 2px solid var(--accent); padding-bottom: 11px;
     }
     .report-mvp {
-      background: rgba(245,197,24,0.1);
-      border: 1px solid rgba(245,197,24,0.3);
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-weight: 700;
+      background: var(--surface2); border: 1.5px solid var(--accent);
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+      display: flex; gap: 10px; align-items: center;
+      font-weight: 700; color: var(--accent-dark); font-family: var(--font-head);
     }
-    .report-mvp .mvp-icon { font-size: 1.4rem; }
     .report-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 9px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      font-size: 0.88rem;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 0.88rem; color: var(--text);
     }
     .report-item:last-child { border-bottom: none; }
     .event-tipo {
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
+      font-size: 0.66rem; font-family: var(--font-head); font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 7px; border-radius: 5px;
+      background: var(--surface3); color: var(--muted);
     }
   </style>
 </head>
@@ -350,7 +301,7 @@
       <h1>Copa <span>Ecuador</span></h1>
     </div>
     <div class="nav-buttons">
-        <button onclick="window.location.href='/haxball.html'">Atrás</button>
+      <button onclick="window.location.href='/haxball.html'">Atrás</button>
     </div>
   </header>
 
@@ -359,82 +310,88 @@
       <h1 class="cup-title">Copa <span>Ecuador</span> 2026</h1>
       <p class="cup-subtitle">Torneo de Eliminación Directa</p>
       <div class="actions-bar" id="adminActions" style="display:none;">
-          <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
-          <button class="btn-action btn-schedule" onclick="window.location.href='/copahorario.html'">📅 Horarios</button>
-          <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar</button>
+        <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
+        <button class="btn-action btn-schedule" onclick="window.location.href='/copahorario.html'">📅 Horarios</button>
+        <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar</button>
       </div>
     </div>
 
-    <div class="bracket-scroll">
-      <div class="bracket-container" id="bracket"></div>
+    <div class="bracket-outer">
+      <div class="bracket-grid" id="bracket"></div>
     </div>
   </div>
 
   <!-- MODAL INFORME -->
-  <div id="modalReporte" class="modal" onclick="cerrarReporteSiOverlay(event)">
+  <div id="modalReporte" class="modal" onclick="cerrarSiOverlay(event)">
     <div class="modal-content">
       <div class="modal-title" id="reporteTitulo"></div>
       <div id="reporteBody"></div>
-      <button class="add-btn" onclick="cerrarReporte()" style="margin-top:20px; width:100%;">Cerrar</button>
+      <button class="add-btn" onclick="cerrarReporte()" style="margin-top:18px;width:100%;">Cerrar</button>
     </div>
   </div>
 
   <script>
-    const API = "/api/index?ruta=copa_partidos";
+    const API       = "/api/index?ruta=copa_partidos";
     const API_TEAMS = "/api/index?ruta=teams";
-    let _bracketData = [];
-    let _teams = [];
-    let _isAdmin = false;
+    let _bracketData = [], _teams = [], _isAdmin = false;
 
-    const ROUND_NAMES = { octavos: "Octavos de Final", cuartos: "Cuartos de Final", semis: "Semifinales", final: "Gran Final" };
-    const ROUND_ORDER = ["octavos", "cuartos", "semis", "final"];
+    const ROUNDS      = ["octavos","cuartos","semis","final"];
+    const ROUND_LABEL = { octavos:"Octavos de Final", cuartos:"Cuartos de Final", semis:"Semifinales", final:"Gran Final" };
+    const ICONOS      = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
 
+    /* ── INIT ── */
     async function init() {
       const user = JSON.parse(localStorage.getItem("user") || "null");
       _isAdmin = !!(user && user.role === "admin");
       if (_isAdmin) document.getElementById("adminActions").style.display = "flex";
-
       try {
-          const [resB, resT] = await Promise.all([
-            fetch(API).then(r => r.json()),
-            fetch(API_TEAMS).then(r => r.json())
-          ]);
-          _bracketData = Array.isArray(resB) ? resB : [];
-          _teams = Array.isArray(resT) ? resT : [];
-          renderBracket();
-      } catch (e) { console.error(e); renderBracket(); }
+        const [rb, rt] = await Promise.all([
+          fetch(API).then(r => r.json()),
+          fetch(API_TEAMS).then(r => r.json())
+        ]);
+        _bracketData = Array.isArray(rb) ? rb : [];
+        _teams       = Array.isArray(rt) ? rt : [];
+      } catch(e) { console.error(e); }
+      renderBracket();
     }
 
+    /* ── LOGO HELPER ── */
+    function logo(teamObj) {
+      // Priority: logo stored in match → logo from teams DB → placeholder
+      if (teamObj?.logo) return teamObj.logo;
+      const t = _teams.find(t => t.nombre === teamObj?.nombre);
+      return t?.logo || "";
+    }
+
+    /* ── GENERAR ── */
     async function generarCopa() {
       if (_bracketData.length && !confirm("¿Generar nueva copa? Se borrará el torneo actual.")) return;
       const shuffled = [..._teams].sort(() => 0.5 - Math.random());
       const all = [];
-      for (let i=0; i<8; i++) {
-          const l = shuffled[i*2] || { nombre:"—", logo:"" };
-          const v = shuffled[i*2+1] || { nombre:"—", logo:"" };
-          all.push({ round:"octavos", pos:i, local:{ nombre:l.nombre, logo:l.logo||"" }, visitante:{ nombre:v.nombre, logo:v.logo||"" }, resultado:{ local:0, visitante:0 }, jugado:false });
+      for (let i = 0; i < 8; i++) {
+        const l = shuffled[i*2]   || { nombre:"—", logo:"" };
+        const v = shuffled[i*2+1] || { nombre:"—", logo:"" };
+        all.push({ round:"octavos", pos:i,
+          local:    { nombre:l.nombre, logo:l.logo||"" },
+          visitante:{ nombre:v.nombre, logo:v.logo||"" },
+          resultado:{ local:0, visitante:0 }, jugado:false });
       }
-      ["cuartos","semis","final"].forEach((r, idx) => {
-          const c = [4, 2, 1][idx];
-          for (let i=0; i<c; i++) all.push({ round:r, pos:i, local:{ nombre:"—", logo:"" }, visitante:{ nombre:"—", logo:"" }, resultado:{ local:0, visitante:0 }, jugado:false });
+      ["cuartos","semis","final"].forEach((r,i) => {
+        for (let p = 0; p < [4,2,1][i]; p++)
+          all.push({ round:r, pos:p, local:{nombre:"—",logo:""}, visitante:{nombre:"—",logo:""}, resultado:{local:0,visitante:0}, jugado:false });
       });
       await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:all}) });
       location.reload();
     }
 
     async function resetCopa() {
-        if (confirm("¿Borrar todo el torneo?")) {
-            await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:[]}) });
-            location.reload();
-        }
+      if (confirm("¿Borrar todo el torneo?")) {
+        await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:[]}) });
+        location.reload();
+      }
     }
 
-    function getTeamLogo(nombre) {
-      if (!nombre || nombre === "—") return "";
-      const t = _teams.find(t => t.nombre === nombre);
-      return t?.logo || "";
-    }
-
+    /* ── RENDER BRACKET ── */
     function renderBracket() {
       const container = document.getElementById("bracket");
       container.innerHTML = "";
@@ -444,114 +401,177 @@
           <div class="empty-bracket">
             <div class="trophy">🏆</div>
             <p>No hay torneo activo.</p>
-            ${_isAdmin ? `<p style="margin-top:8px; font-size:0.85rem; opacity:.6;">Genera los brackets desde el panel de administración.</p>` : ""}
+            ${_isAdmin ? `<p style="margin-top:8px;font-size:.85rem;opacity:.5;">Genera los brackets desde el panel de admin.</p>` : ""}
           </div>`;
         return;
       }
 
-      ROUND_ORDER.forEach((r, idx) => {
-        const matches = _bracketData.filter(m => m.round === r);
+      ROUNDS.forEach((r, ri) => {
+        const matches = _bracketData.filter(m => m.round === r).sort((a,b) => a.pos - b.pos);
         if (!matches.length) return;
 
-        const roundDiv = document.createElement("div");
-        roundDiv.className = "round";
+        // Round column
+        const col = document.createElement("div");
+        col.className = "round-col";
 
-        // Header
-        const header = document.createElement("div");
-        header.className = "round-header";
-        header.textContent = ROUND_NAMES[r] || r;
-        roundDiv.appendChild(header);
+        const lbl = document.createElement("div");
+        lbl.className = "round-label";
+        lbl.textContent = ROUND_LABEL[r];
+        col.appendChild(lbl);
 
         const matchesCol = document.createElement("div");
         matchesCol.className = "matches-col";
 
-        matches.sort((a,b) => a.pos - b.pos).forEach(m => {
-          const logoL = m.local?.logo || getTeamLogo(m.local?.nombre) || "img/copaecuadorlogo.png";
-          const logoV = m.visitante?.logo || getTeamLogo(m.visitante?.nombre) || "img/copaecuadorlogo.png";
-          const isTBDL = !m.local?.nombre || m.local.nombre === "—";
-          const isTBDV = !m.visitante?.nombre || m.visitante.nombre === "—";
-
-          const gl = m.jugado ? m.resultado?.local : null;
+        matches.forEach(m => {
+          const logoL = logo(m.local);
+          const logoV = logo(m.visitante);
+          const tL = !m.local?.nombre    || m.local.nombre    === "—";
+          const tV = !m.visitante?.nombre || m.visitante.nombre === "—";
+          const gl = m.jugado ? m.resultado?.local    : null;
           const gv = m.jugado ? m.resultado?.visitante : null;
-          const wl = m.jugado && gl > gv;
-          const wv = m.jugado && gv > gl;
+          const wL = m.jugado && gl > gv;
+          const wV = m.jugado && gv > gl;
+          const fecha = m.fecha ? `📅 ${m.fecha}${m.hora ? " · " + m.hora : ""}` : "⏳ Pendiente";
 
-          const fechaTexto = m.fecha ? `📅 ${m.fecha}${m.hora ? '  ·  ' + m.hora : ''}` : "⏳ Pendiente";
+          const wrap = document.createElement("div");
+          wrap.className = "match-wrap";
 
-          const wrapper = document.createElement("div");
-          wrapper.className = "match-wrapper";
+          const card = document.createElement("div");
+          card.className = "match-card" + (m.jugado ? " jugado" : "");
+          card.dataset.round = r;
+          card.dataset.pos   = m.pos;
 
-          const matchDiv = document.createElement("div");
-          matchDiv.className = "match" + (m.jugado ? " jugado" : "");
-
-          matchDiv.innerHTML = `
-            <div class="match-date-bar">${fechaTexto}</div>
-            <div class="team-row ${wl ? 'winner' : ''} ${isTBDL ? 'tbd' : ''}">
+          card.innerHTML = `
+            <div class="match-date-bar">${fecha}</div>
+            <div class="team-row ${wL?"winner":""} ${tL?"tbd":""}">
               <div class="team-info">
-                <img class="team-logo" src="${logoL}" onerror="this.src='img/copaecuadorlogo.png'" alt="">
-                <span class="team-name">${isTBDL ? 'Por definir' : m.local.nombre}</span>
+                ${logoL ? `<img class="team-logo" src="${logoL}" onerror="this.style.display='none'" alt="">` : `<span class="team-logo"></span>`}
+                <span class="team-name">${tL ? "Por definir" : m.local.nombre}</span>
               </div>
-              ${m.jugado ? `<div class="score-box ${wl ? 'winner-score' : ''}">${gl}</div>` : `<div class="score-box" style="color:rgba(255,255,255,0.2);">–</div>`}
+              ${m.jugado ? `<div class="score-box ${wL?"win":""}">${gl}</div>` : `<div class="score-box" style="color:var(--border)">–</div>`}
             </div>
-            <div class="team-row ${wv ? 'winner' : ''} ${isTBDV ? 'tbd' : ''}">
+            <div class="team-row ${wV?"winner":""} ${tV?"tbd":""}">
               <div class="team-info">
-                <img class="team-logo" src="${logoV}" onerror="this.src='img/copaecuadorlogo.png'" alt="">
-                <span class="team-name">${isTBDV ? 'Por definir' : m.visitante.nombre}</span>
+                ${logoV ? `<img class="team-logo" src="${logoV}" onerror="this.style.display='none'" alt="">` : `<span class="team-logo"></span>`}
+                <span class="team-name">${tV ? "Por definir" : m.visitante.nombre}</span>
               </div>
-              ${m.jugado ? `<div class="score-box ${wv ? 'winner-score' : ''}">${gv}</div>` : `<div class="score-box" style="color:rgba(255,255,255,0.2);">–</div>`}
+              ${m.jugado ? `<div class="score-box ${wV?"win":""}">${gv}</div>` : `<div class="score-box" style="color:var(--border)">–</div>`}
             </div>
-            ${m.jugado ? `<button class="btn-report-cup" onclick="verInforme('${m._id}')">📝 Ver Informe</button>` : ""}
+            ${m.jugado ? `<button class="btn-report-cup" onclick="verInforme('${m._id}')">📝 Ver informe</button>` : ""}
           `;
 
-          // Botón jugar: SOLO para admins
-          if (_isAdmin && !m.jugado && !isTBDL && !isTBDV) {
-            const btnPlay = document.createElement("button");
-            btnPlay.className = "btn-play-cup";
-            btnPlay.title = "Jugar partido";
-            btnPlay.innerHTML = "▶";
-            btnPlay.onclick = () => jugarCopa(m._id);
-            wrapper.appendChild(matchDiv);
-            wrapper.appendChild(btnPlay);
+          // Botón jugar — SOLO ADMIN
+          if (_isAdmin && !m.jugado && !tL && !tV) {
+            const btn = document.createElement("button");
+            btn.className = "btn-play-cup";
+            btn.title = "Jugar partido";
+            btn.innerHTML = "▶";
+            btn.onclick = () => jugarCopa(m._id);
+            wrap.appendChild(card);
+            wrap.appendChild(btn);
           } else {
-            wrapper.appendChild(matchDiv);
+            wrap.appendChild(card);
           }
 
-          matchesCol.appendChild(wrapper);
+          matchesCol.appendChild(wrap);
         });
 
-        roundDiv.appendChild(matchesCol);
-        container.appendChild(roundDiv);
+        col.appendChild(matchesCol);
+        container.appendChild(col);
+
+        // Spacer between rounds (for SVG lines)
+        if (ri < ROUNDS.length - 1) {
+          const spacer = document.createElement("div");
+          spacer.className = "round-spacer";
+          spacer.dataset.from = r;
+          spacer.dataset.to   = ROUNDS[ri + 1];
+          container.appendChild(spacer);
+        }
       });
+
+      // Draw lines after layout
+      requestAnimationFrame(() => drawLines());
     }
 
+    /* ── SVG BRACKET LINES ── */
+    function drawLines() {
+      const grid = document.getElementById("bracket");
+      grid.querySelectorAll("svg.bracket-svg").forEach(s => s.remove());
+
+      const gridRect = grid.getBoundingClientRect();
+      const W = grid.scrollWidth;
+      const H = grid.scrollHeight;
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.classList.add("bracket-svg");
+      svg.setAttribute("width", W);
+      svg.setAttribute("height", H);
+      svg.style.cssText = `position:absolute;top:0;left:0;width:${W}px;height:${H}px;pointer-events:none;z-index:0;overflow:visible`;
+
+      const SL = grid.scrollLeft || 0;
+      const ST = grid.scrollTop  || 0;
+
+      for (let ri = 0; ri < ROUNDS.length - 1; ri++) {
+        const rNow  = ROUNDS[ri];
+        const rNext = ROUNDS[ri + 1];
+        const leftCards  = [...grid.querySelectorAll(`[data-round="${rNow}"]`)].sort((a,b)=>+a.dataset.pos - +b.dataset.pos);
+        const rightCards = [...grid.querySelectorAll(`[data-round="${rNext}"]`)].sort((a,b)=>+a.dataset.pos - +b.dataset.pos);
+
+        rightCards.forEach((nextCard, i) => {
+          const topCard = leftCards[i * 2];
+          const botCard = leftCards[i * 2 + 1];
+          if (!topCard || !botCard) return;
+
+          const tR   = topCard.getBoundingClientRect();
+          const bR   = botCard.getBoundingClientRect();
+          const nR   = nextCard.getBoundingClientRect();
+
+          const y1   = tR.top  + tR.height  / 2 - gridRect.top  + ST;
+          const y2   = bR.top  + bR.height  / 2 - gridRect.top  + ST;
+          const yN   = nR.top  + nR.height  / 2 - gridRect.top  + ST;
+          const yMid = (y1 + y2) / 2;
+          const x1   = tR.right  - gridRect.left + SL;
+          const x2   = nR.left   - gridRect.left + SL;
+          const xMid = x1 + (x2 - x1) / 2;
+
+          const d = `M ${x1} ${y1} H ${xMid} V ${y2} M ${xMid} ${yMid} H ${x2}`;
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", d);
+          path.setAttribute("fill", "none");
+          path.setAttribute("stroke", "#b8860b");
+          path.setAttribute("stroke-width", "1.5");
+          path.setAttribute("stroke-opacity", "0.45");
+          path.setAttribute("stroke-linecap", "round");
+          svg.appendChild(path);
+        });
+      }
+
+      grid.appendChild(svg);
+    }
+
+    /* ── INFORME ── */
     function verInforme(id) {
-        const p = _bracketData.find(x => x._id === id);
-        if (!p) return;
-        document.getElementById("reporteTitulo").textContent = `${p.local?.nombre} vs ${p.visitante?.nombre}`;
-
-        let html = "";
-        if (p.mvp) {
-          html += `<div class="report-mvp"><span class="mvp-icon">⭐</span><div><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;">MVP</div><div>${p.mvp}</div></div></div>`;
-        }
-
-        const ICONOS = { gol:'⚽', asistencia:'👟', amarilla:'🟨', roja:'🟥' };
-        if (p.eventos && p.eventos.length) {
-            const sorted = [...p.eventos].sort((a,b) => a.minuto - b.minuto);
-            html += sorted.map(e => `
-              <div class="report-item">
-                <span style="color:rgba(255,255,255,0.5);font-size:0.85rem;">${e.minuto}' &nbsp; ${ICONOS[e.tipo]||'•'} &nbsp; ${e.jugador}</span>
-                <span class="event-tipo">${e.tipo}</span>
-              </div>`).join("");
-        } else {
-          html += `<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,0.3);font-size:.9rem;">No hay eventos registrados.</div>`;
-        }
-
-        document.getElementById("reporteBody").innerHTML = html;
-        document.getElementById("modalReporte").style.display = "block";
+      const p = _bracketData.find(x => x._id === id);
+      if (!p) return;
+      document.getElementById("reporteTitulo").textContent = `${p.local?.nombre} vs ${p.visitante?.nombre}`;
+      let html = "";
+      if (p.mvp) html += `<div class="report-mvp"><span>⭐</span><div><div style="font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">MVP</div><div>${p.mvp}</div></div></div>`;
+      if (p.eventos?.length) {
+        const sorted = [...p.eventos].sort((a,b) => a.minuto - b.minuto);
+        html += sorted.map(e => `
+          <div class="report-item">
+            <span>${e.minuto}' &nbsp;${ICONOS[e.tipo]||"•"}&nbsp; ${e.jugador}</span>
+            <span class="event-tipo">${e.tipo}</span>
+          </div>`).join("");
+      } else {
+        html += `<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:.9rem;">Sin eventos registrados.</div>`;
+      }
+      document.getElementById("reporteBody").innerHTML = html;
+      document.getElementById("modalReporte").style.display = "block";
     }
 
     function cerrarReporte() { document.getElementById("modalReporte").style.display = "none"; }
-    function cerrarReporteSiOverlay(e) { if (e.target === document.getElementById("modalReporte")) cerrarReporte(); }
+    function cerrarSiOverlay(e) { if (e.target === document.getElementById("modalReporte")) cerrarReporte(); }
 
     function jugarCopa(id) {
       localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "copa" }));
