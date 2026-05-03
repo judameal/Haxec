@@ -378,7 +378,8 @@ async function handleTournamentPartidos(req, res, collectionName, torneoKey) {
     if (gl !== gv) {
       const ganador = gl > gv ? local : visitante;
       let siguienteRonda = "";
-      if (partido.round === "octavos") siguienteRonda = "cuartos";
+      if (partido.round === "dieciseisavos") siguienteRonda = "octavos";
+      else if (partido.round === "octavos") siguienteRonda = "cuartos";
       else if (partido.round === "cuartos") siguienteRonda = "semis";
       else if (partido.round === "semis") siguienteRonda = "final";
 

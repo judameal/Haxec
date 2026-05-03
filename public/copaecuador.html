@@ -436,8 +436,8 @@
     const API_TEAMS = "/api/index?ruta=teams";
     let _bracketData = [], _teams = [], _isAdmin = false;
 
-    const ROUNDS      = ["octavos","cuartos","semis","final"];
-    const ROUND_LABEL = { octavos:"Octavos de Final", cuartos:"Cuartos de Final", semis:"Semifinales", final:"Gran Final" };
+    const ROUNDS      = ["dieciseisavos","octavos","cuartos","semis","final"];
+    const ROUND_LABEL = { dieciseisavos:"Ronda de 16", octavos:"Octavos de Final", cuartos:"Cuartos de Final", semis:"Semifinales", final:"Gran Final" };
     const ICONOS      = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
 
     /* ── INIT ── */
@@ -447,12 +447,15 @@
       if (_isAdmin) document.getElementById("adminActions").style.display = "flex";
       try {
         const [rb, rt] = await Promise.all([
-          fetch(API).then(r => r.json()),
-          fetch(API_TEAMS).then(r => r.json())
+          fetch(API).then(r => r.ok ? r.json() : []),
+          fetch(API_TEAMS).then(r => r.ok ? r.json() : [])
         ]);
         _bracketData = Array.isArray(rb) ? rb : [];
         _teams       = Array.isArray(rt) ? rt : [];
-      } catch(e) { console.error(e); }
+        console.log(`✅ Cargados: ${_teams.length} equipos, ${_bracketData.length} partidos`);
+      } catch(e) {
+        console.error("Error al cargar datos:", e);
+      }
       renderBracket();
     }
 
@@ -464,25 +467,86 @@
       return t?.logo || "";
     }
 
-    /* ── GENERAR ── */
+    /* ── GENERAR COPA ── */
     async function generarCopa() {
       if (_bracketData.length && !confirm("¿Generar nueva copa? Se borrará el torneo actual.")) return;
-      const shuffled = [..._teams].sort(() => 0.5 - Math.random());
-      const all = [];
-      for (let i = 0; i < 8; i++) {
-        const l = shuffled[i*2]   || { nombre:"—", logo:"" };
-        const v = shuffled[i*2+1] || { nombre:"—", logo:"" };
-        all.push({ round:"octavos", pos:i,
-          local:    { nombre:l.nombre, logo:l.logo||"" },
-          visitante:{ nombre:v.nombre, logo:v.logo||"" },
-          resultado:{ local:0, visitante:0 }, jugado:false });
+
+      const btn = document.querySelector(".btn-generate");
+      const btnOriginal = btn?.innerHTML;
+      if (btn) { btn.disabled = true; btn.textContent = "⏳ Cargando equipos..."; }
+
+      try {
+        // Siempre re-fetch equipos para asegurar datos frescos
+        const rt = await fetch(API_TEAMS).then(r => r.ok ? r.json() : []);
+        _teams = Array.isArray(rt) ? rt : [];
+
+        if (!_teams.length) {
+          alert("⚠️ No hay equipos en la base de datos. Agrega equipos primero.");
+          if (btn) { btn.disabled = false; btn.innerHTML = btnOriginal; }
+          return;
+        }
+
+        if (btn) btn.textContent = `⏳ Generando (${_teams.length} equipos)...`;
+        console.log(`Generando copa con ${_teams.length} equipos:`, _teams.map(t => t.nombre));
+
+        const shuffled = [..._teams].sort(() => 0.5 - Math.random());
+        const all = [];
+
+        // Con 16 equipos: dieciseisavos (8 partidos)
+        // Con 8 equipos:  octavos (4 partidos)
+        // Con cualquier número: adaptamos
+        const primerRound = shuffled.length >= 9 ? "dieciseisavos" : "octavos";
+        const numPartidosPrimerRound = Math.floor(Math.min(shuffled.length, 16) / 2);
+
+        for (let i = 0; i < numPartidosPrimerRound; i++) {
+          const l = shuffled[i * 2]     || { nombre: "—", logo: "" };
+          const v = shuffled[i * 2 + 1] || { nombre: "—", logo: "" };
+          all.push({
+            round: primerRound, pos: i,
+            local:     { nombre: l.nombre, logo: l.logo || "" },
+            visitante: { nombre: v.nombre, logo: v.logo || "" },
+            resultado: { local: 0, visitante: 0 }, jugado: false
+          });
+        }
+
+        // Rondas siguientes vacías
+        const siguientesRounds = primerRound === "dieciseisavos"
+          ? ["octavos", "cuartos", "semis", "final"]
+          : ["cuartos", "semis", "final"];
+        const siguientesCantidades = primerRound === "dieciseisavos"
+          ? [8, 4, 2, 1]
+          : [4, 2, 1];
+
+        siguientesRounds.forEach((r, idx) => {
+          for (let p = 0; p < siguientesCantidades[idx]; p++) {
+            all.push({
+              round: r, pos: p,
+              local:     { nombre: "—", logo: "" },
+              visitante: { nombre: "—", logo: "" },
+              resultado: { local: 0, visitante: 0 }, jugado: false
+            });
+          }
+        });
+
+        console.log(`Total partidos generados: ${all.length}`, all.map(p => `${p.round}[${p.pos}]`));
+
+        const res = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bracket: all })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
+
+        console.log("Copa generada correctamente:", data);
+        location.reload();
+
+      } catch (e) {
+        console.error("Error generando copa:", e);
+        alert("❌ Error al generar brackets: " + e.message);
+        if (btn) { btn.disabled = false; btn.innerHTML = btnOriginal; }
       }
-      ["cuartos","semis","final"].forEach((r,i) => {
-        for (let p = 0; p < [4,2,1][i]; p++)
-          all.push({ round:r, pos:p, local:{nombre:"—",logo:""}, visitante:{nombre:"—",logo:""}, resultado:{local:0,visitante:0}, jugado:false });
-      });
-      await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:all}) });
-      location.reload();
     }
 
     async function resetCopa() {
