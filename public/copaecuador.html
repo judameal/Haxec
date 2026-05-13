@@ -306,94 +306,51 @@
     .empty-bracket { text-align: center; padding: 70px 20px; color: var(--muted); width: 100%; }
     .empty-bracket .trophy { font-size: 3.5rem; margin-bottom: 12px; }
 
-    /* CHAMPION BANNER - PREMIUM DESIGN */
-    @keyframes shineEffect {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 30px rgba(201,168,76,0.1), inset 0 0 20px rgba(201,168,76,0.05); }
-      50% { box-shadow: 0 0 50px rgba(201,168,76,0.4), inset 0 0 40px rgba(201,168,76,0.15); }
-      100% { box-shadow: 0 0 30px rgba(201,168,76,0.1), inset 0 0 20px rgba(201,168,76,0.05); }
-    }
+    /* CHAMPION BANNER - MINIMAL */
     @keyframes dropIn {
-      from { opacity: 0; transform: translateY(-30px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .champion-banner {
-      margin: 60px auto 40px;
-      background: radial-gradient(ellipse at center, var(--surface2) 0%, var(--black) 100%);
-      border: 2px solid transparent;
-      background-clip: padding-box;
-      border-radius: 20px;
-      padding: 40px 30px;
+      margin: 40px auto 20px;
+      background: var(--black);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
       text-align: center;
-      max-width: 550px;
-      animation: dropIn 0.8s cubic-bezier(0.2, 1, 0.3, 1) both, pulseGlow 3s ease-in-out infinite;
-      position: relative;
-      overflow: hidden;
-    }
-    .champion-banner::before {
-      content: '';
-      position: absolute; inset: -2px;
-      background: linear-gradient(135deg, #c9a84c, #ffd700, #c9a84c, #1a1a1a);
-      z-index: -1;
-      border-radius: 22px;
-    }
-    .champion-banner::after {
-      content: '';
-      position: absolute; top: 0; left: -100%;
-      width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-      transform: skewX(-25deg);
-      animation: shineEffect 4s infinite linear;
-      z-index: 0;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: dropIn 0.5s ease both;
     }
     .champion-trophy {
-      font-size: 5rem;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 10px 25px rgba(255, 215, 0, 0.5));
-      position: relative; z-index: 1;
-      animation: fadeDown 0.8s ease 0.3s both;
+      font-size: 2.5rem;
+      margin-bottom: 12px;
     }
     .champion-logo {
-      width: 110px; height: 110px;
+      width: 70px; height: 70px;
       object-fit: contain;
-      margin: 0 auto 20px;
+      margin: 0 auto 12px;
       display: block;
-      border-radius: 14px;
-      position: relative; z-index: 1;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
-      animation: fadeUp 0.8s ease 0.5s both;
     }
     .champion-name {
       font-family: var(--font-head);
-      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-size: 1.5rem;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 1px;
+      color: #fff;
       text-transform: uppercase;
-      margin-bottom: 8px;
-      position: relative; z-index: 1;
-      /* Gold text effect */
-      background: linear-gradient(to bottom, #fff 20%, #ffd700 60%, #c9a84c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
-      animation: fadeUp 0.8s ease 0.7s both;
+      margin-bottom: 4px;
     }
     .champion-title {
       font-family: var(--font-head);
-      font-size: 0.9rem;
-      letter-spacing: 6px;
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      font-weight: 600;
       text-transform: uppercase;
-      position: relative; z-index: 1;
-      animation: fadeUp 0.8s ease 0.9s both;
     }
     .champion-title span {
-      color: #ffd700;
-      font-weight: 900;
+      color: var(--accent);
     }
 
     /* SVG lines overlay */
