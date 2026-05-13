@@ -306,6 +306,60 @@
     .empty-bracket { text-align: center; padding: 70px 20px; color: var(--muted); width: 100%; }
     .empty-bracket .trophy { font-size: 3.5rem; margin-bottom: 12px; }
 
+    /* CHAMPION BANNER */
+    .champion-banner {
+      margin: 40px auto 0;
+      background: var(--surface2);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      max-width: 500px;
+      box-shadow: 0 10px 40px rgba(201, 168, 76, 0.15);
+      animation: fadeUp .6s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .champion-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(201, 168, 76, 0.05), transparent);
+      z-index: 0;
+    }
+    .champion-trophy {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 4px 12px rgba(201, 168, 76, 0.3));
+      position: relative; z-index: 1;
+    }
+    .champion-logo {
+      width: 80px; height: 80px;
+      object-fit: contain;
+      margin: 0 auto 15px;
+      display: block;
+      border-radius: 12px;
+      position: relative; z-index: 1;
+    }
+    .champion-name {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      position: relative; z-index: 1;
+    }
+    .champion-title {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      letter-spacing: 4px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+
     /* SVG lines overlay */
     .bracket-svg {
       position: absolute;
@@ -720,6 +774,25 @@
 
       // Draw lines after layout
       requestAnimationFrame(() => drawLines());
+
+      // Show Champion if final is played
+      const finalMatch = _bracketData.find(m => m.round === "final");
+      if (finalMatch && finalMatch.jugado) {
+        const gl = finalMatch.resultado?.local || 0;
+        const gv = finalMatch.resultado?.visitante || 0;
+        if (gl !== gv) {
+          const winner = gl > gv ? finalMatch.local : finalMatch.visitante;
+          const champSection = document.createElement("div");
+          champSection.className = "champion-banner";
+          champSection.innerHTML = `
+            <div class="champion-trophy">🏆</div>
+            ${logo(winner) ? `<img class="champion-logo" src="${logo(winner)}" onerror="this.style.display='none'" alt="Campeón">` : ''}
+            <div class="champion-name">${winner.nombre}</div>
+            <div class="champion-title">Campeón de la Copa Ecuador 2026</div>
+          `;
+          container.parentElement.appendChild(champSection);
+        }
+      }
     }
 
     /* ── SVG BRACKET LINES ── */
