@@ -8,36 +8,98 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ── HERO ── */
-    .hero-cup {
-      text-align: center;
-      padding: 44px 24px 32px;
-      background: var(--black);
-      border-radius: 16px;
-      margin-bottom: 32px;
-      border-bottom: 3px solid var(--accent);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    /* ══ BASE ══ */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .cup-title {
-      font-family: var(--font-head);
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      font-weight: 900;
-      letter-spacing: 5px;
-      margin: 0 0 4px;
-      color: #fff;
-      text-transform: uppercase;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .cup-title span { color: var(--accent); }
-    .cup-subtitle {
+
+    /* ── BACK BUTTON ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-family: var(--font-head);
-      color: rgba(255,255,255,0.35);
-      font-size: 0.72rem;
-      letter-spacing: 3px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
       text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      animation: fadeDown .4s ease .05s both;
+      margin-bottom: 24px;
+      align-self: flex-start;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateX(-3px);
+      box-shadow: 0 4px 14px rgba(34,197,94,.15);
+    }
+
+    /* ══ PAGE LAYOUT ══ */
+    .home-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
       font-weight: 700;
-      margin-bottom: 22px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fadeDown .45s ease .1s forwards;
     }
-    .actions-bar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--black);
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeDown .45s ease .18s forwards;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 26px;
+      opacity: 0;
+      animation: fadeDown .45s ease .24s forwards;
+    }
+
+    .actions-bar {
+      display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeDown .45s ease .3s forwards;
+    }
     .btn-action {
       font-family: var(--font-head);
       font-weight: 800;
@@ -47,11 +109,11 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
-      border: none;
+      border: 1px solid transparent;
       font-size: 0.8rem;
     }
     .btn-generate { background: var(--accent); color: var(--black); }
-    .btn-schedule { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2) !important; }
+    .btn-schedule { background: var(--surface2); color: var(--text); border-color: var(--border) !important; }
     .btn-reset    { background: #dc2626; color: #fff; }
     .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
@@ -400,25 +462,28 @@
 </head>
 <body>
 
+  <div class="hex-mid"></div>
+
   <header>
     <div class="logo">
       <img src="https://r2.thesportsdb.com/images/media/league/badge/86kk7j1753772273.png/medium" alt="Copa Ecuador">
       <h1>Copa <span>Ecuador</span></h1>
     </div>
-    <div class="nav-buttons">
-      <button onclick="window.location.href='/haxball.html'">Atrás</button>
-    </div>
+    <div id="nav" class="nav-buttons"></div>
   </header>
 
-  <div class="admin-container">
-    <div class="hero-cup">
-      <h1 class="cup-title">Copa <span>Ecuador</span> 2026</h1>
-      <p class="cup-subtitle">Torneo de Eliminación Directa</p>
-      <div class="actions-bar" id="adminActions" style="display:none;">
-        <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
-        <button class="btn-action btn-schedule" onclick="window.location.href='/copahorario.html'">📅 Horarios</button>
-        <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar</button>
-      </div>
+  <div class="home-wrap">
+
+    <a class="back-link" href="/haxball.html">← Volver</a>
+
+    <p class="hero-eyebrow">Copa Ecuador 2026</p>
+    <h1 class="hero-title">Copa <span>Ecuador</span></h1>
+    <p class="hero-sub">Torneo de Eliminación Directa</p>
+
+    <div class="actions-bar" id="adminActions" style="display:none;">
+      <button class="btn-action btn-generate" onclick="generarCopa()">⚙️ Generar Brackets</button>
+      <button class="btn-action btn-schedule" onclick="window.location.href='/copahorario.html'">📅 Horarios</button>
+      <button class="btn-action btn-reset" onclick="resetCopa()">🗑️ Reiniciar</button>
     </div>
 
     <div class="bracket-outer">
@@ -436,8 +501,8 @@
     const API_TEAMS = "/api/index?ruta=teams";
     let _bracketData = [], _teams = [], _isAdmin = false;
 
-    const ROUNDS      = ["dieciseisavos","octavos","cuartos","semis","final"];
-    const ROUND_LABEL = { dieciseisavos:"Ronda de 16", octavos:"Octavos de Final", cuartos:"Cuartos de Final", semis:"Semifinales", final:"Gran Final" };
+    const ROUNDS      = ["octavos","cuartos","semis","final"];
+    const ROUND_LABEL = { octavos:"Octavos de Final", cuartos:"Cuartos de Final", semis:"Semifinales", final:"Gran Final" };
     const ICONOS      = { gol:"⚽", asistencia:"👟", amarilla:"🟨", roja:"🟥" };
 
     /* ── INIT ── */
@@ -492,10 +557,9 @@
         const shuffled = [..._teams].sort(() => 0.5 - Math.random());
         const all = [];
 
-        // Con 16 equipos: dieciseisavos (8 partidos)
-        // Con 8 equipos:  octavos (4 partidos)
-        // Con cualquier número: adaptamos
-        const primerRound = shuffled.length >= 9 ? "dieciseisavos" : "octavos";
+        // Con 16 equipos: octavos (8 partidos)
+        // Con 8 equipos:  cuartos (4 partidos)
+        const primerRound = shuffled.length >= 9 ? "octavos" : "cuartos";
         const numPartidosPrimerRound = Math.floor(Math.min(shuffled.length, 16) / 2);
 
         for (let i = 0; i < numPartidosPrimerRound; i++) {
@@ -510,12 +574,12 @@
         }
 
         // Rondas siguientes vacías
-        const siguientesRounds = primerRound === "dieciseisavos"
-          ? ["octavos", "cuartos", "semis", "final"]
-          : ["cuartos", "semis", "final"];
-        const siguientesCantidades = primerRound === "dieciseisavos"
-          ? [8, 4, 2, 1]
-          : [4, 2, 1];
+        const siguientesRounds = primerRound === "octavos"
+          ? ["cuartos", "semis", "final"]
+          : ["semis", "final"];
+        const siguientesCantidades = primerRound === "octavos"
+          ? [4, 2, 1]
+          : [2, 1];
 
         siguientesRounds.forEach((r, idx) => {
           for (let p = 0; p < siguientesCantidades[idx]; p++) {
@@ -818,5 +882,10 @@
 
     init();
   </script>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
 </body>
 </html>
