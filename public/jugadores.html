@@ -227,8 +227,8 @@
     <label>Dorsal</label>
     <input id="dorsal" placeholder="Ej: 10" type="number">
 
-    <label>Foto</label>
-    <input type="file" id="foto" accept="image/*" onchange="previsualizarFoto()">
+    <label>Foto (URL)</label>
+    <input type="text" id="foto" placeholder="URL de la foto" oninput="previsualizarFoto()">
     <div id="fotoPreviewNuevo" style="margin-top:8px;"></div>
 
     <label>Equipo</label>
@@ -268,9 +268,9 @@
     <label>Dorsal</label>
     <input id="editDorsal" type="number" placeholder="Dorsal">
 
-    <label>Foto (dejar vacío para mantener)</label>
+    <label>Foto (URL, dejar vacío para mantener)</label>
     <div class="foto-preview-edit" id="editFotoActualPreview"></div>
-    <input type="file" id="editFoto" accept="image/*" onchange="previsualizarFotoEdit()">
+    <input type="text" id="editFoto" placeholder="URL de la nueva foto" oninput="previsualizarFotoEdit()">
 
     <label>Equipo</label>
     <input id="editEquipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipoEdit()">
@@ -292,7 +292,6 @@
 var _teamsCache = null;
 let equipoValido = null;
 let equipoValidoEdit = null;
-let fotoEditBase64 = null;
 
 function goBack() {
   window.location.href = "/haxball.html";
@@ -305,11 +304,10 @@ function toggleForm() {
 
 // ——— Preview foto al crear ———
 function previsualizarFoto() {
-  const file = document.getElementById("foto").files[0];
+  const url = document.getElementById("foto").value.trim();
   const preview = document.getElementById("fotoPreviewNuevo");
-  if (!file) { preview.innerHTML = ""; return; }
-  const url = URL.createObjectURL(file);
-  preview.innerHTML = `<img src="${url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--accent,#ccc);">`;
+  if (!url) { preview.innerHTML = ""; return; }
+  preview.innerHTML = `<img src="${url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--accent,#ccc);" onerror="this.style.display='none'">`;
 }
 
 // ——— Verificar equipo (crear) ———
@@ -360,11 +358,9 @@ async function verificarEquipoEdit() {
 async function crearJugador() {
   const nombre = document.getElementById("nombre").value.trim();
   const dorsal = document.getElementById("dorsal").value.trim();
-  const file = document.getElementById("foto").files[0];
+  const foto = document.getElementById("foto").value.trim();
 
   if (!nombre || !dorsal) { alert("Completa nombre y dorsal"); return; }
-
-  const foto = file ? await convertirBase64(file) : "";
 
   await fetch("/api/index?ruta=jugadores", {
     method: "POST",
@@ -426,7 +422,6 @@ function abrirModal(id, nombre, dorsal, equipo, foto) {
   document.getElementById("editDorsal").value = dorsal;
   document.getElementById("editEquipo").value = equipo;
   document.getElementById("editFoto").value = "";
-  fotoEditBase64 = null;
   equipoValidoEdit = null;
 
   const previewActual = document.getElementById("editFotoActualPreview");
@@ -450,13 +445,10 @@ function cerrarModal() {
 }
 
 function previsualizarFotoEdit() {
-  const file = document.getElementById("editFoto").files[0];
-  if (!file) return;
-  convertirBase64(file).then(b64 => {
-    fotoEditBase64 = b64;
-    const preview = document.getElementById("editFotoActualPreview");
-    preview.innerHTML = `<img src="${b64}"><span>Nueva foto</span>`;
-  });
+  const url = document.getElementById("editFoto").value.trim();
+  if (!url) return;
+  const preview = document.getElementById("editFotoActualPreview");
+  preview.innerHTML = `<img src="${url}" onerror="this.style.display='none'"><span>Nueva foto</span>`;
 }
 
 async function guardarEdicion() {
@@ -479,7 +471,8 @@ async function guardarEdicion() {
   }
 
   const body = { id, nombre, dorsal, equipo: equipoFinal };
-  if (fotoEditBase64) body.foto = fotoEditBase64;
+  const editFotoUrl = document.getElementById("editFoto").value.trim();
+  if (editFotoUrl) body.foto = editFotoUrl;
 
   await fetch("/api/index?ruta=jugadores", {
     method: "PUT",
@@ -508,14 +501,7 @@ async function fetchTeams() {
   return _teamsCache;
 }
 
-function convertirBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
+
 
 function iniciales(nombre) {
   return nombre.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);

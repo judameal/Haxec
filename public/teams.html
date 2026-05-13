@@ -134,8 +134,8 @@
     <label>Nombre del equipo</label>
     <input id="nombre" placeholder="Ej: Los Cracks FC">
 
-    <label>Logo (imagen)</label>
-    <input type="file" id="logo" accept="image/*">
+    <label>Logo (URL)</label>
+    <input type="text" id="logo" placeholder="URL del logo">
 
     <label>Color local</label>
     <input id="local" placeholder="Ej: #22c55e o Verde">
@@ -174,27 +174,18 @@ function toggleForm() {
   form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-function convertirBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
+
 
 async function crearEquipo() {
-  const nombre = document.getElementById("nombre").value;
-  const file = document.getElementById("logo").files[0];
+  const nombre = document.getElementById("nombre").value.trim();
+  const logo = document.getElementById("logo").value.trim();
   const local = document.getElementById("local").value;
   const visitante = document.getElementById("visitante").value;
 
-  if (!nombre || !file) {
+  if (!nombre || !logo) {
     alert("El nombre y el logo son obligatorios");
     return;
   }
-
-  const logo = await convertirBase64(file);
 
   await fetch("/api/index?ruta=teams", {
     method: "POST",

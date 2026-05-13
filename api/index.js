@@ -39,7 +39,6 @@ export default async function handler(req, res) {
     if (ruta === "reset") return await handleReset(req, res);
     if (ruta === "config") return await handleConfig(req, res);
     if (ruta === "hexagonal") return await handleHexagonal(req, res);
-    if (ruta === "copas") return await handleCopas(req, res);
 
     return res.status(404).json({ message: "Ruta no encontrada: " + ruta });
   } catch (error) {
@@ -529,70 +528,7 @@ function generarCalendarioHex(equipos, fase) {
   return result;
 }
 
-/* ════════════════════════════════════════════════════
-   COPAS
-════════════════════════════════════════════════════ */
-async function handleCopas(req, res) {
-  const db = await getDb("copa_expresso");
-  const copas = db.collection("copas");
 
-  if (req.method === "GET") {
-    const data = await copas.find().sort({ createdAt: -1 }).toArray();
-    return res.status(200).json(data);
-  }
-
-  if (req.method === "POST") {
-    const body = req.body;
-
-    if (body.action === "save") {
-      const { selectedTeams, players, bracket } = body;
-      const existing = await copas.findOne({ status: "active" });
-
-      if (existing) {
-        await copas.updateOne(
-          { _id: existing._id },
-          { $set: { selectedTeams, players, bracket, updatedAt: new Date() } }
-        );
-        return res.status(200).json({ message: "Copa actualizada", id: existing._id.toString() });
-      } else {
-        const result = await copas.insertOne({
-          status: "active", selectedTeams, players, bracket,
-          createdAt: new Date(), updatedAt: new Date()
-        });
-        return res.status(200).json({ message: "Copa creada", id: result.insertedId.toString() });
-      }
-    }
-
-    if (body.action === "archive") {
-      const { champion, teams, totalGoals, matches, goleadores, edition, date } = body;
-      await copas.updateOne(
-        { status: "active" },
-        { $set: { status: "finished", champion, teams, totalGoals, matches, goleadores, edition, date, finishedAt: new Date() } }
-      );
-      return res.status(200).json({ message: "Copa archivada" });
-    }
-
-    return res.status(400).json({ message: "Acción no válida" });
-  }
-
-  if (req.method === "DELETE") {
-    const { id } = req.body;
-    if (!id) return res.status(400).json({ message: "Falta el id" });
-
-    let objectId;
-    try { objectId = new ObjectId(id); }
-    catch (_) { return res.status(400).json({ message: "Id inválido" }); }
-
-    await copas.deleteOne({ _id: objectId });
-    return res.status(200).json({ message: "Copa eliminada" });
-  }
-
-  return res.status(405).end();
-}
-
-/* ════════════════════════════════════════════════════
-   HELPERS TABLA
-════════════════════════════════════════════════════ */
 async function actualizarTabla(tabla, local, visitante, resultado) {
   const gl = Number(resultado?.local ?? 0);
   const gv = Number(resultado?.visitante ?? 0);

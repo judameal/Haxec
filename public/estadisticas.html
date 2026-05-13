@@ -168,7 +168,48 @@
       animation: fadeDown .4s ease .08s both;
     }
 
-    @media (max-width: 400px) {
+    /* ── HUB TABS ── */
+    .hub-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      animation: fadeDown .45s ease .15s forwards;
+      opacity: 0;
+      width: 100%;
+      max-width: 500px;
+    }
+    .hub-tab {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .hub-tab:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hub-tab.active {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+    }
+
+    @media (max-width: 500px) {
+      .hub-tabs { flex-direction: column; gap: 8px; }
       .stats-menu-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -192,9 +233,15 @@
 <div class="home-wrap">
 
   <p class="hero-eyebrow">LigaPro Ecuabet</p>
-  <h1 class="hero-title">Estadís<span>ticas</span></h1>
-  <p class="hero-sub">Selecciona una categoría</p>
+  <h1 class="hero-title">Centro de <span>Datos</span></h1>
+  <p class="hero-sub">Selecciona una sección</p>
   <div class="hero-divider"></div>
+
+  <div class="hub-tabs">
+    <button class="hub-tab active" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
+    <button class="hub-tab" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
+    <button class="hub-tab" onclick="window.location.href='/verequipos.html'">Equipos</button>
+  </div>
 
   <div class="stats-menu-grid">
 
