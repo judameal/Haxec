@@ -164,8 +164,33 @@
       line-height: 1.3;
     }
 
-    .back-btn {
-      animation: fadeDown .4s ease .08s both;
+    /* ── BACK BUTTON ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      animation: fadeDown .4s ease .05s both;
+      margin-bottom: 24px;
+      align-self: flex-start;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateX(-3px);
+      box-shadow: 0 4px 14px rgba(34,197,94,.15);
     }
 
     /* ── HUB TABS ── */
@@ -231,6 +256,8 @@
 </header>
 
 <div class="home-wrap">
+
+  <a class="back-link" href="/haxball.html">← Volver</a>
 
   <p class="hero-eyebrow">LigaPro Ecuabet</p>
   <h1 class="hero-title">Centro de <span>Datos</span></h1>

@@ -7,9 +7,182 @@
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    /* ══════════════════════════════════════════
-       METALLIC COLOR VARIABLES
-    ══════════════════════════════════════════ */
+    /* ══ BASE — same as estadisticas.html ══ */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── BACK BUTTON ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      animation: fadeDown .4s ease .05s both;
+      margin-bottom: 24px;
+      align-self: flex-start;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateX(-3px);
+      box-shadow: 0 4px 14px rgba(34,197,94,.15);
+    }
+
+    /* ── HUB TABS ── */
+    .hub-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      animation: fadeDown .45s ease .15s forwards;
+      opacity: 0;
+      width: 100%;
+      max-width: 500px;
+    }
+    .hub-tab {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .hub-tab:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hub-tab.active {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+    }
+
+    /* ══ PAGE LAYOUT ══ */
+    .home-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fadeDown .45s ease .1s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--black);
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeDown .45s ease .18s forwards;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeDown .45s ease .24s forwards;
+    }
+    .hero-divider {
+      width: 44px; height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin: 0 auto 36px;
+      opacity: 0;
+      animation: fadeDown .45s ease .3s forwards;
+    }
+
+    /* ══ SEARCH ══ */
+    .controls { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; width:100%; max-width:700px; }
+    .search-wrap { position:relative; flex:1; min-width:200px; }
+    .search-wrap input {
+      width:100%; box-sizing:border-box;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:10px; padding:10px 14px 10px 38px;
+      font-family:var(--font-body); font-size:.9rem; color:var(--text);
+      transition:border-color .2s;
+    }
+    .search-wrap input:focus { outline:none; border-color:var(--accent); }
+    .search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:.95rem; pointer-events:none; }
+
+    /* ══ PLAYER GRID ══ */
+    .players-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; width:100%; max-width:900px; }
+    .player-row {
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:12px; padding:14px 16px;
+      display:flex; align-items:center; gap:12px;
+      cursor:pointer; transition:all .3s ease;
+      animation: fadeUp .35s ease both;
+    }
+    .player-row:hover {
+      background:var(--surface2);
+      transform:scale(1.01);
+      box-shadow: inset 4px 0 0 var(--accent);
+    }
+    .player-row .rank { font-family:var(--font-head); font-size:.7rem; font-weight:900; color:var(--muted); min-width:22px; }
+    .player-row .p-avatar { width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--border); flex-shrink:0; }
+    .player-row .p-info { flex:1; min-width:0; }
+    .player-row .p-name { font-family:var(--font-head); font-size:.9rem; font-weight:800; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .player-row .p-team { font-size:.72rem; color:var(--muted); font-weight:600; }
+    .grl-pill { font-family:var(--font-head); font-size:.78rem; font-weight:900; padding:3px 10px; border-radius:20px; flex-shrink:0; }
+    .grl-bronze { background:linear-gradient(135deg,#cd7f32,#a0522d); color:#fff; }
+    .grl-silver { background:linear-gradient(135deg,#b8bec6,#8a9099); color:#1a1a1a; }
+    .grl-gold   { background:linear-gradient(135deg,#d4a017,#ffe066,#c8960c); color:#1a0900; }
+    .grl-elite  { background:linear-gradient(135deg,#6b21a8,#9333ea,#4c1d95); color:#ffd700; border:1px solid #ffd700; }
+    .grl-none   { background:var(--surface); color:var(--muted); }
+    .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; }
+    .empty-state .icon { font-size:3rem; margin-bottom:10px; }
+
+    /* ══ METALLIC VARS ══ */
     :root {
       --bronze-dark:   #1a0a00;
       --bronze-mid:    #6b3a1f;
@@ -648,38 +821,41 @@
     }
   </style>
 </head>
-<body>
-  <header>
-    <div class="logo">
-      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro">
-      <h1>LigaPro <span>Ecuabet</span></h1>
-    </div>
-    <div class="nav-buttons">
-      <button onclick="window.location.href='/haxball.html'">Atrás</button>
-    </div>
-  </header>
+<div class="hex-mid"></div>
 
-  <div class="admin-container">
-    <div class="page-hero">
-      <h1>Centro de <span>Datos</span></h1>
-      <p>Cartas · Estadísticas · Rankings</p>
-    </div>
-
-    <div class="hub-tabs">
-      <button class="hub-tab" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
-      <button class="hub-tab active" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
-      <button class="hub-tab" onclick="window.location.href='/verequipos.html'">Equipos</button>
-    </div>
-
-    <div class="controls">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input id="searchInput" type="text" placeholder="Buscar jugador o equipo..." oninput="render()">
-      </div>
-    </div>
-
-    <div class="players-grid" id="grid"></div>
+<header>
+  <div class="logo">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet">
+    <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
+  <div id="nav" class="nav-buttons"></div>
+</header>
+
+<div class="home-wrap">
+
+  <a class="back-link" href="/haxball.html">← Volver</a>
+
+  <p class="hero-eyebrow">LigaPro Ecuabet</p>
+  <h1 class="hero-title">Centro de <span>Datos</span></h1>
+  <p class="hero-sub">Cartas · Estadísticas · Rankings</p>
+  <div class="hero-divider"></div>
+
+  <div class="hub-tabs">
+    <button class="hub-tab" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
+    <button class="hub-tab active" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
+    <button class="hub-tab" onclick="window.location.href='/verequipos.html'">Equipos</button>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" type="text" placeholder="Buscar jugador o equipo..." oninput="render()">
+      </div>
+  </div>
+
+  <div class="players-grid" id="grid"></div>
+
+</div>
 
   <!-- NORMAL CARD OVERLAY (bronce, plata, oro) -->
   <div id="cardOverlay" onclick="closeCard(event)">
@@ -921,5 +1097,10 @@
 
     init();
   </script>
+
+<footer>
+  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+</footer>
+
 </body>
 </html>
