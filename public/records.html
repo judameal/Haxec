@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Récords — LigaPro Ecuabet</title>
+  <meta name="description" content="Récords históricos de la LigaPro Ecuabet: mejores jugadores, equipos y estadísticas de todas las competiciones.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(184,134,11,0); }
+      50%      { box-shadow: 0 0 16px 4px rgba(184,134,11,.18); }
+    }
+    @keyframes countUp {
+      from { opacity:0; transform:scale(.7); }
+      to   { opacity:1; transform:scale(1); }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .admin-title  { animation: fadeDown .4s ease both; }
+    .back-btn     { animation: fadeDown .4s ease .08s both; }
+    .page-sub {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 32px;
+      font-weight: 500;
+      animation: fadeDown .4s ease .14s both;
+    }
+
+    /* ── CATEGORY TABS ── */
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeDown .4s ease .2s forwards;
+    }
+    .cat-tab {
+      padding: 9px 20px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cat-tab:hover { border-color: var(--accent); color: var(--text); }
+    .cat-tab.active {
+      background: var(--black);
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* ── PANEL ── */
+    .cat-panel { display: none; }
+    .cat-panel.active { display: block; }
+
+    /* ── RECORDS GRID ── */
+    .records-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    /* ── RECORD CARD ── */
+    .record-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 3px 14px rgba(0,0,0,.06);
+      opacity: 0;
+      animation: fadeUp .45s ease both;
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+    }
+    .record-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.1);
+      border-color: var(--accent);
+    }
+    .record-card:nth-child(1)  { animation-delay:.22s; }
+    .record-card:nth-child(2)  { animation-delay:.30s; }
+    .record-card:nth-child(3)  { animation-delay:.38s; }
+    .record-card:nth-child(4)  { animation-delay:.46s; }
+    .record-card:nth-child(5)  { animation-delay:.54s; }
+    .record-card:nth-child(6)  { animation-delay:.62s; }
+    .record-card:nth-child(7)  { animation-delay:.70s; }
+    .record-card:nth-child(8)  { animation-delay:.78s; }
+    .record-card:nth-child(9)  { animation-delay:.86s; }
+    .record-card:nth-child(10) { animation-delay:.94s; }
+    .record-card:nth-child(11) { animation-delay:1.02s; }
+    .record-card:nth-child(12) { animation-delay:1.10s; }
+
+    /* ── CARD HEADER BAR ── */
+    .card-header-bar {
+      background: var(--black);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-header-icon { font-size: 1rem; }
+    .card-header-label {
+      font-family: var(--font-head);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+    }
+
+    /* ── CARD BODY ── */
+    .card-body {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── WINNER ROW ── */
+    .winner-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .winner-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      flex-shrink: 0;
+      animation: pulseGlow 2.5s ease infinite;
+    }
+    .winner-initials {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--black);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: .85rem;
+      font-weight: 900;
+      color: var(--accent);
+      flex-shrink: 0;
+      animation: pulseGlow 2.5s ease infinite;
+    }
+    .winner-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      flex-shrink: 0;
+      animation: pulseGlow 2.5s ease infinite;
+      background: var(--surface2);
+      padding: 4px;
+    }
+    .winner-logo-placeholder {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: var(--black);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .winner-info { flex: 1; min-width: 0; }
+    .winner-name {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: .3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .winner-sub {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .winner-crown { font-size: .9rem; margin-left: 4px; }
+
+    /* ── STAT VALUE ── */
+    .stat-value-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .stat-val-label {
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .stat-val-num {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      animation: countUp .5s ease both;
+    }
+
+    /* ── PODIUM (top 3 mini) ── */
+    .podium-row {
+      display: flex;
+      gap: 6px;
+    }
+    .podium-item {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 8px;
+      text-align: center;
+    }
+    .podium-rank { font-size: .85rem; }
+    .podium-name {
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--black);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .podium-val {
+      font-family: var(--font-head);
+      font-size: .85rem;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeDown .4s ease .25s forwards;
+    }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── EMPTY ── */
+    .rec-empty {
+      font-family: var(--font-head);
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── LOADING SKELETON ── */
+    .rec-loading {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media(max-width:540px) {
+      .records-grid { grid-template-columns: 1fr; }
+      .cat-tabs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="hex-mid"></div>
+
+<header>
+  <div class="logo">
+    <img class="hero-logo-img"
+      src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+      alt="LigaPro Ecuabet">
+    <h1>LigaPro <span>Ecuabet</span></h1>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <div class="page-header">
+    <h1 class="admin-title">⚡ Récords</h1>
+    <button class="back-btn" onclick="history.back()">⬅ Volver</button>
+  </div>
+  <p class="page-sub">Los mejores de la historia · Todas las competiciones</p>
+
+  <!-- CATEGORY TABS -->
+  <div class="cat-tabs">
+    <button class="cat-tab active" id="ct-jugadores" onclick="switchCat('jugadores')">👤 Jugadores</button>
+    <button class="cat-tab"        id="ct-equipos"   onclick="switchCat('equipos')">🛡️ Equipos</button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="recLoading" class="rec-loading">⚡ Cargando récords…</div>
+
+  <!-- PANEL JUGADORES -->
+  <div class="cat-panel" id="panel-jugadores">
+    <p class="section-title">⚽ Récords Ofensivos</p>
+    <div class="records-grid" id="grid-jugadores-ofensivos"></div>
+
+    <p class="section-title">🛡️ Récords Defensivos / Disciplina</p>
+    <div class="records-grid" id="grid-jugadores-disciplina"></div>
+  </div>
+
+  <!-- PANEL EQUIPOS -->
+  <div class="cat-panel" id="panel-equipos">
+    <p class="section-title">📊 Récords de Equipos</p>
+    <div class="records-grid" id="grid-equipos"></div>
+  </div>
+
+</div>
+
+<footer><p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p></footer>
+
+<script>
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
+function iniciales(n) {
+  return String(n).split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
+}
+
+function switchCat(cat) {
+  document.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".cat-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("ct-" + cat).classList.add("active");
+  document.getElementById("panel-" + cat).classList.add("active");
+}
+
+/* ════════════════════════════════════════
+   CARD BUILDERS
+════════════════════════════════════════ */
+function buildPlayerCard({ icon, label, jugador, campo, valor, labelValor, podium }) {
+  if (!jugador) {
+    return `<div class="record-card">
+      <div class="card-header-bar"><span class="card-header-icon">${icon}</span><span class="card-header-label">${label}</span></div>
+      <div class="card-body"><p class="rec-empty">Sin datos aún</p></div>
+    </div>`;
+  }
+
+  const avatarHTML = jugador.foto
+    ? `<img class="winner-avatar" src="${jugador.foto}" alt="${jugador.nombre}">`
+    : `<div class="winner-initials">${iniciales(jugador.nombre)}</div>`;
+
+  const podiumHTML = podium && podium.length > 1 ? `
+    <div class="podium-row">
+      ${podium.slice(0, 3).map((p, i) => {
+        const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
+        return `<div class="podium-item">
+          <div class="podium-rank">${rank}</div>
+          <div class="podium-name">${p.nombre.split(" ")[0]}</div>
+          <div class="podium-val">${p[campo] || 0}</div>
+        </div>`;
+      }).join("")}
+    </div>` : "";
+
+  return `<div class="record-card">
+    <div class="card-header-bar">
+      <span class="card-header-icon">${icon}</span>
+      <span class="card-header-label">${label}</span>
+    </div>
+    <div class="card-body">
+      <div class="winner-row">
+        ${avatarHTML}
+        <div class="winner-info">
+          <div class="winner-name">${jugador.nombre} <span class="winner-crown">👑</span></div>
+          <div class="winner-sub">${jugador.equipo || "Sin equipo"}</div>
+        </div>
+      </div>
+      <div class="stat-value-row">
+        <span class="stat-val-label">${labelValor}</span>
+        <span class="stat-val-num">${valor}</span>
+      </div>
+      ${podiumHTML}
+    </div>
+  </div>`;
+}
+
+function buildTeamCard({ icon, label, equipoNombre, logoUrl, valor, labelValor, podium }) {
+  if (!equipoNombre) {
+    return `<div class="record-card">
+      <div class="card-header-bar"><span class="card-header-icon">${icon}</span><span class="card-header-label">${label}</span></div>
+      <div class="card-body"><p class="rec-empty">Sin datos aún</p></div>
+    </div>`;
+  }
+
+  const logoHTML = logoUrl
+    ? `<img class="winner-logo" src="${logoUrl}" alt="${equipoNombre}">`
+    : `<div class="winner-logo-placeholder">🛡️</div>`;
+
+  const podiumHTML = podium && podium.length > 1 ? `
+    <div class="podium-row">
+      ${podium.slice(0, 3).map((p, i) => {
+        const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
+        return `<div class="podium-item">
+          <div class="podium-rank">${rank}</div>
+          <div class="podium-name">${p.nombre.length > 8 ? p.nombre.slice(0,8)+"…" : p.nombre}</div>
+          <div class="podium-val">${p.val}</div>
+        </div>`;
+      }).join("")}
+    </div>` : "";
+
+  return `<div class="record-card">
+    <div class="card-header-bar">
+      <span class="card-header-icon">${icon}</span>
+      <span class="card-header-label">${label}</span>
+    </div>
+    <div class="card-body">
+      <div class="winner-row">
+        ${logoHTML}
+        <div class="winner-info">
+          <div class="winner-name">${equipoNombre} <span class="winner-crown">👑</span></div>
+          <div class="winner-sub">Récord de la temporada</div>
+        </div>
+      </div>
+      <div class="stat-value-row">
+        <span class="stat-val-label">${labelValor}</span>
+        <span class="stat-val-num">${valor}</span>
+      </div>
+      ${podiumHTML}
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════
+   TOP-N helper
+════════════════════════════════════════ */
+function topN(arr, campo, n) {
+  return [...arr]
+    .filter(x => (x[campo] || 0) > 0)
+    .sort((a, b) => (b[campo] || 0) - (a[campo] || 0))
+    .slice(0, n);
+}
+
+/* ════════════════════════════════════════
+   CALCULAR STATS DE EQUIPO DESDE PARTIDOS
+════════════════════════════════════════ */
+function calcEquipoStats(allPartidos) {
+  const mapa = {};
+
+  for (const p of allPartidos) {
+    if (!p.jugado || !p.resultado || !p.local || !p.visitante) continue;
+    const gl = Number(p.resultado.local    || 0);
+    const gv = Number(p.resultado.visitante || 0);
+    const nl = p.local.nombre;
+    const nv = p.visitante.nombre;
+    const ll = p.local.logo   || "";
+    const lv = p.visitante.logo || "";
+
+    if (!mapa[nl]) mapa[nl] = { nombre:nl, logo:ll, pj:0, g:0, e:0, per:0, gf:0, gc:0 };
+    if (!mapa[nv]) mapa[nv] = { nombre:nv, logo:lv, pj:0, g:0, e:0, per:0, gf:0, gc:0 };
+
+    mapa[nl].pj++; mapa[nv].pj++;
+    mapa[nl].gf += gl; mapa[nl].gc += gv;
+    mapa[nv].gf += gv; mapa[nv].gc += gl;
+
+    if (gl > gv)      { mapa[nl].g++;   mapa[nv].per++; }
+    else if (gl < gv) { mapa[nv].g++;   mapa[nl].per++; }
+    else              { mapa[nl].e++;   mapa[nv].e++;   }
+  }
+
+  return Object.values(mapa);
+}
+
+/* ════════════════════════════════════════
+   RENDER PRINCIPAL
+════════════════════════════════════════ */
+async function cargar() {
+  try {
+    const [jugadores, partidos, copaPartidos, supercopaPartidos] = await Promise.all([
+      fetch("/api/index?ruta=jugadores").then(r => r.json()),
+      fetch("/api/index?ruta=partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=copa_partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=supercopa_partidos").then(r => r.json()).catch(() => [])
+    ]);
+
+    document.getElementById("recLoading").style.display = "none";
+    document.getElementById("panel-jugadores").classList.add("active");
+
+    /* ── Añadir campo calculado: goles_producidos = goles + asistencias ── */
+    jugadores.forEach(j => {
+      j.goles_producidos = (j.goles || 0) + (j.asistencias || 0);
+    });
+
+    const allPartidos = [...partidos, ...copaPartidos, ...supercopaPartidos];
+    const equipos = calcEquipoStats(allPartidos);
+
+    /* ════ JUGADORES — OFENSIVOS ════ */
+    const recJugOf = [
+      { icon:"⚽", label:"Máximo Goleador · Todas las Competiciones",
+        campo:"goles", labelValor:"Goles totales" },
+      { icon:"⚽🎯", label:"Máximo Goleador · Liga",
+        campo:"goles_liga", labelValor:"Goles en Liga" },
+      { icon:"🏆⚽", label:"Máximo Goleador · Copa Ecuador",
+        campo:"goles_copa", labelValor:"Goles en Copa" },
+      { icon:"⭐⚽", label:"Máximo Goleador · Supercopa",
+        campo:"goles_supercopa", labelValor:"Goles en Supercopa" },
+      { icon:"👟", label:"Más Asistencias · Todas las Competiciones",
+        campo:"asistencias", labelValor:"Asistencias totales" },
+      { icon:"👟🎯", label:"Más Asistencias · Liga",
+        campo:"asistencias_liga", labelValor:"Asistencias en Liga" },
+      { icon:"🏆👟", label:"Más Asistencias · Copa Ecuador",
+        campo:"asistencias_copa", labelValor:"Asistencias en Copa" },
+      { icon:"🎯", label:"Más Goles Producidos · Todas las Competiciones",
+        campo:"goles_producidos", labelValor:"Goles + Asistencias" },
+      { icon:"👑", label:"Más MVPs · Todas las Competiciones",
+        campo:"mvp", labelValor:"Premios MVP" },
+      { icon:"📋👑", label:"Más MVPs · Liga",
+        campo:"mvp_liga", labelValor:"MVPs en Liga" },
+    ];
+
+    const gridOf = document.getElementById("grid-jugadores-ofensivos");
+    gridOf.innerHTML = recJugOf.map(r => {
+      const pod = topN(jugadores, r.campo, 3);
+      const best = pod[0] || null;
+      return buildPlayerCard({
+        icon: r.icon, label: r.label,
+        jugador: best, campo: r.campo,
+        valor: best ? (best[r.campo] || 0) : 0,
+        labelValor: r.labelValor,
+        podium: pod
+      });
+    }).join("");
+
+    /* ════ JUGADORES — DISCIPLINA ════ */
+    const recJugDis = [
+      { icon:"🟨", label:"Más Tarjetas Amarillas · Todas",
+        campo:"amarillas", labelValor:"Amarillas totales" },
+      { icon:"🟨📋", label:"Más Tarjetas Amarillas · Liga",
+        campo:"amarillas_liga", labelValor:"Amarillas en Liga" },
+      { icon:"🟥", label:"Más Tarjetas Rojas · Todas",
+        campo:"rojas", labelValor:"Rojas totales" },
+      { icon:"🟥📋", label:"Más Tarjetas Rojas · Liga",
+        campo:"rojas_liga", labelValor:"Rojas en Liga" },
+    ];
+
+    const gridDis = document.getElementById("grid-jugadores-disciplina");
+    gridDis.innerHTML = recJugDis.map(r => {
+      const pod = topN(jugadores, r.campo, 3);
+      const best = pod[0] || null;
+      return buildPlayerCard({
+        icon: r.icon, label: r.label,
+        jugador: best, campo: r.campo,
+        valor: best ? (best[r.campo] || 0) : 0,
+        labelValor: r.labelValor,
+        podium: pod
+      });
+    }).join("");
+
+    /* ════ EQUIPOS ════ */
+    function topEq(campo, n) {
+      return [...equipos]
+        .filter(e => (e[campo] || 0) > 0)
+        .sort((a, b) => (b[campo] || 0) - (a[campo] || 0))
+        .slice(0, n)
+        .map(e => ({ nombre: e.nombre, val: e[campo] || 0 }));
+    }
+
+    const recEq = [
+      { icon:"🏹", label:"Más Goles Anotados · Todas",
+        campo:"gf", labelValor:"Goles a favor" },
+      { icon:"🥅", label:"Más Goles Recibidos · Todas",
+        campo:"gc", labelValor:"Goles en contra" },
+      { icon:"🏆", label:"Más Partidos Ganados · Todas",
+        campo:"g", labelValor:"Victorias" },
+      { icon:"💔", label:"Más Partidos Perdidos · Todas",
+        campo:"per", labelValor:"Derrotas" },
+      { icon:"🤝", label:"Más Empates · Todas",
+        campo:"e", labelValor:"Empates" },
+      { icon:"📋", label:"Más Partidos Jugados · Todas",
+        campo:"pj", labelValor:"Partidos disputados" },
+    ];
+
+    const gridEq = document.getElementById("grid-equipos");
+    gridEq.innerHTML = recEq.map(r => {
+      const pod = topEq(r.campo, 3);
+      const best = pod[0] || null;
+      const bestEq = best ? equipos.find(e => e.nombre === best.nombre) : null;
+      return buildTeamCard({
+        icon: r.icon, label: r.label,
+        equipoNombre: bestEq ? bestEq.nombre : null,
+        logoUrl: bestEq ? bestEq.logo : null,
+        valor: best ? best.val : 0,
+        labelValor: r.labelValor,
+        podium: pod
+      });
+    }).join("");
+
+  } catch(err) {
+    console.error("Error cargando récords:", err);
+    document.getElementById("recLoading").textContent = "Error al cargar los récords.";
+  }
+}
+
+cargar();
+</script>
+</body>
+</html>
