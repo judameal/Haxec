@@ -3,233 +3,618 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Supercopa Ecuador</title>
+  <title>Supercopa Ecuador — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --super-gold: var(--accent); --super-bg: var(--bg); }
-    body { background: var(--super-bg); color: var(--text); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);} }
 
+    /* HERO */
     .hero-super {
       text-align: center;
-      padding: 60px 0;
+      padding: 52px 24px 40px;
       background: var(--black);
       border-radius: 20px;
-      margin-bottom: 40px;
-      border-bottom: 5px solid var(--super-gold);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 36px;
+      border-bottom: 4px solid var(--accent);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
       position: relative;
+      overflow: hidden;
     }
-
+    .hero-super::before {
+      content: '⭐';
+      position: absolute;
+      font-size: 14rem;
+      opacity: .04;
+      top: -30px; right: -20px;
+      line-height: 1;
+    }
     .super-title {
       font-family: var(--font-head);
-      font-size: 4rem;
+      font-size: clamp(2.2rem,6vw,3.8rem);
       font-weight: 900;
       letter-spacing: 6px;
-      margin: 0;
+      margin: 0 0 8px;
       color: #fff;
       text-transform: uppercase;
     }
-    .super-title span { color: var(--super-gold); }
-
-    .actions-bar { display: flex; justify-content: center; gap: 15px; margin-top: 35px; flex-wrap: wrap; }
-
+    .super-title span { color: var(--accent); }
+    .super-sub {
+      color: rgba(255,255,255,.5);
+      font-size: .85rem;
+      font-family: var(--font-head);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .actions-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
     .btn-action {
       font-family: var(--font-head);
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 14px 35px;
+      letter-spacing: 1.5px;
+      padding: 12px 28px;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all .25s;
       border: none;
+      font-size: .82rem;
     }
-    .btn-super { background: var(--super-gold); color: var(--black); }
-    .btn-schedule { background: var(--surface); color: var(--black); border: 2px solid var(--black); }
-    .btn-reset { background: #ef4444; color: #fff; }
+    .btn-gold    { background: var(--accent); color: var(--black); }
+    .btn-gold:hover { background: var(--accent-dark); color: #fff; transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.3); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-danger  { background: #dc2626; color: #fff; }
+    .btn-danger:hover { background: #b91c1c; transform: translateY(-2px); }
 
-    .bracket-wrap { max-width: 1100px; margin: 50px auto; display: flex; justify-content: center; gap: 60px; }
-    .round { display: flex; flex-direction: column; justify-content: center; gap: 40px; min-width: 300px; }
-    .round-label { text-align: center; font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; border-bottom: 3px solid var(--super-gold); padding-bottom: 10px; text-transform: uppercase; }
-
-    .match-card {
+    /* CLASIFICADOS BANNER */
+    .clasif-section {
+      margin-bottom: 32px;
+      animation: fadeUp .5s ease .1s both;
+    }
+    .clasif-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .clasif-card {
       background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      position: relative;
-      transition: all 0.3s;
-    }
-    .match-date { font-size: 0.7rem; color: var(--muted); text-align: center; font-weight: 800; margin-bottom: 8px; }
-    .team { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
-    .team img { width: 40px; height: 40px; object-fit: contain; }
-    .team-name { font-weight: 700; font-size: 1.15rem; }
-    .score { font-family: var(--font-head); font-size: 2rem; font-weight: 900; color: var(--super-gold); }
-
-    .play-icon, .report-icon {
-      position: absolute;
-      right: -20px;
-      background: var(--black);
-      color: var(--super-gold);
-      border: 3px solid var(--super-gold);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      transition: border-color .2s, transform .2s;
     }
-    .play-icon { top: 25%; }
-    .report-icon { top: 60%; background: var(--surface); color: var(--black); border-color: var(--black); }
+    .clasif-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .clasif-card.champion { border-color: var(--accent); }
+    .clasif-badge {
+      background: var(--black);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-family: var(--font-head);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .clasif-logo {
+      width: 40px; height: 40px;
+      object-fit: contain; border-radius: 6px;
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+      background: var(--surface2);
+      padding: 3px;
+    }
+    .clasif-logo-placeholder {
+      width: 40px; height: 40px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .clasif-name {
+      font-family: var(--font-head);
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--black);
+    }
+    .clasif-origin {
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
 
-    .winner { color: var(--accent-dark); }
+    /* SECTION HEADER */
+    .section-hdr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .section-hdr h2 {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      margin: 0;
+    }
+    .section-hdr h2 span { color: var(--accent); }
+    .section-line { flex:1; height:1.5px; background:var(--border); }
+
+    /* BRACKET */
+    .bracket-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+      animation: fadeUp .5s ease .2s both;
+    }
+    .round-col { display: flex; flex-direction: column; align-items: center; gap: 24px; min-width: 280px; }
+    .round-label {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* MATCH CARD */
+    .match-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 3px 14px rgba(0,0,0,.07);
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .match-card:hover { border-color: var(--accent); box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+    .match-card-header {
+      background: var(--black);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .match-card-round {
+      font-family: var(--font-head);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .match-card-fecha {
+      font-family: var(--font-head);
+      font-size: .65rem;
+      color: rgba(255,255,255,.5);
+    }
+    .match-team-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .match-team-row:last-of-type { border-bottom: none; }
+    .match-team-row.winner-row { background: rgba(184,134,11,.07); }
+    .team-info { display: flex; align-items: center; gap: 10px; }
+    .team-logo-bracket {
+      width: 32px; height: 32px;
+      object-fit: contain; border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--surface2); padding: 2px;
+    }
+    .team-logo-placeholder {
+      width: 32px; height: 32px;
+      border-radius: 5px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem;
+    }
+    .team-label {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .92rem;
+      color: var(--black);
+    }
+    .team-label.pending { color: var(--muted); font-style: italic; }
+    .team-score {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 32px;
+      text-align: right;
+    }
+    .team-score.pending { color: var(--border); font-size: 1rem; }
+    .match-actions-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      border-top: 1px dashed var(--border);
+      justify-content: flex-end;
+    }
+    .btn-play-sm {
+      background: var(--accent);
+      border: none;
+      color: var(--black);
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-family: var(--font-body);
+      font-size: .8rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .btn-play-sm:hover { background: var(--accent-dark); color: #fff; }
+    .btn-report-sm {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-report-sm:hover { border-color: var(--black); color: var(--black); }
+
+    /* EMPTY / PENDING */
+    .empty-bracket {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .88rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
     /* MODAL */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
-    .modal-content { background: var(--surface); margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; border: 3px solid var(--super-gold); }
+    .modal { display:none; position:fixed; z-index:1000; inset:0; background:rgba(0,0,0,.75); }
+    .modal-box {
+      background: var(--surface);
+      margin: 8% auto;
+      padding: 28px;
+      border-radius: 18px;
+      width: 90%;
+      max-width: 480px;
+      border: 2px solid var(--accent);
+    }
+    .modal-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--black);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .evento-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+    .evento-row:last-child { border-bottom: none; }
+
+    @media(max-width:640px) {
+      .bracket-wrap { gap: 24px; }
+      .round-col { min-width: 260px; }
+    }
   </style>
 </head>
 <body>
+<div class="hex-mid"></div>
 
-  <header>
-    <div class="logo">
-      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Supercopa">
-      <h1>Supercopa <span>Ecuador</span></h1>
-    </div>
-    <div class="nav-buttons">
-        <button onclick="window.location.href='/haxball.html'">Atrás</button>
-    </div>
-  </header>
+<header>
+  <div class="logo">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Supercopa">
+    <h1>Supercopa <span>Ecuador</span></h1>
+  </div>
+  <div class="nav-buttons">
+    <button onclick="window.location.href='/haxball.html'">← Inicio</button>
+  </div>
+</header>
 
+<div class="admin-container">
+
+  <!-- HERO -->
   <div class="hero-super">
     <h1 class="super-title">Super<span>copa</span> 2026</h1>
+    <p class="super-sub">Liga · Copa · Campeones</p>
     <div class="actions-bar" id="adminActions" style="display:none;">
-        <button class="btn-action btn-super" onclick="generarSupercopa()">⚙️ Generar Cruces</button>
-        <button class="btn-action btn-schedule" onclick="window.location.href='/supercopahorario.html'">📅 Horarios</button>
-        <button class="btn-action btn-reset" onclick="resetSuper()">🗑️ Reiniciar</button>
+      <button class="btn-action btn-gold" onclick="generarSupercopa()">⚙️ Generar Cruces</button>
+      <button class="btn-action btn-outline" onclick="window.location.href='/supercopahorario.html'">📅 Horarios</button>
+      <button class="btn-action btn-danger" onclick="resetSuper()">🗑️ Reiniciar</button>
     </div>
   </div>
 
-  <div class="bracket-wrap" id="bracket"></div>
-
-  <div id="modalReporte" class="modal">
-    <div class="modal-content">
-      <h2 id="reporteTitulo" style="text-transform:uppercase;"></h2>
-      <div id="reporteBody" style="margin-top:20px;"></div>
-      <button class="add-btn" onclick="cerrarReporte()" style="margin-top:20px;">Cerrar</button>
+  <!-- CLASIFICADOS -->
+  <div class="clasif-section" id="seccionClasificados" style="display:none;">
+    <div class="section-hdr">
+      <h2>🏅 Clasificados a la <span>Supercopa</span></h2>
+      <div class="section-line"></div>
     </div>
+    <div class="clasif-grid" id="gridClasificados"></div>
   </div>
 
-  <script>
-    const API = "/api/index?ruta=supercopa_partidos";
-    const API_COPA = "/api/index?ruta=copa_partidos";
-    const API_TABLA = "/api/index?ruta=tabla";
+  <!-- BRACKET -->
+  <div class="section-hdr" style="margin-bottom:16px;">
+    <h2>🏆 Bracket <span>Supercopa</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="bracket-wrap" id="bracket">
+    <div class="empty-bracket">⭐ Supercopa no generada aún</div>
+  </div>
 
-    let _partidos = [];
-    let _teams = [];
+</div>
 
-    async function init() {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user && user.role === "admin") document.getElementById("adminActions").style.display = "flex";
+<!-- MODAL REPORTE -->
+<div id="modalReporte" class="modal">
+  <div class="modal-box">
+    <div class="modal-title" id="reporteTitulo"></div>
+    <div id="reporteBody"></div>
+    <button class="add-btn" onclick="cerrarModal()" style="margin-top:18px;">Cerrar</button>
+  </div>
+</div>
 
-      const [resP, resT] = await Promise.all([
-        fetch(API).then(r => r.json()),
-        fetch(API_TABLA).then(r => r.json())
-      ]);
-      _partidos = Array.isArray(resP) ? resP : [];
-      _teams = Array.isArray(resT) ? resT : [];
-      render();
-    }
+<footer><p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p></footer>
 
-    async function generarSupercopa() {
-      if (_partidos.length && !confirm("¿Generar nueva?")) return;
-      const resCopa = await fetch(API_COPA).then(r => r.json());
-      const finalCopa = resCopa.find(m => m.round === "final" && m.jugado);
-      if (!finalCopa) { alert("La Copa Ecuador aún no ha terminado."); return; }
-      
-      const cC = finalCopa.resultado.local > finalCopa.resultado.visitante ? finalCopa.local : finalCopa.visitante;
-      const sC = finalCopa.resultado.local > finalCopa.resultado.visitante ? finalCopa.visitante : finalCopa.local;
+<script>
+const API_SUP   = "/api/index?ruta=supercopa_partidos";
+const API_COPA  = "/api/index?ruta=copa_partidos";
+const API_TABLA = "/api/index?ruta=tabla";
+const API_TEAMS = "/api/index?ruta=teams";
 
-      const tablaSorted = _teams.sort((a,b) => (b.PTS-a.PTS) || (b.DG-a.DG));
-      const cL = { nombre: tablaSorted[0].equipo };
-      const sL = { nombre: tablaSorted[1].equipo };
+let _partidos = [];
+let _teams    = [];   // colección teams con logos
+let _tabla    = [];
 
-      const clas = [cC, sC, cL, sL].sort(() => 0.5 - Math.random());
-      const bracket = [
-        { round:"semis", pos:0, local:{nombre:clas[0].nombre}, visitante:{nombre:clas[1].nombre}, resultado:{local:0, visitante:0}, jugado:false },
-        { round:"semis", pos:1, local:{nombre:clas[2].nombre}, visitante:{nombre:clas[3].nombre}, resultado:{local:0, visitante:0}, jugado:false },
-        { round:"final", pos:0, local:{nombre:"—"}, visitante:{nombre:"—"}, resultado:{local:0, visitante:0}, jugado:false }
-      ];
-      await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket}) });
-      location.reload();
-    }
+/* ── INIT ── */
+async function init() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user && user.role === "admin") document.getElementById("adminActions").style.display = "flex";
 
-    async function resetSuper() {
-        if (confirm("¿Resetear?")) {
-            await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bracket:[]}) });
-            location.reload();
-        }
-    }
+  const [resP, resT, resTabla] = await Promise.all([
+    fetch(API_SUP).then(r => r.json()).catch(() => []),
+    fetch(API_TEAMS).then(r => r.json()).catch(() => []),
+    fetch(API_TABLA).then(r => r.json()).catch(() => [])
+  ]);
 
-    function render() {
-      const container = document.getElementById("bracket");
-      container.innerHTML = "";
-      if (!_partidos.length) { container.innerHTML = "<p>No hay Supercopa activa.</p>"; return; }
+  _partidos = Array.isArray(resP)     ? resP     : [];
+  _teams    = Array.isArray(resT)     ? resT     : [];
+  _tabla    = Array.isArray(resTabla) ? resTabla : [];
 
-      ["semis", "final"].forEach((r, idx) => {
-        const div = document.createElement("div");
-        div.className = "round";
-        div.innerHTML = `<div class="round-label">${r.toUpperCase()}</div>`;
+  await mostrarClasificados();
+  renderBracket();
+}
 
-        _partidos.filter(m => m.round === r).forEach(m => {
-          const teamL = _teams.find(t => t.equipo === m.local?.nombre) || { logo: 'img/logo.png' };
-          const teamV = _teams.find(t => t.equipo === m.visitante?.nombre) || { logo: 'img/logo.png' };
-          const wl = m.jugado && m.resultado.local > m.resultado.visitante ? "winner" : "";
-          const wv = m.jugado && m.resultado.visitante > m.resultado.local ? "winner" : "";
-          
-          const card = document.createElement("div");
-          card.className = "match-card";
-          const fechaTexto = m.fecha ? `📅 ${m.fecha} — ${m.hora || ''}` : "⏳ PENDIENTE";
+/* ── OBTENER LOGO DE UN EQUIPO ── */
+function getLogo(nombre) {
+  const t = _teams.find(e => e.nombre && e.nombre.toLowerCase() === (nombre || "").toLowerCase());
+  return t && t.logo ? t.logo : null;
+}
 
-          card.innerHTML = `
-            <div class="match-date" style="background:var(--surface2); padding:6px; border-radius:8px; margin-bottom:12px; border:1px solid var(--border); color:var(--black); font-size:0.8rem;">
-                ${fechaTexto}
-            </div>
-            <div class="team ${wl}"><div style="display:flex;align-items:center;gap:15px;"><img src="${teamL.logo}"> <span class="team-name">${m.local.nombre}</span></div><div class="score">${m.jugado ? m.resultado.local : ''}</div></div>
-            <div class="team ${wv}"><div style="display:flex;align-items:center;gap:15px;"><img src="${teamV.logo}"> <span class="team-name">${m.visitante.nombre}</span></div><div class="score">${m.jugado ? m.resultado.visitante : ''}</div></div>
-            ${!m.jugado && m.local.nombre !== "—" ? `<div class="play-icon" onclick="jugar('${m._id}')">▶</div>` : ""}
-            ${m.jugado ? `<div class="report-icon" onclick="verInforme('${m._id}')">📝</div>` : ""}
-          `;
-          div.appendChild(card);
-        });
-        container.appendChild(div);
-      });
-    }
+/* ── CLASIFICADOS BANNER ── */
+async function mostrarClasificados() {
+  const resCopa = await fetch(API_COPA).then(r => r.json()).catch(() => []);
+  const finalCopa = resCopa.find(m => m.round === "final" && m.jugado);
 
-    function verInforme(id) {
-        const p = _partidos.find(x => x._id === id);
-        if (!p) return;
-        document.getElementById("reporteTitulo").innerText = `${p.local.nombre} vs ${p.visitante.nombre}`;
-        let html = `<div><strong>MVP:</strong> ${p.mvp || '—'}</div><hr>`;
-        if (p.eventos && p.eventos.length) {
-            p.eventos.forEach(e => {
-                html += `<div style="display:flex; justify-content:space-between; padding:5px 0;"><span>${e.minuto}' ${e.tipo.toUpperCase()}</span> <span>${e.jugador}</span></div>`;
-            });
-        } else { html += "<div>Sin eventos.</div>"; }
-        document.getElementById("reporteBody").innerHTML = html;
-        document.getElementById("modalReporte").style.display = "block";
-    }
+  // Liga: top-2 de la tabla
+  const tablaSorted = [..._tabla].sort((a, b) => (b.PTS - a.PTS) || (b.DG - a.DG) || (b.GF - a.GF));
+  const clasif = [];
 
-    function cerrarReporte() { document.getElementById("modalReporte").style.display = "none"; }
-    function jugar(id) {
-      localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "supercopa" }));
-      window.location.href = "/jugarpartidosupercopa.html";
-    }
-    init();
-  </script>
+  // Copa
+  if (finalCopa) {
+    const gl = Number(finalCopa.resultado.local    || 0);
+    const gv = Number(finalCopa.resultado.visitante || 0);
+    const campeonCopa   = gl > gv ? finalCopa.local    : finalCopa.visitante;
+    const subcampeonCopa = gl > gv ? finalCopa.visitante : finalCopa.local;
+    clasif.push({ nombre: campeonCopa.nombre,    origen: "🏆 Campeón Copa Ecuador" });
+    clasif.push({ nombre: subcampeonCopa.nombre, origen: "🏆 Subcampeón Copa Ecuador" });
+  } else {
+    clasif.push({ nombre: "Por definir", origen: "🏆 Campeón Copa Ecuador" });
+    clasif.push({ nombre: "Por definir", origen: "🏆 Subcampeón Copa Ecuador" });
+  }
+
+  // Liga
+  if (tablaSorted[0]) clasif.push({ nombre: tablaSorted[0].equipo, origen: "📋 1° de la Liga" });
+  else clasif.push({ nombre: "Por definir", origen: "📋 1° de la Liga" });
+  if (tablaSorted[1]) clasif.push({ nombre: tablaSorted[1].equipo, origen: "📋 2° de la Liga" });
+  else clasif.push({ nombre: "Por definir", origen: "📋 2° de la Liga" });
+
+  const grid = document.getElementById("gridClasificados");
+  grid.innerHTML = clasif.map((c, i) => {
+    const logo = getLogo(c.nombre);
+    const imgHTML = logo
+      ? `<img class="clasif-logo" src="${logo}" alt="${c.nombre}">`
+      : `<div class="clasif-logo-placeholder">🛡️</div>`;
+    return `<div class="clasif-card ${i===0?'champion':''}">
+      <div class="clasif-badge">${i===0?"Campeón":i===1?"Subcampeón":i===2?"1° Liga":"2° Liga"}</div>
+      ${imgHTML}
+      <div>
+        <div class="clasif-name">${c.nombre}</div>
+        <div class="clasif-origin">${c.origen}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("seccionClasificados").style.display = "block";
+}
+
+/* ── GENERAR SUPERCOPA ── */
+async function generarSupercopa() {
+  if (_partidos.length && !confirm("¿Generar nueva Supercopa? Se borrará la actual.")) return;
+
+  const resCopa = await fetch(API_COPA).then(r => r.json()).catch(() => []);
+  const finalCopa = resCopa.find(m => m.round === "final" && m.jugado);
+  if (!finalCopa) { alert("⚠️ La Copa Ecuador aún no ha terminado."); return; }
+
+  const tablaSorted = [..._tabla].sort((a, b) => (b.PTS - a.PTS) || (b.DG - a.DG) || (b.GF - a.GF));
+  if (tablaSorted.length < 2) { alert("⚠️ La Liga no tiene suficientes equipos clasificados."); return; }
+
+  const gl = Number(finalCopa.resultado.local    || 0);
+  const gv = Number(finalCopa.resultado.visitante || 0);
+  const campeonCopa    = gl > gv ? finalCopa.local    : finalCopa.visitante;
+  const subcampeonCopa = gl > gv ? finalCopa.visitante : finalCopa.local;
+
+  const cL = { nombre: tablaSorted[0].equipo, logo: getLogo(tablaSorted[0].equipo) || "" };
+  const sL = { nombre: tablaSorted[1].equipo, logo: getLogo(tablaSorted[1].equipo) || "" };
+  const cC = { nombre: campeonCopa.nombre,    logo: getLogo(campeonCopa.nombre)    || "" };
+  const sC = { nombre: subcampeonCopa.nombre, logo: getLogo(subcampeonCopa.nombre) || "" };
+
+  // Sorteo: mezcla los 4 clasificados y empareja semis
+  const pool = [cC, sC, cL, sL].sort(() => 0.5 - Math.random());
+
+  const bracket = [
+    { round:"semis", pos:0, local:pool[0], visitante:pool[1], resultado:{local:0,visitante:0}, jugado:false, fecha:"", hora:"" },
+    { round:"semis", pos:1, local:pool[2], visitante:pool[3], resultado:{local:0,visitante:0}, jugado:false, fecha:"", hora:"" },
+    { round:"final", pos:0, local:{nombre:"—", logo:""}, visitante:{nombre:"—", logo:""}, resultado:{local:0,visitante:0}, jugado:false, fecha:"", hora:"" }
+  ];
+
+  await fetch(API_SUP, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bracket })
+  });
+  location.reload();
+}
+
+/* ── RESET ── */
+async function resetSuper() {
+  if (!confirm("¿Reiniciar la Supercopa? Se borrarán todos los datos.")) return;
+  await fetch(API_SUP, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bracket: [] })
+  });
+  location.reload();
+}
+
+/* ── RENDER BRACKET ── */
+function renderBracket() {
+  const container = document.getElementById("bracket");
+
+  if (!_partidos.length) {
+    container.innerHTML = '<div class="empty-bracket">⭐ Supercopa no generada aún<br><small style="font-size:.75rem;margin-top:8px;display:block;">El administrador debe generar los cruces</small></div>';
+    return;
+  }
+
+  container.innerHTML = "";
+  const rounds = ["semis", "final"];
+  const labels = { semis: "⚔️ Semifinales", final: "🏆 Final" };
+
+  rounds.forEach(r => {
+    const rPartidos = _partidos.filter(m => m.round === r);
+    if (!rPartidos.length) return;
+
+    const col = document.createElement("div");
+    col.className = "round-col";
+    col.innerHTML = `<div class="round-label">${labels[r] || r.toUpperCase()}</div>`;
+
+    rPartidos.forEach(m => {
+      const isPending = !m.local?.nombre || m.local.nombre === "—";
+      const logoL = getLogo(m.local?.nombre) || m.local?.logo || null;
+      const logoV = getLogo(m.visitante?.nombre) || m.visitante?.logo || null;
+
+      const imgL = logoL
+        ? `<img class="team-logo-bracket" src="${logoL}" alt="${m.local.nombre}">`
+        : `<div class="team-logo-placeholder">🛡️</div>`;
+      const imgV = logoV
+        ? `<img class="team-logo-bracket" src="${logoV}" alt="${m.visitante.nombre}">`
+        : `<div class="team-logo-placeholder">🛡️</div>`;
+
+      const wL = m.jugado && Number(m.resultado?.local||0) > Number(m.resultado?.visitante||0);
+      const wV = m.jugado && Number(m.resultado?.visitante||0) > Number(m.resultado?.local||0);
+      const fechaStr = m.fecha ? `${m.fecha}${m.hora?" · "+m.hora:""}` : "Fecha por definir";
+
+      const adminUser = JSON.parse(localStorage.getItem("user"));
+      const isAdmin = adminUser && adminUser.role === "admin";
+
+      const actionsHTML = isAdmin
+        ? `<div class="match-actions-row">
+            ${!m.jugado && !isPending ? `<button class="btn-play-sm" onclick="jugar('${m._id}')">▶ Jugar</button>` : ""}
+            ${m.jugado ? `<button class="btn-report-sm" onclick="verReporte('${m._id}')">📝 Reporte</button>` : ""}
+          </div>` : (m.jugado ? `<div class="match-actions-row"><button class="btn-report-sm" onclick="verReporte('${m._id}')">📝 Reporte</button></div>` : "");
+
+      col.innerHTML += `<div class="match-card">
+        <div class="match-card-header">
+          <span class="match-card-round">${r.toUpperCase()}</span>
+          <span class="match-card-fecha">${fechaStr}</span>
+        </div>
+        <div class="match-team-row ${wL?'winner-row':''}">
+          <div class="team-info">${imgL}<span class="team-label ${isPending?'pending':''}">${m.local?.nombre||"—"}</span></div>
+          <span class="team-score ${m.jugado?'':'pending'}">${m.jugado?m.resultado.local:"·"}</span>
+        </div>
+        <div class="match-team-row ${wV?'winner-row':''}">
+          <div class="team-info">${imgV}<span class="team-label ${isPending?'pending':''}">${m.visitante?.nombre||"—"}</span></div>
+          <span class="team-score ${m.jugado?'':'pending'}">${m.jugado?m.resultado.visitante:"·"}</span>
+        </div>
+        ${actionsHTML}
+      </div>`;
+    });
+
+    container.appendChild(col);
+  });
+}
+
+/* ── JUGAR ── */
+function jugar(id) {
+  localStorage.setItem("partidoSeleccionado", JSON.stringify({ pid: id, torneo: "supercopa" }));
+  window.location.href = "/jugarpartidosupercopa.html";
+}
+
+/* ── VER REPORTE ── */
+function verReporte(id) {
+  const p = _partidos.find(x => String(x._id) === String(id));
+  if (!p) return;
+  document.getElementById("reporteTitulo").textContent = `${p.local.nombre} vs ${p.visitante.nombre}`;
+  let html = `<div class="evento-row"><strong>Resultado:</strong><span>${p.resultado.local} – ${p.resultado.visitante}</span></div>`;
+  html += `<div class="evento-row"><strong>MVP:</strong><span>${p.mvp || "—"}</span></div>`;
+  if (p.eventos && p.eventos.length) {
+    p.eventos.forEach(e => {
+      const icon = e.tipo === "gol" ? "⚽" : e.tipo === "asistencia" ? "👟" : e.tipo === "amarilla" ? "🟨" : "🟥";
+      html += `<div class="evento-row"><span>${icon} ${e.tipo?.toUpperCase()} — ${e.jugador}</span></div>`;
+    });
+  } else { html += `<div class="evento-row" style="color:var(--muted);">Sin eventos registrados.</div>`; }
+  document.getElementById("reporteBody").innerHTML = html;
+  document.getElementById("modalReporte").style.display = "block";
+}
+
+function cerrarModal() { document.getElementById("modalReporte").style.display = "none"; }
+
+init();
+</script>
 </body>
 </html>

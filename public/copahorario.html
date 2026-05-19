@@ -3,91 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Horarios Copa — Haxec Esport</title>
+  <title>Horarios Copa Ecuador — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+
+    .ap-title-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .page-sub { color:var(--muted); font-size:.88rem; margin-bottom:28px; font-weight:500; }
+
+    .horario-block {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      opacity: 0;
+      animation: fadeUp .4s ease both;
+    }
+    .horario-block:nth-child(1){animation-delay:.08s;}
+    .horario-block:nth-child(2){animation-delay:.16s;}
+    .horario-block:nth-child(3){animation-delay:.24s;}
+    .horario-block:nth-child(4){animation-delay:.32s;}
+
+    .horario-header {
+      background: var(--black);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 18px;
+    }
+    .horario-header h3 {
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .horario-partido {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 14px 20px;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .horario-partido:last-child { border-bottom: none; }
+
+    .hp-team { display:flex; align-items:center; gap:10px; }
+    .hp-team.right { flex-direction:row-reverse; justify-content:flex-end; text-align:right; }
+
+    .hp-logo {
+      width: 34px; height: 34px;
+      object-fit: contain; border-radius: 6px;
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+      background: var(--surface2);
+      padding: 3px;
+    }
+    .hp-logo-ph {
+      width: 34px; height: 34px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; flex-shrink: 0;
+    }
+    .hp-name {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .88rem;
+      color: var(--black);
+    }
+    .hp-name.pending { color: var(--muted); font-style: italic; }
+
+    .hp-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .vs-badge {
+      font-family: var(--font-head);
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+    .date-time-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .date-time-row input { margin:0; padding:7px 10px; font-size:.82rem; border-radius:7px; }
+    input[type="date"] { width: 130px; }
+    input[type="time"] { width: 100px; }
+
+    .btn-save {
+      background: var(--black);
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-save:hover { background: var(--accent); color: var(--black); }
+    .btn-save.saved { background: #16a34a; color: #fff; border-color: #16a34a; }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 0;
+      font-family: var(--font-head);
+      font-size: .85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media(max-width:560px) {
+      .horario-partido { grid-template-columns: 1fr; gap: 10px; }
+      .hp-team.right { flex-direction:row; justify-content:flex-start; text-align:left; }
+    }
+  </style>
 </head>
 <body>
+<div class="hex-mid"></div>
 
-  <header>
-    <div class="logo">
-      <h1>Horarios <span>Copa</span></h1>
-    </div>
-  </header>
-
-  <div class="admin-container">
-    <h1 class="admin-title">Programar Copa Ecuador</h1>
-    <button class="back-btn" onclick="window.location.href='/copaecuador.html'">← Volver al Bracket</button>
-
-    <div id="listaPartidos">
-      <!-- Cargando partidos... -->
-    </div>
+<header>
+  <div class="logo">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="Copa Ecuador">
+    <h1>Horarios <span>Copa</span></h1>
   </div>
+</header>
 
-  <script>
-    const API = "/api/index?ruta=copa_partidos";
+<div class="admin-container">
+  <div class="ap-title-row">
+    <h1 class="admin-title">🏆 Horarios Copa Ecuador</h1>
+    <button class="back-btn" onclick="window.location.href='/copaecuador.html'">⬅ Volver</button>
+  </div>
+  <p class="page-sub">Programa las fechas y horas de cada partido del torneo</p>
 
-    async function cargar() {
-      const res = await fetch(API);
-      const partidos = await res.json();
-      const container = document.getElementById("listaPartidos");
-      container.innerHTML = "";
+  <div id="listaPartidos"><div class="empty-msg">Cargando partidos…</div></div>
+</div>
 
-      if (!partidos.length) {
-          container.innerHTML = "<p>No hay partidos generados aún.</p>";
-          return;
-      }
+<footer><p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p></footer>
 
-      // Agrupar por ronda
-      const rounds = ["octavos", "cuartos", "semis", "final"];
-      rounds.forEach(r => {
-          const rPartidos = partidos.filter(p => p.round === r);
-          if (!rPartidos.length) return;
+<script>
+const API_COPA  = "/api/index?ruta=copa_partidos";
+const API_TEAMS = "/api/index?ruta=teams";
 
-          const section = document.createElement("div");
-          section.className = "jornada-block";
-          section.innerHTML = `<div class="jornada-header"><h3>Ronda: ${r.toUpperCase()}</h3></div>`;
+const ROUND_LABELS = {
+  dieciseisavos: "1/16 · Dieciseisavos",
+  octavos:       "1/8 · Octavos de Final",
+  cuartos:       "1/4 · Cuartos de Final",
+  semis:         "1/2 · Semifinales",
+  final:         "🏆 Gran Final"
+};
 
-          rPartidos.forEach(p => {
-              const row = document.createElement("div");
-              row.className = "partido-row";
-              row.style.gridTemplateColumns = "1fr 2fr 1fr";
-              row.innerHTML = `
-                <div class="team-side">${p.local.nombre} vs ${p.visitante.nombre}</div>
-                <div class="match-center">
-                    <div style="display:flex; gap:10px;">
-                        <input type="date" id="f-${p._id}" value="${p.fecha || ''}" style="margin:0; padding:5px;">
-                        <input type="time" id="h-${p._id}" value="${p.hora || ''}" style="margin:0; padding:5px;">
-                    </div>
-                </div>
-                <div class="match-actions">
-                    <button class="btn-play" onclick="guardar('${p._id}')">💾</button>
-                </div>
-              `;
-              section.appendChild(row);
-          });
-          container.appendChild(section);
-      });
-    }
+async function cargar() {
+  const [partidos, teams] = await Promise.all([
+    fetch(API_COPA).then(r => r.json()).catch(() => []),
+    fetch(API_TEAMS).then(r => r.json()).catch(() => [])
+  ]);
 
-    async function guardar(id) {
-      const fecha = document.getElementById(`f-${id}`).value;
-      const hora = document.getElementById(`h-${id}`).value;
+  const container = document.getElementById("listaPartidos");
 
-      const res = await fetch(API, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-              id, 
-              fecha, 
-              hora,
-              soloHorario: true // Flag para que el servidor sepa que solo cambiamos fecha/hora
-          })
-      });
+  if (!partidos.length) {
+    container.innerHTML = '<div class="empty-msg">🏆 No hay partidos de Copa generados aún</div>';
+    return;
+  }
 
-      if (res.ok) alert("Horario actualizado");
-    }
+  function getLogo(nombre) {
+    const t = teams.find(e => e.nombre && e.nombre.toLowerCase() === (nombre || "").toLowerCase());
+    return t && t.logo ? t.logo : null;
+  }
 
-    cargar();
-  </script>
+  function logoHTML(nombre) {
+    const l = getLogo(nombre);
+    if (l) return `<img class="hp-logo" src="${l}" alt="${nombre}">`;
+    // fallback: intentar con el logo guardado en el partido directamente
+    return `<div class="hp-logo-ph">🛡️</div>`;
+  }
+
+  container.innerHTML = "";
+  const rounds = ["dieciseisavos", "octavos", "cuartos", "semis", "final"];
+
+  rounds.forEach(r => {
+    const rPart = partidos.filter(p => p.round === r);
+    if (!rPart.length) return;
+
+    const block = document.createElement("div");
+    block.className = "horario-block";
+    block.innerHTML = `<div class="horario-header"><h3>${ROUND_LABELS[r] || r.toUpperCase()}</h3></div>`;
+
+    rPart.forEach(p => {
+      const nl = p.local?.nombre    || "Por definir";
+      const nv = p.visitante?.nombre || "Por definir";
+      const pending = nl === "Por definir" || nv === "Por definir";
+
+      // Intentar logo del partido primero (guardado al crear bracket), luego de teams
+      const logoL = getLogo(nl) || p.local?.logo    || null;
+      const logoV = getLogo(nv) || p.visitante?.logo || null;
+
+      const imgL = logoL ? `<img class="hp-logo" src="${logoL}" alt="${nl}">` : `<div class="hp-logo-ph">🛡️</div>`;
+      const imgV = logoV ? `<img class="hp-logo" src="${logoV}" alt="${nv}">` : `<div class="hp-logo-ph">🛡️</div>`;
+
+      const row = document.createElement("div");
+      row.className = "horario-partido";
+      row.innerHTML = `
+        <div class="hp-team">
+          ${imgL}
+          <span class="hp-name ${pending?'pending':''}">${nl}</span>
+        </div>
+        <div class="hp-center">
+          <span class="vs-badge">VS</span>
+          <div class="date-time-row">
+            <input type="date" id="f-${p._id}" value="${p.fecha || ''}">
+            <input type="time" id="h-${p._id}" value="${p.hora  || ''}">
+          </div>
+          <button class="btn-save" id="btn-${p._id}" onclick="guardar('${p._id}')">💾 Guardar</button>
+        </div>
+        <div class="hp-team right">
+          ${imgV}
+          <span class="hp-name ${pending?'pending':''}">${nv}</span>
+        </div>
+      `;
+      block.appendChild(row);
+    });
+
+    container.appendChild(block);
+  });
+}
+
+async function guardar(id) {
+  const fecha = document.getElementById(`f-${id}`).value;
+  const hora  = document.getElementById(`h-${id}`).value;
+  const btn   = document.getElementById(`btn-${id}`);
+
+  btn.textContent = "Guardando…";
+  btn.disabled = true;
+
+  const res = await fetch(API_COPA, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, fecha, hora, soloHorario: true })
+  });
+
+  if (res.ok) {
+    btn.textContent = "✅ Guardado";
+    btn.classList.add("saved");
+    setTimeout(() => { btn.textContent = "💾 Guardar"; btn.classList.remove("saved"); btn.disabled = false; }, 2000);
+  } else {
+    btn.textContent = "❌ Error";
+    btn.disabled = false;
+  }
+}
+
+cargar();
+</script>
 </body>
 </html>
