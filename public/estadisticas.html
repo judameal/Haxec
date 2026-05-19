@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estadísticas — Liga</title>
+  <title>Centro de Datos — LigaPro Ecuaverd</title>
+  <meta name="description" content="Centro de estadísticas de la LigaPro Ecuaverd: goleadores, asistencias, vallas invictas, tarjetas y más.">
   <link rel="stylesheet" href="css/styles.css">
   <style>
-
     @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
+      from { opacity: 0; transform: translateY(-12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes countUp {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
     }
 
     .home-wrap {
@@ -21,12 +29,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 48px 20px 80px;
+      padding: 44px 20px 80px;
       position: relative;
       z-index: 1;
     }
 
+    /* ── EYEBROW / TITLE ── */
     .hero-eyebrow {
       font-family: var(--font-head);
       font-size: 0.7rem;
@@ -38,7 +46,6 @@
       opacity: 0;
       animation: fadeDown .45s ease .1s forwards;
     }
-
     .hero-title {
       font-family: var(--font-head);
       font-size: clamp(2rem, 6vw, 3.4rem);
@@ -52,37 +59,119 @@
       opacity: 0;
       animation: fadeDown .45s ease .18s forwards;
     }
-
     .hero-title span { color: var(--accent); }
-
     .hero-sub {
       font-family: var(--font-body);
       font-size: 0.88rem;
       font-weight: 500;
       color: var(--muted);
       letter-spacing: 1px;
-      margin-bottom: 36px;
+      margin-bottom: 10px;
       opacity: 0;
       animation: fadeDown .45s ease .24s forwards;
     }
-
     .hero-divider {
       width: 44px;
       height: 3px;
       background: var(--accent);
       border-radius: 2px;
-      margin: 0 auto 36px;
+      margin: 0 auto 28px;
       opacity: 0;
       animation: fadeDown .45s ease .3s forwards;
     }
 
-    /* ── GRID 2x3 ── */
+    /* ── LIVE STAT CHIPS ── */
+    .live-stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp .5s ease .34s forwards;
+    }
+    .live-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text2);
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      transition: all .2s;
+      cursor: default;
+    }
+    .live-chip:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .live-chip .chip-num {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 20px;
+      text-align: center;
+      animation: countUp .4s ease both;
+    }
+    .live-chip .chip-icon { font-size: 1rem; }
+
+    /* ── HUB TABS ── */
+    .hub-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeDown .45s ease .15s forwards;
+      width: 100%;
+      max-width: 520px;
+      flex-wrap: wrap;
+    }
+    .hub-tab {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .hub-tab:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hub-tab.active {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    /* ── STAT MENU GRID ── */
     .stats-menu-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 13px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
       width: 100%;
-      max-width: 440px;
+      max-width: 600px;
     }
 
     .menu-btn {
@@ -90,24 +179,23 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 5px;
+      gap: 6px;
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: 14px;
-      padding: 18px 16px;
+      padding: 20px 16px;
       cursor: pointer;
       text-align: left;
       overflow: hidden;
       transition: border-color .22s, transform .22s, box-shadow .22s;
       opacity: 0;
     }
-
     .menu-btn:nth-child(1) { animation: fadeUp .42s ease .36s forwards; }
-    .menu-btn:nth-child(2) { animation: fadeUp .42s ease .42s forwards; }
-    .menu-btn:nth-child(3) { animation: fadeUp .42s ease .48s forwards; }
-    .menu-btn:nth-child(4) { animation: fadeUp .42s ease .54s forwards; }
-    .menu-btn:nth-child(5) { animation: fadeUp .42s ease .60s forwards; }
-    .menu-btn:nth-child(6) { animation: fadeUp .42s ease .66s forwards; }
+    .menu-btn:nth-child(2) { animation: fadeUp .42s ease .43s forwards; }
+    .menu-btn:nth-child(3) { animation: fadeUp .42s ease .50s forwards; }
+    .menu-btn:nth-child(4) { animation: fadeUp .42s ease .57s forwards; }
+    .menu-btn:nth-child(5) { animation: fadeUp .42s ease .64s forwards; }
+    .menu-btn:nth-child(6) { animation: fadeUp .42s ease .71s forwards; }
 
     .menu-btn::after {
       content: '';
@@ -120,26 +208,18 @@
       z-index: 0;
       border-radius: inherit;
     }
-
-    .menu-btn:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 28px rgba(34,197,94,.16);
-    }
-
+    .menu-btn:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 28px var(--accent-glow); }
     .menu-btn:hover::after { transform: scaleX(1); }
-
     .menu-btn:hover .btn-icon,
     .menu-btn:hover .btn-label,
     .menu-btn:hover .btn-desc { color: var(--black); }
 
     .btn-icon {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       position: relative;
       z-index: 1;
       transition: color .2s;
     }
-
     .btn-label {
       font-family: var(--font-head);
       font-size: 0.78rem;
@@ -152,7 +232,6 @@
       transition: color .2s;
       line-height: 1;
     }
-
     .btn-desc {
       font-family: var(--font-body);
       font-size: 0.72rem;
@@ -163,6 +242,29 @@
       transition: color .2s;
       line-height: 1.3;
     }
+    .btn-stat-preview {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .btn-stat-preview .mini-num {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--accent);
+      transition: color .2s;
+    }
+    .menu-btn:hover .btn-stat-preview .mini-num { color: var(--black); }
+    .btn-stat-preview .mini-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 600;
+      transition: color .2s;
+    }
+    .menu-btn:hover .btn-stat-preview .mini-label { color: var(--black); }
 
     /* ── BACK BUTTON ── */
     .back-link {
@@ -183,74 +285,41 @@
       text-decoration: none;
       transition: all 0.2s ease;
       animation: fadeDown .4s ease .05s both;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       align-self: flex-start;
     }
     .back-link:hover {
       border-color: var(--accent);
       color: var(--accent);
       transform: translateX(-3px);
-      box-shadow: 0 4px 14px rgba(34,197,94,.15);
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    /* ── HUB TABS ── */
-    .hub-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 30px;
-      animation: fadeDown .45s ease .15s forwards;
-      opacity: 0;
-      width: 100%;
-      max-width: 500px;
-    }
-    .hub-tab {
-      flex: 1;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-head);
-      font-size: 0.8rem;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-    }
-    .hub-tab:hover {
-      background: var(--surface2);
-      color: var(--text);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .hub-tab.active {
-      background: var(--accent);
-      color: var(--black);
-      border-color: var(--accent);
-      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+    /* ── SKELETON LOADER ── */
+    .skel {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 8px;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 540px) {
       .hub-tabs { flex-direction: column; gap: 8px; }
+      .stats-menu-grid { grid-template-columns: 1fr 1fr; }
+      .live-stats-row { gap: 8px; }
+    }
+    @media (max-width: 360px) {
       .stats-menu-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
 <div class="hex-mid"></div>
 
 <header>
   <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+    <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuaverd">
+    <h1>LigaPro <span>Ecuaverd</span></h1>
   </div>
   <div id="nav" class="nav-buttons"></div>
 </header>
@@ -259,53 +328,88 @@
 
   <a class="back-link" href="/haxball.html">← Volver</a>
 
-  <p class="hero-eyebrow">LigaPro Ecuabet</p>
+  <p class="hero-eyebrow">LigaPro Ecuaverd</p>
   <h1 class="hero-title">Centro de <span>Datos</span></h1>
-  <p class="hero-sub">Selecciona una sección</p>
+  <p class="hero-sub">Estadísticas en vivo · Todas las competiciones</p>
   <div class="hero-divider"></div>
 
+  <!-- LIVE STAT CHIPS -->
+  <div class="live-stats-row" id="liveChips">
+    <div class="live-chip"><span class="chip-icon">⚽</span><span class="chip-num" id="chipGoles">—</span><span>Goles</span></div>
+    <div class="live-chip"><span class="chip-icon">👟</span><span class="chip-num" id="chipAsist">—</span><span>Asistencias</span></div>
+    <div class="live-chip"><span class="chip-icon">🧤</span><span class="chip-num" id="chipVallas">—</span><span>Vallas</span></div>
+    <div class="live-chip"><span class="chip-icon">🟨</span><span class="chip-num" id="chipAmar">—</span><span>Amarillas</span></div>
+    <div class="live-chip"><span class="chip-icon">🟥</span><span class="chip-num" id="chipRojas">—</span><span>Rojas</span></div>
+  </div>
+
+  <!-- TABS -->
   <div class="hub-tabs">
-    <button class="hub-tab active" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
+    <button class="hub-tab active" id="tabEstadisticas" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
     <button class="hub-tab" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
     <button class="hub-tab" onclick="window.location.href='/verequipos.html'">Equipos</button>
   </div>
 
+  <!-- STAT MENU GRID -->
   <div class="stats-menu-grid">
 
-    <button class="menu-btn" onclick="goGoleadores()">
+    <button class="menu-btn" id="btnGoleadores" onclick="window.location.href='/goleadores.html'">
       <span class="btn-icon">⚽</span>
       <span class="btn-label">Goleadores</span>
-      <span class="btn-desc">Máximos anotadores</span>
+      <span class="btn-desc">Liga · Copa · Supercopa</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewGoles">—</span>
+        <span class="mini-label">goles totales</span>
+      </div>
     </button>
 
-    <button class="menu-btn" onclick="goAsistencias()">
+    <button class="menu-btn" id="btnAsistencias" onclick="window.location.href='/asistencias.html'">
       <span class="btn-icon">👟</span>
       <span class="btn-label">Asistencias</span>
-      <span class="btn-desc">Pases de gol</span>
+      <span class="btn-desc">Liga · Copa · Supercopa</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewAsist">—</span>
+        <span class="mini-label">asistencias</span>
+      </div>
     </button>
 
-    <button class="menu-btn" onclick="goVallas()">
+    <button class="menu-btn" id="btnVallas" onclick="window.location.href='/vallas.html'">
       <span class="btn-icon">🧤</span>
       <span class="btn-label">Vallas</span>
       <span class="btn-desc">Arcos invictos</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewVallas">—</span>
+        <span class="mini-label">vallas invictas</span>
+      </div>
     </button>
 
-    <button class="menu-btn" onclick="goMVP()">
+    <button class="menu-btn" id="btnMVP" onclick="window.location.href='/mvp.html'">
       <span class="btn-icon">👑</span>
       <span class="btn-label">MVP</span>
       <span class="btn-desc">Mejores del partido</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewMvp">—</span>
+        <span class="mini-label">premios MVP</span>
+      </div>
     </button>
 
-    <button class="menu-btn" onclick="goAmarillas()">
+    <button class="menu-btn" id="btnAmarillas" onclick="window.location.href='/amarillas.html'">
       <span class="btn-icon">🟨</span>
       <span class="btn-label">Amarillas</span>
-      <span class="btn-desc">Tarjetas amarillas</span>
+      <span class="btn-desc">Liga · Copa · Supercopa</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewAmar">—</span>
+        <span class="mini-label">tarjetas</span>
+      </div>
     </button>
 
-    <button class="menu-btn" onclick="goRojas()">
+    <button class="menu-btn" id="btnRojas" onclick="window.location.href='/rojas.html'">
       <span class="btn-icon">🟥</span>
       <span class="btn-label">Rojas</span>
-      <span class="btn-desc">Tarjetas rojas</span>
+      <span class="btn-desc">Liga · Copa · Supercopa</span>
+      <div class="btn-stat-preview">
+        <span class="mini-num" id="previewRojas">—</span>
+        <span class="mini-label">expulsiones</span>
+      </div>
     </button>
 
   </div>
@@ -313,15 +417,59 @@
 </div>
 
 <footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+  <p>© 2026 LigaPro Ecuaverd — Hecho por Judameal</p>
 </footer>
+
+<script src="js/app.js"></script>
 <script>
-  function goGoleadores() { window.location.href = "/goleadores.html"; }
-  function goAsistencias() { window.location.href = "/asistencias.html"; }
-  function goAmarillas()   { window.location.href = "/amarillas.html"; }
-  function goRojas()       { window.location.href = "/rojas.html"; }
-  function goVallas()      { window.location.href = "/vallas.html"; }
-  function goMVP()         { window.location.href = "/mvp.html"; }
+(async function cargarStats() {
+  try {
+    const [jugadores, partidos, copaPartidos, supercopaPartidos] = await Promise.all([
+      fetch("/api/index?ruta=jugadores").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=copa_partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=supercopa_partidos").then(r => r.json()).catch(() => [])
+    ]);
+
+    const totalGoles   = jugadores.reduce((s, j) => s + (j.goles   || 0), 0);
+    const totalAsist   = jugadores.reduce((s, j) => s + (j.asistencias || 0), 0);
+    const totalAmar    = jugadores.reduce((s, j) => s + (j.amarillas   || 0), 0);
+    const totalRojas   = jugadores.reduce((s, j) => s + (j.rojas       || 0), 0);
+    const totalMvp     = jugadores.reduce((s, j) => s + (j.mvp         || 0), 0);
+
+    // Contar vallas invictas de todos los partidos
+    function contarVallas(pts) {
+      let v = 0;
+      for (const p of pts) {
+        if (!p.jugado || !p.resultado) continue;
+        const gl = Number(p.resultado.local    || 0);
+        const gv = Number(p.resultado.visitante|| 0);
+        if (gv === 0) v++;
+        if (gl === 0) v++;
+      }
+      return v;
+    }
+    const totalVallas = contarVallas([...partidos, ...copaPartidos, ...supercopaPartidos]);
+
+    // Chips
+    document.getElementById("chipGoles").textContent  = totalGoles;
+    document.getElementById("chipAsist").textContent  = totalAsist;
+    document.getElementById("chipVallas").textContent = totalVallas;
+    document.getElementById("chipAmar").textContent   = totalAmar;
+    document.getElementById("chipRojas").textContent  = totalRojas;
+
+    // Previews en botones
+    document.getElementById("previewGoles").textContent  = totalGoles;
+    document.getElementById("previewAsist").textContent  = totalAsist;
+    document.getElementById("previewVallas").textContent = totalVallas;
+    document.getElementById("previewMvp").textContent    = totalMvp;
+    document.getElementById("previewAmar").textContent   = totalAmar;
+    document.getElementById("previewRojas").textContent  = totalRojas;
+
+  } catch(e) {
+    console.error("Error cargando stats del centro de datos:", e);
+  }
+})();
 </script>
 
 </body>

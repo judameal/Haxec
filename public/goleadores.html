@@ -3,33 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goleadores — Haxec Esport</title>
+  <title>Goleadores — LigaPro Ecuaverd</title>
+  <meta name="description" content="Máximos goleadores de la LigaPro Ecuaverd por competición: Liga, Copa Ecuador y Supercopa.">
   <link rel="stylesheet" href="css/styles.css">
   <style>
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-10px);} to { opacity:1; transform:translateY(0);} }
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0);} }
 
-    /* ── ANIMACIONES ── */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ── PAGE HEADER ── */
+    .ap-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .admin-title { animation: fadeDown .4s ease both; }
+    .back-btn    { animation: fadeDown .4s ease .08s both; }
+    .page-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 24px;
+      font-weight: 500;
+      animation: fadeDown .4s ease .14s both;
     }
 
-    .admin-title  { animation: fadeDown .4s ease both; }
-    .back-btn     { animation: fadeDown .4s ease .08s both; }
-    .page-sub     { animation: fadeDown .4s ease .14s both; }
+    /* ── COMPETITION TABS ── */
+    .comp-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeDown .4s ease .18s forwards;
+    }
+    .comp-tab {
+      padding: 9px 20px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .comp-tab:hover { border-color: var(--accent); color: var(--text); }
+    .comp-tab.active {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
 
-    /* ── SECCIONES ── */
+    /* ── SECTIONS ── */
     .section-block {
       margin-bottom: 28px;
       opacity: 0;
       animation: fadeUp .45s ease both;
     }
-    .section-block:nth-child(1) { animation-delay: .2s; }
-    .section-block:nth-child(2) { animation-delay: .32s; }
-    .section-block:nth-child(3) { animation-delay: .44s; }
+    .section-block:nth-child(1) { animation-delay:.22s; }
+    .section-block:nth-child(2) { animation-delay:.34s; }
+    .section-block:nth-child(3) { animation-delay:.46s; }
+    .section-block:nth-child(4) { animation-delay:.58s; }
 
     .section-header {
       display: flex;
@@ -45,15 +83,12 @@
       text-transform: uppercase;
       color: var(--black);
       margin: 0;
+      white-space: nowrap;
     }
     .section-header h2 span { color: var(--accent); }
-    .section-line {
-      flex: 1;
-      height: 1.5px;
-      background: var(--border);
-    }
+    .section-line { flex:1; height:1.5px; background:var(--border); }
 
-    /* ── TABLA ── */
+    /* ── TABLA STATS ── */
     .stats-card {
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -61,13 +96,11 @@
       overflow: hidden;
       box-shadow: 0 2px 12px rgba(0,0,0,.05);
     }
-
     .stats-table {
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
     }
-
     .stats-table thead tr {
       background: var(--black);
       border-bottom: 2px solid var(--accent);
@@ -83,14 +116,12 @@
       text-align: left;
     }
     .stats-table th.center { text-align: center; }
-
     .stats-table tbody tr {
       border-bottom: 1px solid var(--border);
       transition: background .14s;
     }
     .stats-table tbody tr:last-child { border-bottom: none; }
     .stats-table tbody tr:hover { background: var(--surface2); }
-
     .stats-table td {
       padding: 11px 16px;
       font-size: 0.9rem;
@@ -117,118 +148,51 @@
     .rank-num.silver { color: #94a3b8; }
     .rank-num.bronze { color: #b45309; }
 
-    /* ── JUGADOR ── */
-    .player-cell {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    /* ── PLAYER CELL ── */
+    .player-cell { display:flex; align-items:center; gap:10px; }
     .player-avatar-sm {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1.5px solid var(--border);
-      flex-shrink: 0;
+      width:34px; height:34px; border-radius:50%;
+      object-fit:cover; border:1.5px solid var(--border); flex-shrink:0;
     }
     .avatar-initials-sm {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: var(--black);
-      border: 1.5px solid var(--accent);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-head);
-      font-size: 0.68rem;
-      font-weight: 900;
-      color: var(--accent);
-      flex-shrink: 0;
-      letter-spacing: .5px;
+      width:34px; height:34px; border-radius:50%;
+      background:var(--black); border:1.5px solid var(--accent);
+      display:inline-flex; align-items:center; justify-content:center;
+      font-family:var(--font-head); font-size:0.68rem; font-weight:900;
+      color:var(--accent); flex-shrink:0; letter-spacing:.5px;
     }
-    .player-info-name {
-      font-family: var(--font-head);
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--black);
-      letter-spacing: .3px;
-    }
-    .player-info-team {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-weight: 500;
-      margin-top: 1px;
-    }
+    .player-info-name { font-family:var(--font-head); font-weight:800; font-size:0.9rem; color:var(--black); letter-spacing:.3px; }
+    .player-info-team { font-size:0.75rem; color:var(--muted); font-weight:500; margin-top:1px; }
 
-    /* ── EQUIPO CELL ── */
-    .team-cell {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .team-logo-sm {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
-    .team-name-txt {
-      font-family: var(--font-head);
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--black);
-      letter-spacing: .3px;
-    }
+    /* ── TEAM CELL ── */
+    .team-cell { display:flex; align-items:center; gap:10px; }
+    .team-logo-sm { width:28px; height:28px; object-fit:contain; border-radius:4px; flex-shrink:0; }
+    .team-name-txt { font-family:var(--font-head); font-weight:800; font-size:0.9rem; color:var(--black); letter-spacing:.3px; }
 
     /* ── BADGE ── */
     .col-stat { width: 80px; }
     .stat-badge {
-      display: inline-block;
-      background: var(--black);
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      font-family: var(--font-head);
-      font-weight: 900;
-      border-radius: 7px;
-      padding: 3px 12px;
-      font-size: 0.9rem;
-      min-width: 32px;
-      text-align: center;
-      letter-spacing: 1px;
+      display:inline-block; background:var(--black); color:var(--accent);
+      border:1px solid var(--accent); font-family:var(--font-head); font-weight:900;
+      border-radius:7px; padding:3px 12px; font-size:0.9rem; min-width:32px;
+      text-align:center; letter-spacing:1px;
     }
-    .stat-badge.gc {
-      background: transparent;
-      color: var(--red);
-      border-color: var(--red);
-    }
+    .stat-badge.gc { background:transparent; color:#d32f2f; border-color:#d32f2f; }
 
     /* ── EMPTY ── */
     .empty-msg {
-      text-align: center;
-      color: var(--muted);
-      padding: 32px 0;
-      font-size: 0.88rem;
-      font-family: var(--font-head);
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      text-align:center; color:var(--muted); padding:32px 0;
+      font-size:0.88rem; font-family:var(--font-head);
+      letter-spacing:1px; text-transform:uppercase;
     }
+    .loading-state { display:flex; justify-content:center; align-items:center; padding:32px; }
 
-    /* ── PAGE SUB ── */
-    .page-sub {
-      color: var(--muted);
-      font-size: 0.88rem;
-      margin-bottom: 28px;
-      font-weight: 500;
-    }
+    /* ── SECTION PANEL ── */
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
 
-    /* ── HEADER ROW ── */
-    .ap-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
+    @media (max-width: 500px) {
+      .comp-tabs { flex-direction: column; }
     }
   </style>
 </head>
@@ -237,203 +201,277 @@
 
 <header>
   <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+    <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuaverd">
+    <h1>LigaPro <span>Ecuaverd</span></h1>
   </div>
 </header>
 
 <div class="admin-container">
 
   <div class="ap-title-row">
-    <h1 class="admin-title">Goleadores</h1>
+    <h1 class="admin-title">⚽ Goleadores</h1>
     <button class="back-btn" onclick="history.back()">⬅ Volver</button>
   </div>
-  <p class="page-sub">Estadísticas de gol de la temporada</p>
+  <p class="page-sub">Máximos anotadores · Liga · Copa · Supercopa</p>
 
-  <!-- SECCIÓN 1: Jugadores -->
-  <div class="section-block">
-    <div class="section-header">
-      <h2>⚽ Máximos <span>goleadores</span></h2>
-      <div class="section-line"></div>
+  <!-- TABS DE COMPETICIÓN -->
+  <div class="comp-tabs">
+    <button class="comp-tab active" id="tab-liga"      onclick="switchTab('liga')">📋 Liga</button>
+    <button class="comp-tab"        id="tab-copa"      onclick="switchTab('copa')">🏆 Copa</button>
+    <button class="comp-tab"        id="tab-supercopa" onclick="switchTab('supercopa')">⭐ Supercopa</button>
+    <button class="comp-tab"        id="tab-equipos"   onclick="switchTab('equipos')">🛡️ Por Equipo</button>
+  </div>
+
+  <!-- PANEL LIGA -->
+  <div class="section-panel active" id="panel-liga">
+    <div class="section-block">
+      <div class="section-header"><h2>⚽ Goleadores de <span>Liga</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-lig-jugadores"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
-    <div class="stats-card">
-      <div id="tablaJugadores"><div class="loading-state"><div class="spinner"></div></div></div>
+    <div class="section-block">
+      <div class="section-header"><h2>🔥 Últimos goleadores <span>Liga</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-lig-ultimos"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
   </div>
 
-  <!-- SECCIÓN 2: Equipos GF -->
-  <div class="section-block">
-    <div class="section-header">
-      <h2>🏹 Equipos más <span>goles</span></h2>
-      <div class="section-line"></div>
-    </div>
-    <div class="stats-card">
-      <div id="tablaGF"><div class="loading-state"><div class="spinner"></div></div></div>
+  <!-- PANEL COPA -->
+  <div class="section-panel" id="panel-copa">
+    <div class="section-block">
+      <div class="section-header"><h2>🏆 Goleadores de <span>Copa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-cop-jugadores"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
   </div>
 
-  <!-- SECCIÓN 3: Equipos GC -->
-  <div class="section-block">
-    <div class="section-header">
-      <h2>🥅 Goles <span>recibidos</span> por equipo</h2>
-      <div class="section-line"></div>
+  <!-- PANEL SUPERCOPA -->
+  <div class="section-panel" id="panel-supercopa">
+    <div class="section-block">
+      <div class="section-header"><h2>⭐ Goleadores de <span>Supercopa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-sup-jugadores"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
-    <div class="stats-card">
-      <div id="tablaGC"><div class="loading-state"><div class="spinner"></div></div></div>
+  </div>
+
+  <!-- PANEL EQUIPOS -->
+  <div class="section-panel" id="panel-equipos">
+    <div class="section-block">
+      <div class="section-header"><h2>🏹 Equipos más goles <span>Liga</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gf-liga"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-header"><h2>🥅 Más goles recibidos <span>Liga</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gc-liga"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-header"><h2>🏹 Equipos más goles <span>Copa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gf-copa"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-header"><h2>🥅 Más goles recibidos <span>Copa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gc-copa"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-header"><h2>🏹 Equipos más goles <span>Supercopa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gf-sup"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-header"><h2>🥅 Más goles recibidos <span>Supercopa</span></h2><div class="section-line"></div></div>
+      <div class="stats-card"><div id="tab-eq-gc-sup"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
   </div>
 
 </div>
 
-<footer><p>© 2026 Haxec Esport — Hecho por Judameal</p></footer>
+<footer><p>© 2026 LigaPro Ecuaverd — Hecho por Judameal</p></footer>
 
 <script>
+/* ── HELPERS ── */
 function iniciales(nombre) {
-  return String(nombre).split(" ").map(function(p) { return p[0]; }).join("").toUpperCase().slice(0, 2);
+  return String(nombre).split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
 }
-
 function rankClass(i) {
-  if (i === 0) return "gold";
-  if (i === 1) return "silver";
-  if (i === 2) return "bronze";
-  return "";
+  return i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
 }
-
 function rankIcon(i) {
-  if (i === 0) return "🥇";
-  if (i === 1) return "🥈";
-  if (i === 2) return "🥉";
-  return String(i + 1);
+  return i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : String(i + 1);
 }
 
-async function cargar() {
-  try {
-    var results = await Promise.all([
-      fetch("/api/jugadores").then(function(r) { return r.json(); }),
-      fetch("/api/teams").then(function(r) { return r.json(); }),
-      fetch("/api/tabla").then(function(r) {
-        return r.text().then(function(t) { try { return JSON.parse(t); } catch(_) { return []; } });
-      }).catch(function() { return []; })
-    ]);
-
-    var jugadores = results[0];
-    var teams     = results[1];
-    var tabla     = results[2];
-
-    cargarJugadores(jugadores);
-    cargarEquiposGF(tabla, teams);
-    cargarEquiposGC(tabla, teams);
-
-  } catch(err) {
-    console.error(err);
-  }
+/* ── TAB SWITCH ── */
+function switchTab(tab) {
+  document.querySelectorAll(".comp-tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  document.getElementById("panel-" + tab).classList.add("active");
 }
 
-/* ── JUGADORES ── */
-function cargarJugadores(jugadores) {
-  var cont = document.getElementById("tablaJugadores");
-  var lista = jugadores
-    .filter(function(j) { return (j.goles || 0) > 0; })
-    .sort(function(a, b) { return (b.goles || 0) - (a.goles || 0); });
+/* ── RENDER JUGADORES ── */
+function renderJugadores(contId, jugadores, campo) {
+  const cont = document.getElementById(contId);
+  const lista = jugadores
+    .filter(j => (j[campo] || 0) > 0)
+    .sort((a, b) => (b[campo] || 0) - (a[campo] || 0));
 
   if (!lista.length) {
     cont.innerHTML = '<p class="empty-msg">Sin goles registrados aún</p>';
     return;
   }
 
-  var filas = "";
-  for (var i = 0; i < lista.length; i++) {
-    var j = lista[i];
-    var avatarHTML = j.foto
-      ? "<img class='player-avatar-sm' src='" + j.foto + "' alt='" + j.nombre + "'>"
-      : "<div class='avatar-initials-sm'>" + iniciales(j.nombre) + "</div>";
-
-    filas += "<tr>";
-    filas += "<td class='col-rank center'><span class='rank-num " + rankClass(i) + "'>" + rankIcon(i) + "</span></td>";
-    filas += "<td><div class='player-cell'>" + avatarHTML + "<div><div class='player-info-name'>" + j.nombre + "</div><div class='player-info-team'>" + (j.equipo || "Sin equipo") + "</div></div></div></td>";
-    filas += "<td class='col-stat center'><span class='stat-badge'>" + (j.goles || 0) + "</span></td>";
-    filas += "</tr>";
+  let filas = "";
+  for (let i = 0; i < lista.length; i++) {
+    const j = lista[i];
+    const avatarHTML = j.foto
+      ? `<img class="player-avatar-sm" src="${j.foto}" alt="${j.nombre}">`
+      : `<div class="avatar-initials-sm">${iniciales(j.nombre)}</div>`;
+    filas += `<tr>
+      <td class="col-rank center"><span class="rank-num ${rankClass(i)}">${rankIcon(i)}</span></td>
+      <td><div class="player-cell">${avatarHTML}<div>
+        <div class="player-info-name">${j.nombre}</div>
+        <div class="player-info-team">${j.equipo || "Sin equipo"}</div>
+      </div></div></td>
+      <td class="col-stat center"><span class="stat-badge">${j[campo] || 0}</span></td>
+    </tr>`;
   }
 
-  cont.innerHTML =
-    "<table class='stats-table'>" +
-    "<colgroup><col class='col-rank'><col><col class='col-stat'></colgroup>" +
-    "<thead><tr><th class='center'>#</th><th>Jugador</th><th class='center'>Goles</th></tr></thead>" +
-    "<tbody>" + filas + "</tbody></table>";
+  cont.innerHTML = `<table class="stats-table">
+    <colgroup><col class="col-rank"><col><col class="col-stat"></colgroup>
+    <thead><tr><th class="center">#</th><th>Jugador</th><th class="center">Goles</th></tr></thead>
+    <tbody>${filas}</tbody>
+  </table>`;
 }
 
-/* ── EQUIPOS GF ── */
-function cargarEquiposGF(tabla, teams) {
-  var cont = document.getElementById("tablaGF");
+/* ── RENDER ÚLTIMOS GOLEADORES (de partidos jugados) ── */
+function renderUltimosGoleadores(contId, partidos) {
+  const cont = document.getElementById(contId);
+  const eventos = [];
 
-  var lista = tabla
-    .filter(function(t) { return (t.GF || 0) > 0; })
-    .sort(function(a, b) { return (b.GF || 0) - (a.GF || 0); });
+  const played = partidos.filter(p => p.jugado && p.eventos && p.eventos.length > 0);
+  // Tomar los 3 partidos más recientes con goles
+  const recientes = played.slice(-3).reverse();
+
+  for (const p of recientes) {
+    for (const ev of p.eventos) {
+      if (ev.tipo === "gol") {
+        eventos.push({
+          jugador: ev.jugador,
+          local: p.local ? p.local.nombre : "—",
+          visitante: p.visitante ? p.visitante.nombre : "—",
+          resultado: p.resultado
+        });
+      }
+    }
+  }
+
+  if (!eventos.length) {
+    cont.innerHTML = '<p class="empty-msg">Sin goles recientes</p>';
+    return;
+  }
+
+  let filas = "";
+  for (let i = 0; i < Math.min(eventos.length, 10); i++) {
+    const ev = eventos[i];
+    filas += `<tr>
+      <td class="col-rank center"><span class="rank-num">${i + 1}</span></td>
+      <td><div class="player-cell">
+        <div class="avatar-initials-sm">${iniciales(ev.jugador)}</div>
+        <div><div class="player-info-name">${ev.jugador}</div>
+             <div class="player-info-team">${ev.local} vs ${ev.visitante}</div>
+        </div>
+      </div></td>
+      <td class="col-stat center"><span class="stat-badge">⚽</span></td>
+    </tr>`;
+  }
+
+  cont.innerHTML = `<table class="stats-table">
+    <colgroup><col class="col-rank"><col><col class="col-stat"></colgroup>
+    <thead><tr><th class="center">#</th><th>Jugador · Partido</th><th class="center">Gol</th></tr></thead>
+    <tbody>${filas}</tbody>
+  </table>`;
+}
+
+/* ── RENDER EQUIPOS POR GF/GC desde partidos ── */
+function renderEquiposMarcados(contId, partidos, teams, campo) {
+  const cont = document.getElementById(contId);
+  const mapa = {};
+
+  for (const p of partidos) {
+    if (!p.jugado || !p.resultado || !p.local || !p.visitante) continue;
+    const gl = Number(p.resultado.local    || 0);
+    const gv = Number(p.resultado.visitante || 0);
+    const nl = p.local.nombre;
+    const nv = p.visitante.nombre;
+    if (!mapa[nl]) mapa[nl] = { gf: 0, gc: 0 };
+    if (!mapa[nv]) mapa[nv] = { gf: 0, gc: 0 };
+    mapa[nl].gf += gl; mapa[nl].gc += gv;
+    mapa[nv].gf += gv; mapa[nv].gc += gl;
+  }
+
+  const lista = Object.entries(mapa)
+    .map(([nombre, d]) => ({ nombre, ...d }))
+    .filter(e => e[campo] > 0)
+    .sort((a, b) => b[campo] - a[campo]);
 
   if (!lista.length) {
     cont.innerHTML = '<p class="empty-msg">Sin datos de equipos aún</p>';
     return;
   }
 
-  var filas = "";
-  for (var i = 0; i < lista.length; i++) {
-    var t = lista[i];
-    var team = teams.find(function(eq) { return eq.nombre.toLowerCase() === (t.equipo || "").toLowerCase(); });
-    var logoHTML = team && team.logo
-      ? "<img class='team-logo-sm' src='" + team.logo + "' alt='" + t.equipo + "'>"
+  const isGC = campo === "gc";
+  const header = isGC ? "GC" : "GF";
+  let filas = "";
+  for (let i = 0; i < lista.length; i++) {
+    const t = lista[i];
+    const team = teams.find(eq => eq.nombre.toLowerCase() === t.nombre.toLowerCase());
+    const logoHTML = team && team.logo
+      ? `<img class="team-logo-sm" src="${team.logo}" alt="${t.nombre}">`
       : "";
-
-    filas += "<tr>";
-    filas += "<td class='col-rank center'><span class='rank-num " + rankClass(i) + "'>" + rankIcon(i) + "</span></td>";
-    filas += "<td><div class='team-cell'>" + logoHTML + "<div class='team-name-txt'>" + (t.equipo || "—") + "</div></div></td>";
-    filas += "<td class='col-stat center'><span class='stat-badge'>" + (t.GF || 0) + "</span></td>";
-    filas += "</tr>";
+    filas += `<tr>
+      <td class="col-rank center"><span class="rank-num ${rankClass(i)}">${rankIcon(i)}</span></td>
+      <td><div class="team-cell">${logoHTML}<div class="team-name-txt">${t.nombre}</div></div></td>
+      <td class="col-stat center"><span class="stat-badge ${isGC ? 'gc' : ''}">${t[campo]}</span></td>
+    </tr>`;
   }
 
-  cont.innerHTML =
-    "<table class='stats-table'>" +
-    "<colgroup><col class='col-rank'><col><col class='col-stat'></colgroup>" +
-    "<thead><tr><th class='center'>#</th><th>Equipo</th><th class='center'>GF</th></tr></thead>" +
-    "<tbody>" + filas + "</tbody></table>";
+  cont.innerHTML = `<table class="stats-table">
+    <colgroup><col class="col-rank"><col><col class="col-stat"></colgroup>
+    <thead><tr><th class="center">#</th><th>Equipo</th><th class="center">${header}</th></tr></thead>
+    <tbody>${filas}</tbody>
+  </table>`;
 }
 
-/* ── EQUIPOS GC ── */
-function cargarEquiposGC(tabla, teams) {
-  var cont = document.getElementById("tablaGC");
+/* ── CARGA PRINCIPAL ── */
+async function cargar() {
+  try {
+    const [jugadores, teams, partidos, copaPartidos, supercopaPartidos] = await Promise.all([
+      fetch("/api/index?ruta=jugadores").then(r => r.json()),
+      fetch("/api/index?ruta=teams").then(r => r.json()),
+      fetch("/api/index?ruta=partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=copa_partidos").then(r => r.json()).catch(() => []),
+      fetch("/api/index?ruta=supercopa_partidos").then(r => r.json()).catch(() => [])
+    ]);
 
-  var lista = tabla
-    .filter(function(t) { return t.PJ > 0; })
-    .sort(function(a, b) { return (b.GC || 0) - (a.GC || 0); });
+    // Liga
+    renderJugadores("tab-lig-jugadores", jugadores, "goles_liga");
+    renderUltimosGoleadores("tab-lig-ultimos", partidos);
 
-  if (!lista.length) {
-    cont.innerHTML = '<p class="empty-msg">Sin datos de equipos aún</p>';
-    return;
+    // Copa
+    renderJugadores("tab-cop-jugadores", jugadores, "goles_copa");
+
+    // Supercopa
+    renderJugadores("tab-sup-jugadores", jugadores, "goles_supercopa");
+
+    // Equipos Liga
+    renderEquiposMarcados("tab-eq-gf-liga", partidos, teams, "gf");
+    renderEquiposMarcados("tab-eq-gc-liga", partidos, teams, "gc");
+
+    // Equipos Copa
+    renderEquiposMarcados("tab-eq-gf-copa", copaPartidos, teams, "gf");
+    renderEquiposMarcados("tab-eq-gc-copa", copaPartidos, teams, "gc");
+
+    // Equipos Supercopa
+    renderEquiposMarcados("tab-eq-gf-sup", supercopaPartidos, teams, "gf");
+    renderEquiposMarcados("tab-eq-gc-sup", supercopaPartidos, teams, "gc");
+
+  } catch(err) {
+    console.error("Error en goleadores:", err);
   }
-
-  var filas = "";
-  for (var i = 0; i < lista.length; i++) {
-    var t = lista[i];
-    var team = teams.find(function(eq) { return eq.nombre.toLowerCase() === (t.equipo || "").toLowerCase(); });
-    var logoHTML = team && team.logo
-      ? "<img class='team-logo-sm' src='" + team.logo + "' alt='" + t.equipo + "'>"
-      : "";
-
-    filas += "<tr>";
-    filas += "<td class='col-rank center'><span class='rank-num " + rankClass(i) + "'>" + rankIcon(i) + "</span></td>";
-    filas += "<td><div class='team-cell'>" + logoHTML + "<div class='team-name-txt'>" + (t.equipo || "—") + "</div></div></td>";
-    filas += "<td class='col-stat center'><span class='stat-badge gc'>" + (t.GC || 0) + "</span></td>";
-    filas += "</tr>";
-  }
-
-  cont.innerHTML =
-    "<table class='stats-table'>" +
-    "<colgroup><col class='col-rank'><col><col class='col-stat'></colgroup>" +
-    "<thead><tr><th class='center'>#</th><th>Equipo</th><th class='center'>GC</th></tr></thead>" +
-    "<tbody>" + filas + "</tbody></table>";
 }
 
 cargar();
