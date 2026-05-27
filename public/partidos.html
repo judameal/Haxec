@@ -1004,6 +1004,11 @@
       _allPartidos.forEach(p => { window._allPartidosMap[p._id] = p; });
     }
 
+    function getLogo(nombre) {
+      const eq = _equipos.find(e => e.nombre === nombre);
+      return (eq && eq.logo) ? eq.logo : "";
+    }
+
     function abrirInformePorId(pid) {
       const info = _allPartidos.find(p => String(p._id) === String(pid));
       if (!info) return;
@@ -1013,6 +1018,13 @@
       const card = document.getElementById("informeCard");
       const jornadaLabel = `Jornada ${(info.jornada || 0) + 1} · Partido ${(info.partido || 0) + 1}`;
 
+      // Siempre buscar el logo actualizado del equipo
+      const logoL = local.logo || getLogo(local.nombre);
+      const logoV = visitante.logo || getLogo(visitante.nombre);
+
+      const imgL = logoL ? `<img src="${logoL}" alt="${local.nombre || ''}" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🛡️</div>`;
+      const imgV = logoV ? `<img src="${logoV}" alt="${visitante.nombre || ''}" onerror="this.style.display='none'">` : `<div style="width:52px;height:52px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🛡️</div>`;
+
       if (!jugado) {
         const fechaStr = info.fecha ? info.fecha + (info.hora ? " · " + info.hora : "") : "Sin horario";
         card.innerHTML = `
@@ -1020,9 +1032,9 @@
           <button class="informe-close" onclick="cerrarInforme()">✕</button>
           <div class="informe-jornada">${jornadaLabel}</div>
           <div class="informe-teams">
-            <div class="informe-team"><img src="${local.logo || ""}" alt=""><div class="informe-team-name">${local.nombre || "—"}</div></div>
+            <div class="informe-team">${imgL}<div class="informe-team-name">${local.nombre || "—"}</div></div>
             <div class="informe-score-box"><div style="font-size:1.3rem;color:var(--accent);font-weight:900;font-family:var(--font-head);letter-spacing:2px;">VS</div><div class="informe-fecha-label">${fechaStr}</div></div>
-            <div class="informe-team"><img src="${visitante.logo || ""}" alt=""><div class="informe-team-name">${visitante.nombre || "—"}</div></div>
+            <div class="informe-team">${imgV}<div class="informe-team-name">${visitante.nombre || "—"}</div></div>
           </div>
         </div>
         <div class="informe-body"><p class="informe-empty">Este partido aún no ha sido jugado.<br>El informe estará disponible después del encuentro.</p></div>`;
@@ -1046,13 +1058,13 @@
         <button class="informe-close" onclick="cerrarInforme()">✕</button>
         <div class="informe-jornada">${jornadaLabel}</div>
         <div class="informe-teams">
-          <div class="informe-team"><img src="${local.logo || ""}" alt=""><div class="informe-team-name">${localNombre}</div></div>
+          <div class="informe-team">${imgL}<div class="informe-team-name">${localNombre}</div></div>
           <div class="informe-score-box">
             <div class="informe-score"><span>${gl}</span><span class="informe-score-sep">–</span><span>${gv}</span></div>
             <div class="informe-resultado-label">${resultadoLabel}</div>
             ${info.fecha ? `<div class="informe-fecha-label">${info.fecha}${info.hora ? " · " + info.hora : ""}</div>` : ""}
           </div>
-          <div class="informe-team"><img src="${visitante.logo || ""}" alt=""><div class="informe-team-name">${visitanteNombre}</div></div>
+          <div class="informe-team">${imgV}<div class="informe-team-name">${visitanteNombre}</div></div>
         </div>
       </div>
       <div class="informe-body">`;

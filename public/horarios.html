@@ -41,7 +41,8 @@
   </footer>
 
   <script>
-    const API = "/api";
+    const API_PARTIDOS = "/api/index?ruta=partidos";
+    const API_TEAMS = "/api/index?ruta=teams";
 
     /* 🔙 VOLVER */
     function goBack() {
@@ -58,7 +59,7 @@
         return;
       }
 
-      const resTeams = await fetch(API + "/teams");
+      const resTeams = await fetch(API_TEAMS);
       const equipos = await resTeams.json();
 
       // 🔥 generar calendario igual que en partidos.html
@@ -109,7 +110,7 @@
   `;
 
       // 🔥 cargar si ya tenía horario
-      const resPartidos = await fetch(API + "/partidos");
+      const resPartidos = await fetch(API_PARTIDOS);
       const data = await resPartidos.json();
 
       const existente = data.find(p =>
@@ -136,7 +137,7 @@
       const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
       try {
-        await fetch(API + "/partidos", {
+        await fetch(API_PARTIDOS, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
