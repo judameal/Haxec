@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LigaPro Ecuabet — Jugadores</title>
   <link rel="stylesheet" href="css/styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap"
+    rel="stylesheet">
   <style>
     /* ══ BASE — same as estadisticas.html ══ */
     @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ── BACK BUTTON ── */
@@ -39,11 +56,12 @@
       margin-bottom: 24px;
       align-self: flex-start;
     }
+
     .back-link:hover {
       border-color: var(--accent);
       color: var(--accent);
       transform: translateX(-3px);
-      box-shadow: 0 4px 14px rgba(34,197,94,.15);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, .15);
     }
 
     /* ── HUB TABS ── */
@@ -57,6 +75,7 @@
       width: 100%;
       max-width: 500px;
     }
+
     .hub-tab {
       flex: 1;
       padding: 12px 20px;
@@ -73,17 +92,19 @@
       transition: all 0.2s ease;
       text-align: center;
     }
+
     .hub-tab:hover {
       background: var(--surface2);
       color: var(--text);
       border-color: var(--accent);
       transform: translateY(-2px);
     }
+
     .hub-tab.active {
       background: var(--accent);
       color: var(--black);
       border-color: var(--accent);
-      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
     }
 
     /* ══ PAGE LAYOUT ══ */
@@ -108,6 +129,7 @@
       opacity: 0;
       animation: fadeDown .45s ease .1s forwards;
     }
+
     .hero-title {
       font-family: var(--font-head);
       font-size: clamp(2rem, 6vw, 3.4rem);
@@ -121,7 +143,11 @@
       opacity: 0;
       animation: fadeDown .45s ease .18s forwards;
     }
-    .hero-title span { color: var(--accent); }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
     .hero-sub {
       font-family: var(--font-body);
       font-size: 0.88rem;
@@ -132,8 +158,10 @@
       opacity: 0;
       animation: fadeDown .45s ease .24s forwards;
     }
+
     .hero-divider {
-      width: 44px; height: 3px;
+      width: 44px;
+      height: 3px;
       background: var(--accent);
       border-radius: 2px;
       margin: 0 auto 36px;
@@ -142,71 +170,187 @@
     }
 
     /* ══ SEARCH ══ */
-    .controls { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; width:100%; max-width:700px; }
-    .search-wrap { position:relative; flex:1; min-width:200px; }
-    .search-wrap input {
-      width:100%; box-sizing:border-box;
-      background:var(--surface); border:1.5px solid var(--border);
-      border-radius:10px; padding:10px 14px 10px 38px;
-      font-family:var(--font-body); font-size:.9rem; color:var(--text);
-      transition:border-color .2s;
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+      max-width: 700px;
     }
-    .search-wrap input:focus { outline:none; border-color:var(--accent); }
-    .search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:.95rem; pointer-events:none; }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px 10px 38px;
+      font-family: var(--font-body);
+      font-size: .9rem;
+      color: var(--text);
+      transition: border-color .2s;
+    }
+
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .95rem;
+      pointer-events: none;
+    }
 
     /* ══ PLAYER GRID ══ */
-    .players-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; width:100%; max-width:900px; }
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+
     .player-row {
-      background:var(--surface); border:1.5px solid var(--border);
-      border-radius:12px; padding:14px 16px;
-      display:flex; align-items:center; gap:12px;
-      cursor:pointer; transition:all .3s ease;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all .3s ease;
       animation: fadeUp .35s ease both;
     }
+
     .player-row:hover {
-      background:var(--surface2);
-      transform:scale(1.01);
+      background: var(--surface2);
+      transform: scale(1.01);
       box-shadow: inset 4px 0 0 var(--accent);
     }
-    .player-row .rank { font-family:var(--font-head); font-size:.7rem; font-weight:900; color:var(--muted); min-width:22px; }
-    .player-row .p-avatar { width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--border); flex-shrink:0; }
-    .player-row .p-info { flex:1; min-width:0; }
-    .player-row .p-name { font-family:var(--font-head); font-size:.9rem; font-weight:800; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .player-row .p-team { font-size:.72rem; color:var(--muted); font-weight:600; }
-    .grl-pill { font-family:var(--font-head); font-size:.78rem; font-weight:900; padding:3px 10px; border-radius:20px; flex-shrink:0; }
-    .grl-bronze { background:linear-gradient(135deg,#cd7f32,#a0522d); color:#fff; }
-    .grl-silver { background:linear-gradient(135deg,#b8bec6,#8a9099); color:#1a1a1a; }
-    .grl-gold   { background:linear-gradient(135deg,#d4a017,#ffe066,#c8960c); color:#1a0900; }
-    .grl-elite  { background:linear-gradient(135deg,#6b21a8,#9333ea,#4c1d95); color:#ffd700; border:1px solid #ffd700; }
-    .grl-none   { background:var(--surface); color:var(--muted); }
-    .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; }
-    .empty-state .icon { font-size:3rem; margin-bottom:10px; }
+
+    .player-row .rank {
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 900;
+      color: var(--muted);
+      min-width: 22px;
+    }
+
+    .player-row .p-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .player-row .p-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-row .p-name {
+      font-family: var(--font-head);
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-row .p-team {
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .grl-pill {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .grl-bronze {
+      background: linear-gradient(135deg, #cd7f32, #a0522d);
+      color: #fff;
+    }
+
+    .grl-silver {
+      background: linear-gradient(135deg, #b8bec6, #8a9099);
+      color: #1a1a1a;
+    }
+
+    .grl-gold {
+      background: linear-gradient(135deg, #d4a017, #ffe066, #c8960c);
+      color: #1a0900;
+    }
+
+    .grl-elite {
+      background: linear-gradient(135deg, #6b21a8, #9333ea, #4c1d95);
+      color: #ffd700;
+      border: 1px solid #ffd700;
+    }
+
+    .grl-none {
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      grid-column: 1/-1;
+    }
+
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
 
     /* ══ METALLIC VARS ══ */
     :root {
-      --bronze-dark:   #1a0a00;
-      --bronze-mid:    #6b3a1f;
-      --bronze-light:  #cd7f32;
-      --bronze-shine:  #e8a86a;
-      --bronze-glow:   rgba(205,127,50,0.45);
+      --bronze-dark: #1a0a00;
+      --bronze-mid: #6b3a1f;
+      --bronze-light: #cd7f32;
+      --bronze-shine: #e8a86a;
+      --bronze-glow: rgba(205, 127, 50, 0.45);
 
-      --silver-dark:   #0d0e10;
-      --silver-mid:    #3a3d42;
-      --silver-light:  #b8bec6;
-      --silver-shine:  #e8ecf0;
-      --silver-glow:   rgba(184,190,198,0.4);
+      --silver-dark: #0d0e10;
+      --silver-mid: #3a3d42;
+      --silver-light: #b8bec6;
+      --silver-shine: #e8ecf0;
+      --silver-glow: rgba(184, 190, 198, 0.4);
 
-      --gold-dark:     #120900;
-      --gold-mid:      #4a2e00;
-      --gold-light:    #d4a017;
-      --gold-shine:    #ffe066;
-      --gold-glow:     rgba(255,215,0,0.5);
+      --gold-dark: #120900;
+      --gold-mid: #4a2e00;
+      --gold-light: #d4a017;
+      --gold-shine: #ffe066;
+      --gold-glow: rgba(255, 215, 0, 0.5);
 
-      --elite-dark:    #0a0015;
-      --elite-mid:     #1e0040;
-      --elite-accent:  #7c3aed;
-      --elite-shine:   #ffd700;
-      --elite-glow:    rgba(124,58,237,0.6);
+      --elite-dark: #0a0015;
+      --elite-mid: #1e0040;
+      --elite-accent: #7c3aed;
+      --elite-shine: #ffd700;
+      --elite-glow: rgba(124, 58, 237, 0.6);
     }
 
     /* ══════════════════════════════════════════
@@ -215,234 +359,479 @@
 
     /* Bronze: simple rise */
     @keyframes bronzeIn {
-      from { opacity:0; transform:translateY(20px); }
-      to   { opacity:1; transform:none; }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
 
     /* Silver: slide from left with metallic flash */
     @keyframes silverIn {
-      0%   { opacity:0; transform:translateX(-60px); }
-      70%  { opacity:1; transform:translateX(4px); }
-      100% { opacity:1; transform:none; }
+      0% {
+        opacity: 0;
+        transform: translateX(-60px);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translateX(4px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: none;
+      }
     }
 
     /* Gold: spin-in with depth */
     @keyframes goldSpin {
-      0%   { opacity:0; transform:perspective(900px) rotateY(-1080deg) scale(0.3); }
-      60%  { opacity:1; }
-      100% { opacity:1; transform:perspective(900px) rotateY(0deg) scale(1); }
+      0% {
+        opacity: 0;
+        transform: perspective(900px) rotateY(-1080deg) scale(0.3);
+      }
+
+      60% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 1;
+        transform: perspective(900px) rotateY(0deg) scale(1);
+      }
     }
 
     /* ── ELITE ENVELOPE ANIMATION ── */
     /* Stage 1: envelope arrives from below */
     @keyframes envelopeArrive {
-      0%   { opacity:0; transform:translateY(120px) scale(0.7); }
-      100% { opacity:1; transform:translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(120px) scale(0.7);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
+
     /* Stage 2: envelope flap opens */
     @keyframes flapOpen {
-      0%   { transform: rotateX(0deg); }
-      100% { transform: rotateX(-180deg); }
+      0% {
+        transform: rotateX(0deg);
+      }
+
+      100% {
+        transform: rotateX(-180deg);
+      }
     }
+
     /* Stage 3: card rises out of envelope */
     @keyframes cardRise {
-      0%   { opacity:0; transform:translateY(60px) scale(0.8); }
-      60%  { opacity:1; transform:translateY(-10px) scale(1.04); }
-      100% { opacity:1; transform:translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.8);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.04);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     /* Shimmer sweep for gold and elite */
     @keyframes shimmer {
-      0%   { transform:translateX(-100%) skewX(-15deg); }
-      100% { transform:translateX(300%) skewX(-15deg); }
+      0% {
+        transform: translateX(-100%) skewX(-15deg);
+      }
+
+      100% {
+        transform: translateX(300%) skewX(-15deg);
+      }
     }
 
     /* Float bob */
     @keyframes floatUp {
-      0%,100% { transform:translateY(0); }
-      50%      { transform:translateY(-6px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
     }
 
     /* Elite star glow on label */
     @keyframes starGlow {
-      0%,100% { text-shadow:0 0 8px rgba(255,215,0,0.7); }
-      50%      { text-shadow:0 0 22px rgba(255,215,0,1), 0 0 40px rgba(124,58,237,0.6); }
+
+      0%,
+      100% {
+        text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+      }
+
+      50% {
+        text-shadow: 0 0 22px rgba(255, 215, 0, 1), 0 0 40px rgba(124, 58, 237, 0.6);
+      }
     }
 
     /* Pulse ring on elite card */
     @keyframes pulseRing {
-      0%   { box-shadow:0 0 0 0 rgba(124,58,237,0.6); }
-      70%  { box-shadow:0 0 0 16px rgba(124,58,237,0); }
-      100% { box-shadow:0 0 0 0 rgba(124,58,237,0); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.6);
+      }
+
+      70% {
+        box-shadow: 0 0 0 16px rgba(124, 58, 237, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+      }
     }
 
     /* ══════════════════════════════════════════
        PAGE HEADER
     ══════════════════════════════════════════ */
     .page-hero {
-      text-align:center; padding:40px 20px 30px;
-      background:var(--black); border-radius:16px;
-      margin-bottom:30px; border-bottom:3px solid var(--accent);
+      text-align: center;
+      padding: 40px 20px 30px;
+      background: var(--black);
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border-bottom: 3px solid var(--accent);
     }
-    .page-hero h1 { font-family:var(--font-head); font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; color:#fff; letter-spacing:4px; text-transform:uppercase; margin:0 0 4px; }
-    .page-hero h1 span { color:var(--accent); }
-    .page-hero p { color:rgba(255,255,255,.4); font-size:.75rem; letter-spacing:3px; text-transform:uppercase; font-family:var(--font-head); }
+
+    .page-hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin: 0 0 4px;
+    }
+
+    .page-hero h1 span {
+      color: var(--accent);
+    }
+
+    .page-hero p {
+      color: rgba(255, 255, 255, .4);
+      font-size: .75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-family: var(--font-head);
+    }
 
     /* ══════════════════════════════════════════
        SEARCH + FILTERS
     ══════════════════════════════════════════ */
-    .controls { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
-    .search-wrap { position:relative; flex:1; min-width:200px; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
     .search-wrap input {
-      width:100%; box-sizing:border-box;
-      background:var(--surface); border:1.5px solid var(--border);
-      border-radius:10px; padding:10px 14px 10px 38px;
-      font-family:var(--font-body); font-size:.9rem; color:var(--text);
-      transition:border-color .2s;
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px 10px 38px;
+      font-family: var(--font-body);
+      font-size: .9rem;
+      color: var(--text);
+      transition: border-color .2s;
     }
-    .search-wrap input:focus { outline:none; border-color:var(--accent); }
-    .search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:.95rem; pointer-events:none; }
-    .tier-filters { display:flex; gap:6px; flex-wrap:wrap; }
+
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .95rem;
+      pointer-events: none;
+    }
+
+    .tier-filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
     .btn-tier {
-      padding:8px 14px; border-radius:8px; border:1.5px solid var(--border);
-      background:var(--surface2); color:var(--muted);
-      font-family:var(--font-head); font-size:.7rem; font-weight:800;
-      letter-spacing:1.5px; text-transform:uppercase; cursor:pointer;
-      transition:all .2s;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
     }
-    .btn-tier.active, .btn-tier:hover { background:var(--black); color:var(--accent); border-color:var(--accent); }
+
+    .btn-tier.active,
+    .btn-tier:hover {
+      background: var(--black);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
 
     /* ══════════════════════════════════════════
        PLAYER GRID
     ══════════════════════════════════════════ */
-    .players-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
     .player-row {
-      background:var(--surface); border:1.5px solid var(--border);
-      border-radius:12px; padding:14px 16px;
-      display:flex; align-items:center; gap:12px;
-      cursor:pointer; transition:all .3s ease;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all .3s ease;
       animation: bronzeIn .35s ease both;
     }
+
     .player-row:hover {
-      background:var(--surface2);
-      transform:scale(1.01);
+      background: var(--surface2);
+      transform: scale(1.01);
       box-shadow: inset 4px 0 0 var(--accent);
     }
-    .player-row .rank { font-family:var(--font-head); font-size:.7rem; font-weight:900; color:var(--muted); min-width:22px; }
-    .player-row .p-avatar { width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--border); flex-shrink:0; }
-    .player-row .p-info { flex:1; min-width:0; }
-    .player-row .p-name { font-family:var(--font-head); font-size:.9rem; font-weight:800; color:#000; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .player-row .p-team { font-size:.72rem; color:#111; font-weight:600; }
-    .grl-pill {
-      font-family:var(--font-head); font-size:.78rem; font-weight:900;
-      padding:3px 10px; border-radius:20px; flex-shrink:0;
+
+    .player-row .rank {
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 900;
+      color: var(--muted);
+      min-width: 22px;
     }
+
+    .player-row .p-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .player-row .p-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-row .p-name {
+      font-family: var(--font-head);
+      font-size: .9rem;
+      font-weight: 800;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-row .p-team {
+      font-size: .72rem;
+      color: #111;
+      font-weight: 600;
+    }
+
+    .grl-pill {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
     /* Pill colors — real metallic tones */
-    .grl-bronze { background:linear-gradient(135deg,#cd7f32,#a0522d); color:#fff; }
-    .grl-silver { background:linear-gradient(135deg,#b8bec6,#8a9099); color:#1a1a1a; }
-    .grl-gold   { background:linear-gradient(135deg,#d4a017,#ffe066,#c8960c); color:#1a0900; }
-    .grl-elite  { background:linear-gradient(135deg,#6b21a8,#9333ea,#4c1d95); color:#ffd700; border:1px solid #ffd700; }
-    .grl-none   { background:var(--surface3); color:var(--muted); }
+    .grl-bronze {
+      background: linear-gradient(135deg, #cd7f32, #a0522d);
+      color: #fff;
+    }
+
+    .grl-silver {
+      background: linear-gradient(135deg, #b8bec6, #8a9099);
+      color: #1a1a1a;
+    }
+
+    .grl-gold {
+      background: linear-gradient(135deg, #d4a017, #ffe066, #c8960c);
+      color: #1a0900;
+    }
+
+    .grl-elite {
+      background: linear-gradient(135deg, #6b21a8, #9333ea, #4c1d95);
+      color: #ffd700;
+      border: 1px solid #ffd700;
+    }
+
+    .grl-none {
+      background: var(--surface3);
+      color: var(--muted);
+    }
 
     /* ══════════════════════════════════════════
        OVERLAY
     ══════════════════════════════════════════ */
     #cardOverlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,.85); backdrop-filter:blur(10px);
-      z-index:9999; align-items:center; justify-content:center; padding:16px;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
-    #cardOverlay.open { display:flex; }
+
+    #cardOverlay.open {
+      display: flex;
+    }
 
     /* ══════════════════════════════════════════
        ELITE ENVELOPE WRAPPER
     ══════════════════════════════════════════ */
     #envelopeWrapper {
-      display:none;
-      position:relative;
-      width:320px;
-      perspective:1000px;
+      display: none;
+      position: relative;
+      width: 320px;
+      perspective: 1000px;
     }
-    #envelopeWrapper.active { display:block; }
+
+    #envelopeWrapper.active {
+      display: block;
+    }
 
     /* The envelope body */
     .envelope-body {
-      width:320px;
-      height:200px;
-      background:linear-gradient(160deg,#1e0040,#3b006e,#1e0040);
-      border:2px solid #7c3aed;
-      border-radius:8px;
-      position:relative;
-      overflow:hidden;
-      box-shadow:0 0 40px rgba(124,58,237,0.5);
+      width: 320px;
+      height: 200px;
+      background: linear-gradient(160deg, #1e0040, #3b006e, #1e0040);
+      border: 2px solid #7c3aed;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
     }
+
     .envelope-body::before {
-      content:'';
-      position:absolute;
-      bottom:0; left:0; right:0;
-      height:0;
-      border-left:160px solid transparent;
-      border-right:160px solid transparent;
-      border-bottom:100px solid #2d0060;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-bottom: 100px solid #2d0060;
     }
+
     .envelope-body::after {
-      content:'';
-      position:absolute;
-      top:0; left:0; right:0;
-      height:0;
-      border-left:160px solid transparent;
-      border-right:160px solid transparent;
-      border-top:110px solid #280050;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-top: 110px solid #280050;
     }
+
     /* Stars decoration on envelope */
     .envelope-stars {
-      position:absolute;
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      font-size:1.8rem;
-      z-index:2;
-      animation:starGlow 2s infinite;
-      color:#ffd700;
-      letter-spacing:6px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8rem;
+      z-index: 2;
+      animation: starGlow 2s infinite;
+      color: #ffd700;
+      letter-spacing: 6px;
     }
 
     /* The flap (top triangle that opens) */
     .envelope-flap {
-      position:absolute;
-      top:0; left:0; right:0;
-      height:0;
-      border-left:160px solid transparent;
-      border-right:160px solid transparent;
-      border-top:120px solid #3b0070;
-      transform-origin:top center;
-      transform-style:preserve-3d;
-      z-index:10;
-      border-top-color:#3b0070;
-      filter:drop-shadow(0 4px 12px rgba(124,58,237,0.6));
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-top: 120px solid #3b0070;
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      z-index: 10;
+      border-top-color: #3b0070;
+      filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.6));
     }
 
     /* Hidden card peeking from envelope before reveal */
     .envelope-card-peek {
-      position:absolute;
-      bottom:10px;
-      left:50%;
-      transform:translateX(-50%);
-      width:140px;
-      height:60px;
-      background:linear-gradient(160deg,#0a0015,#1e0040);
-      border:1px solid #7c3aed;
-      border-radius:6px;
-      z-index:1;
-      opacity:0.4;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 60px;
+      background: linear-gradient(160deg, #0a0015, #1e0040);
+      border: 1px solid #7c3aed;
+      border-radius: 6px;
+      z-index: 1;
+      opacity: 0.4;
     }
 
     /* ══════════════════════════════════════════
        FIFA CARD BASE
     ══════════════════════════════════════════ */
     .fifa-card {
-      position:relative; width:300px; border-radius:20px;
-      padding:28px 22px 24px; text-align:center;
-      overflow:hidden;
+      position: relative;
+      width: 300px;
+      border-radius: 20px;
+      padding: 28px 22px 24px;
+      text-align: center;
+      overflow: hidden;
     }
 
     /* ── BRONZE CARD — warm dark brown, real copper tones ── */
@@ -450,20 +839,24 @@
       background:
         radial-gradient(ellipse at 30% 20%, #3d1f0a 0%, transparent 60%),
         linear-gradient(160deg, #0f0600, #2a1005, #1a0b03);
-      border:2px solid var(--bronze-light);
+      border: 2px solid var(--bronze-light);
       box-shadow:
-        0 0 0 1px rgba(205,127,50,0.15) inset,
-        0 20px 60px rgba(0,0,0,.7),
+        0 0 0 1px rgba(205, 127, 50, 0.15) inset,
+        0 20px 60px rgba(0, 0, 0, .7),
         0 0 30px var(--bronze-glow);
       animation: bronzeIn .4s ease-out both;
     }
+
     .card-bronze::before {
-      content:'';
-      position:absolute; top:0; left:-60%;
-      width:40%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(232,168,106,0.12),transparent);
-      animation:shimmer 4s infinite 1s;
-      pointer-events:none;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(232, 168, 106, 0.12), transparent);
+      animation: shimmer 4s infinite 1s;
+      pointer-events: none;
     }
 
     /* ── SILVER CARD — cool dark, real silver/steel tones ── */
@@ -471,309 +864,597 @@
       background:
         radial-gradient(ellipse at 70% 25%, #2a2d32 0%, transparent 55%),
         linear-gradient(160deg, #07080a, #12151a, #07080a);
-      border:2px solid var(--silver-light);
+      border: 2px solid var(--silver-light);
       box-shadow:
-        0 0 0 1px rgba(184,190,198,0.1) inset,
-        0 20px 60px rgba(0,0,0,.7),
+        0 0 0 1px rgba(184, 190, 198, 0.1) inset,
+        0 20px 60px rgba(0, 0, 0, .7),
         0 0 30px var(--silver-glow);
-      animation: silverIn .5s cubic-bezier(.2,1.1,.6,1) both;
+      animation: silverIn .5s cubic-bezier(.2, 1.1, .6, 1) both;
     }
+
     .card-silver::before {
-      content:'';
-      position:absolute; top:0; left:-60%;
-      width:35%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(232,236,240,0.18),transparent);
-      animation:shimmer 3s infinite 0.8s;
-      pointer-events:none;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 35%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(232, 236, 240, 0.18), transparent);
+      animation: shimmer 3s infinite 0.8s;
+      pointer-events: none;
     }
 
     /* ── GOLD CARD — pure yellow gold ── */
     .card-gold {
       background: linear-gradient(160deg, #ffe066, #ffb300, #ffe066);
-      border:2px solid var(--gold-dark);
+      border: 2px solid var(--gold-dark);
       box-shadow:
-        0 20px 70px rgba(0,0,0,.75),
-        0 0 50px rgba(255,215,0,0.6);
-      animation: goldSpin 1.2s cubic-bezier(0.1,0.8,0.2,1) both;
+        0 20px 70px rgba(0, 0, 0, .75),
+        0 0 50px rgba(255, 215, 0, 0.6);
+      animation: goldSpin 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) both;
     }
-    .card-gold .card-tier-label, .card-gold .card-grl, .card-gold .stat-val, .card-gold .card-pos, .card-gold .card-name { color:var(--gold-dark) !important; text-shadow:none !important; }
-    .card-gold .card-team { color:rgba(18,9,0,.7) !important; }
-    .card-gold .card-avatar-wrap { border-color:transparent !important; box-shadow:0 6px 20px rgba(0,0,0,0.2) !important; }
-    .card-gold .card-divider { background:linear-gradient(90deg,transparent,var(--gold-dark),transparent) !important; opacity:.3; }
-    .card-gold .stat-item { border-color:rgba(18,9,0,0.2) !important; background:rgba(0,0,0,0.05); }
-    .card-gold .card-close { background:rgba(0,0,0,.1) !important; border-color:rgba(0,0,0,.2) !important; color:rgba(0,0,0,.7) !important; }
-    .card-gold .card-close:hover { background:rgba(0,0,0,.25) !important; color:#000 !important; }
-    .card-gold .btn-set-grl { background:rgba(0,0,0,.08) !important; border-color:rgba(0,0,0,.2) !important; color:var(--gold-dark) !important; }
+
+    .card-gold .card-tier-label,
+    .card-gold .card-grl,
+    .card-gold .stat-val,
+    .card-gold .card-pos,
+    .card-gold .card-name {
+      color: var(--gold-dark) !important;
+      text-shadow: none !important;
+    }
+
+    .card-gold .card-team {
+      color: rgba(18, 9, 0, .7) !important;
+    }
+
+    .card-gold .card-avatar-wrap {
+      border-color: transparent !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .card-gold .card-divider {
+      background: linear-gradient(90deg, transparent, var(--gold-dark), transparent) !important;
+      opacity: .3;
+    }
+
+    .card-gold .stat-item {
+      border-color: rgba(18, 9, 0, 0.2) !important;
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .card-gold .card-close {
+      background: rgba(0, 0, 0, .1) !important;
+      border-color: rgba(0, 0, 0, .2) !important;
+      color: rgba(0, 0, 0, .7) !important;
+    }
+
+    .card-gold .card-close:hover {
+      background: rgba(0, 0, 0, .25) !important;
+      color: #000 !important;
+    }
+
+    .card-gold .btn-set-grl {
+      background: rgba(0, 0, 0, .08) !important;
+      border-color: rgba(0, 0, 0, .2) !important;
+      color: var(--gold-dark) !important;
+    }
+
     .card-gold::before {
-      content:'';
-      position:absolute; top:0; left:-60%;
-      width:30%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,224,102,0.25),transparent);
-      animation:shimmer 2.5s infinite 1.4s;
-      pointer-events:none;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 224, 102, 0.25), transparent);
+      animation: shimmer 2.5s infinite 1.4s;
+      pointer-events: none;
     }
 
     /* ── ELITE CARD — deep purple, gold trim, shimmer ── */
     .card-elite {
       background:
-        radial-gradient(ellipse at 50% 0%,   #3a006e 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 0%, #3a006e 0%, transparent 60%),
         radial-gradient(ellipse at 20% 100%, #1e0040 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 60%,  #200045 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 60%, #200045 0%, transparent 40%),
         linear-gradient(160deg, #06000f, #0f0020, #06000f);
-      border:2px solid var(--elite-shine);
+      border: 2px solid var(--elite-shine);
       box-shadow:
-        0 0 0 1px rgba(255,215,0,0.15) inset,
-        0 0 0 4px rgba(124,58,237,0.2) inset,
-        0 25px 80px rgba(0,0,0,.85),
+        0 0 0 1px rgba(255, 215, 0, 0.15) inset,
+        0 0 0 4px rgba(124, 58, 237, 0.2) inset,
+        0 25px 80px rgba(0, 0, 0, .85),
         0 0 60px var(--elite-glow);
-      animation: cardRise 1s cubic-bezier(.34,1.2,.64,1) both;
+      animation: cardRise 1s cubic-bezier(.34, 1.2, .64, 1) both;
       animation-delay: 0.9s;
       opacity: 0;
     }
+
     .card-elite::before {
-      content:'';
-      position:absolute; top:0; left:-60%;
-      width:25%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,215,0,0.2),transparent);
-      animation:shimmer 2s infinite 2s;
-      pointer-events:none;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 25%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      animation: shimmer 2s infinite 2s;
+      pointer-events: none;
     }
+
     .card-elite::after {
-      content:'';
-      position:absolute; inset:0;
-      border-radius:20px;
-      background:linear-gradient(135deg,rgba(124,58,237,0.05) 0%,transparent 50%,rgba(255,215,0,0.05) 100%);
-      pointer-events:none;
-      animation:pulseRing 3s ease-out infinite 2s;
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, transparent 50%, rgba(255, 215, 0, 0.05) 100%);
+      pointer-events: none;
+      animation: pulseRing 3s ease-out infinite 2s;
     }
 
     /* ══════════════════════════════════════════
        CARD INTERNALS
     ══════════════════════════════════════════ */
     .card-tier-label {
-      font-family:var(--font-head); font-size:.6rem; font-weight:900;
-      letter-spacing:4px; text-transform:uppercase; margin-bottom:12px;
-      position:relative; z-index:1;
+      font-family: var(--font-head);
+      font-size: .6rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
     }
-    .card-bronze .card-tier-label { color:var(--bronze-shine); }
-    .card-silver .card-tier-label { color:var(--silver-shine); }
-    .card-gold   .card-tier-label { color:var(--gold-shine); }
-    .card-elite  .card-tier-label { color:var(--elite-shine); animation:starGlow 2s infinite; }
+
+    .card-bronze .card-tier-label {
+      color: var(--bronze-shine);
+    }
+
+    .card-silver .card-tier-label {
+      color: var(--silver-shine);
+    }
+
+    .card-gold .card-tier-label {
+      color: var(--gold-shine);
+    }
+
+    .card-elite .card-tier-label {
+      color: var(--elite-shine);
+      animation: starGlow 2s infinite;
+    }
 
     .card-grl {
-      font-family:var(--font-head); font-size:3.4rem; font-weight:900;
-      line-height:1; margin-bottom:4px; position:relative; z-index:1;
+      font-family: var(--font-head);
+      font-size: 3.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
     }
-    .card-bronze .card-grl { color:var(--bronze-shine); text-shadow:0 0 20px var(--bronze-glow); }
-    .card-silver .card-grl { color:var(--silver-shine); text-shadow:0 0 20px var(--silver-glow); }
-    .card-gold   .card-grl { color:var(--gold-shine);   text-shadow:0 0 30px var(--gold-glow); }
-    .card-elite  .card-grl { color:var(--elite-shine);  text-shadow:0 0 35px rgba(255,215,0,0.8), 0 0 60px rgba(124,58,237,0.5); }
 
-    .card-pos { font-family:var(--font-head); font-size:.65rem; font-weight:800; letter-spacing:3px; opacity:.55; color:#fff; margin-bottom:14px; position:relative; z-index:1; }
+    .card-bronze .card-grl {
+      color: var(--bronze-shine);
+      text-shadow: 0 0 20px var(--bronze-glow);
+    }
+
+    .card-silver .card-grl {
+      color: var(--silver-shine);
+      text-shadow: 0 0 20px var(--silver-glow);
+    }
+
+    .card-gold .card-grl {
+      color: var(--gold-shine);
+      text-shadow: 0 0 30px var(--gold-glow);
+    }
+
+    .card-elite .card-grl {
+      color: var(--elite-shine);
+      text-shadow: 0 0 35px rgba(255, 215, 0, 0.8), 0 0 60px rgba(124, 58, 237, 0.5);
+    }
+
+    .card-pos {
+      font-family: var(--font-head);
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      opacity: .55;
+      color: #fff;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
 
     .card-avatar-wrap {
-      width:110px; height:110px; border-radius:50%; overflow:hidden;
-      margin:0 auto 14px; border:3px solid;
-      animation:floatUp 3s ease-in-out infinite;
-      position:relative; z-index:1;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto 14px;
+      border: 3px solid;
+      animation: floatUp 3s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
     }
-    .card-bronze .card-avatar-wrap { border-color:var(--bronze-light); box-shadow:0 6px 24px var(--bronze-glow); }
-    .card-silver .card-avatar-wrap { border-color:var(--silver-light); box-shadow:0 6px 24px var(--silver-glow); }
-    .card-gold   .card-avatar-wrap { border-color:var(--gold-shine);   box-shadow:0 6px 28px var(--gold-glow); }
-    .card-elite  .card-avatar-wrap { border-color:var(--elite-shine);  box-shadow:0 6px 32px rgba(255,215,0,0.5), 0 0 0 4px rgba(124,58,237,0.3); }
-    .card-avatar-wrap img { width:100%; height:100%; object-fit:cover; }
 
-    .card-name { font-family:var(--font-head); font-size:1.15rem; font-weight:900; color:#fff; letter-spacing:2px; text-transform:uppercase; margin-bottom:3px; position:relative; z-index:1; }
-    .card-team { font-size:.7rem; color:rgba(255,255,255,.5); font-family:var(--font-head); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; font-weight:800; position:relative; z-index:1; }
+    .card-bronze .card-avatar-wrap {
+      border-color: var(--bronze-light);
+      box-shadow: 0 6px 24px var(--bronze-glow);
+    }
 
-    .card-divider { height:1px; margin:0 0 14px; position:relative; z-index:1; }
-    .card-bronze .card-divider { background:linear-gradient(90deg,transparent,var(--bronze-light),transparent); }
-    .card-silver .card-divider { background:linear-gradient(90deg,transparent,var(--silver-light),transparent); }
-    .card-gold   .card-divider { background:linear-gradient(90deg,transparent,var(--gold-shine),transparent); }
-    .card-elite  .card-divider { background:linear-gradient(90deg,transparent,var(--elite-shine),transparent); opacity:.7; }
+    .card-silver .card-avatar-wrap {
+      border-color: var(--silver-light);
+      box-shadow: 0 6px 24px var(--silver-glow);
+    }
+
+    .card-gold .card-avatar-wrap {
+      border-color: var(--gold-shine);
+      box-shadow: 0 6px 28px var(--gold-glow);
+    }
+
+    .card-elite .card-avatar-wrap {
+      border-color: var(--elite-shine);
+      box-shadow: 0 6px 32px rgba(255, 215, 0, 0.5), 0 0 0 4px rgba(124, 58, 237, 0.3);
+    }
+
+    .card-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-name {
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-team {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .5);
+      font-family: var(--font-head);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-divider {
+      height: 1px;
+      margin: 0 0 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-bronze .card-divider {
+      background: linear-gradient(90deg, transparent, var(--bronze-light), transparent);
+    }
+
+    .card-silver .card-divider {
+      background: linear-gradient(90deg, transparent, var(--silver-light), transparent);
+    }
+
+    .card-gold .card-divider {
+      background: linear-gradient(90deg, transparent, var(--gold-shine), transparent);
+    }
+
+    .card-elite .card-divider {
+      background: linear-gradient(90deg, transparent, var(--elite-shine), transparent);
+      opacity: .7;
+    }
 
     /* ── STATS — negro para máximo contraste ── */
-    .card-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; position:relative; z-index:1; }
-    .stat-item {
-      text-align:center;
-      background:rgba(255,255,255,0.06);
-      border-radius:8px;
-      padding:6px 4px;
+    .card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      position: relative;
+      z-index: 1;
     }
-    .card-bronze .stat-item { border:1px solid rgba(205,127,50,0.25); }
-    .card-silver .stat-item { border:1px solid rgba(184,190,198,0.2); }
-    .card-gold   .stat-item { border:1px solid rgba(212,160,23,0.3); }
-    .card-elite  .stat-item { border:1px solid rgba(255,215,0,0.25); background:rgba(124,58,237,0.08); }
+
+    .stat-item {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 6px 4px;
+    }
+
+    .card-bronze .stat-item {
+      border: 1px solid rgba(205, 127, 50, 0.25);
+    }
+
+    .card-silver .stat-item {
+      border: 1px solid rgba(184, 190, 198, 0.2);
+    }
+
+    .card-gold .stat-item {
+      border: 1px solid rgba(212, 160, 23, 0.3);
+    }
+
+    .card-elite .stat-item {
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      background: rgba(124, 58, 237, 0.08);
+    }
 
     .stat-val {
-      font-family:var(--font-head); font-size:1.3rem; font-weight:900;
-      line-height:1; color:#ffffff;
+      font-family: var(--font-head);
+      font-size: 1.3rem;
+      font-weight: 900;
+      line-height: 1;
+      color: #ffffff;
     }
-    .card-bronze .stat-val { color:var(--bronze-shine); }
-    .card-silver .stat-val { color:var(--silver-shine); }
-    .card-gold   .stat-val { color:var(--gold-shine); }
-    .card-elite  .stat-val { color:var(--elite-shine); }
+
+    .card-bronze .stat-val {
+      color: var(--bronze-shine);
+    }
+
+    .card-silver .stat-val {
+      color: var(--silver-shine);
+    }
+
+    .card-gold .stat-val {
+      color: var(--gold-shine);
+    }
+
+    .card-elite .stat-val {
+      color: var(--elite-shine);
+    }
 
     .stat-key {
-      font-size:.55rem; font-family:var(--font-head); font-weight:900;
-      letter-spacing:1.5px; text-transform:uppercase;
-      color:#000000;          /* ← NEGRO para contraste */
-      background:rgba(255,255,255,0.75);
-      border-radius:4px;
-      padding:1px 4px;
-      margin-top:3px;
-      display:inline-block;
+      font-size: .55rem;
+      font-family: var(--font-head);
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #000000;
+      /* ← NEGRO para contraste */
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 4px;
+      padding: 1px 4px;
+      margin-top: 3px;
+      display: inline-block;
     }
 
     .card-close {
-      position:absolute; top:12px; right:14px;
-      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25);
-      color:rgba(255,255,255,.7); border-radius:50%; width:28px; height:28px;
-      font-size:.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
-      transition:all .15s; z-index:20;
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: rgba(255, 255, 255, .7);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: .8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      z-index: 20;
     }
-    .card-close:hover { background:rgba(255,255,255,.25); color:#fff; }
+
+    .card-close:hover {
+      background: rgba(255, 255, 255, .25);
+      color: #fff;
+    }
 
     /* Admin GRL btn */
     .btn-set-grl {
-      margin-top:14px; width:100%;
-      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
-      color:rgba(255,255,255,.7); border-radius:8px; padding:8px;
-      font-family:var(--font-head); font-size:.72rem; font-weight:800;
-      letter-spacing:1px; text-transform:uppercase; cursor:pointer;
-      transition:all .2s; position:relative; z-index:1;
+      margin-top: 14px;
+      width: 100%;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .2);
+      color: rgba(255, 255, 255, .7);
+      border-radius: 8px;
+      padding: 8px;
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      z-index: 1;
     }
-    .btn-set-grl:hover { background:var(--accent); color:var(--black); border-color:var(--accent); }
+
+    .btn-set-grl:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
 
     /* Card stars */
-    .card-stars { font-size:.9rem; margin-bottom:6px; letter-spacing:2px; position:relative; z-index:1; }
+    .card-stars {
+      font-size: .9rem;
+      margin-bottom: 6px;
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 1;
+    }
 
     /* Empty */
-    .empty-state { text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; }
-    .empty-state .icon { font-size:3rem; margin-bottom:10px; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      grid-column: 1/-1;
+    }
+
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
 
     /* ══════════════════════════════════════════
        ELITE ENVELOPE SCENE
     ══════════════════════════════════════════ */
     #eliteScene {
-      display:none;
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.92); backdrop-filter:blur(12px);
-      z-index:10000;
-      align-items:center; justify-content:center;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .92);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
     }
-    #eliteScene.active { display:flex; }
+
+    #eliteScene.active {
+      display: flex;
+    }
 
     .scene-wrapper {
-      position:relative;
-      width:320px;
-      height:520px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-end;
+      position: relative;
+      width: 320px;
+      height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
     }
 
     /* Envelope container (animates in) */
     .env-container {
-      position:absolute;
-      bottom:60px;
-      width:300px;
-      animation: envelopeArrive 0.6s cubic-bezier(.34,1.2,.64,1) both;
+      position: absolute;
+      bottom: 60px;
+      width: 300px;
+      animation: envelopeArrive 0.6s cubic-bezier(.34, 1.2, .64, 1) both;
     }
 
     /* Envelope body */
     .env-body {
-      width:300px;
-      height:180px;
-      background:linear-gradient(160deg,#1a0038,#320060,#1a0038);
-      border:2px solid #7c3aed;
-      border-radius:6px 6px 8px 8px;
-      position:relative;
-      overflow:hidden;
-      box-shadow:0 0 50px rgba(124,58,237,0.6), 0 0 100px rgba(124,58,237,0.2);
+      width: 300px;
+      height: 180px;
+      background: linear-gradient(160deg, #1a0038, #320060, #1a0038);
+      border: 2px solid #7c3aed;
+      border-radius: 6px 6px 8px 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(124, 58, 237, 0.6), 0 0 100px rgba(124, 58, 237, 0.2);
     }
 
     /* Left triangle of envelope */
     .env-left {
-      position:absolute; bottom:0; left:0;
-      width:0; height:0;
-      border-bottom:90px solid #250050;
-      border-right:150px solid transparent;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-bottom: 90px solid #250050;
+      border-right: 150px solid transparent;
     }
+
     /* Right triangle */
     .env-right {
-      position:absolute; bottom:0; right:0;
-      width:0; height:0;
-      border-bottom:90px solid #1e0040;
-      border-left:150px solid transparent;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-bottom: 90px solid #1e0040;
+      border-left: 150px solid transparent;
     }
+
     /* V shape at bottom */
     .env-bottom {
-      position:absolute; bottom:0; left:0; right:0;
-      height:0;
-      border-left:150px solid transparent;
-      border-right:150px solid transparent;
-      border-bottom:0px solid transparent;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 0px solid transparent;
     }
 
     /* Gold seal */
     .env-seal {
-      position:absolute;
-      bottom:30px; left:50%; transform:translateX(-50%);
-      width:44px; height:44px;
-      background:radial-gradient(circle,#ffe066,#d4a017);
-      border-radius:50%;
-      border:2px solid #ffd700;
-      box-shadow:0 0 20px rgba(255,215,0,0.6);
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.1rem; z-index:5;
-      color:#1a0900; font-weight:900;
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 44px;
+      background: radial-gradient(circle, #ffe066, #d4a017);
+      border-radius: 50%;
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      z-index: 5;
+      color: #1a0900;
+      font-weight: 900;
     }
 
     /* Top flap — animated */
     .env-flap {
-      position:absolute;
-      top:-2px; left:-2px; right:-2px;
-      height:0;
-      border-left:152px solid transparent;
-      border-right:152px solid transparent;
-      border-top:110px solid #3b0070;
-      transform-origin:center top;
-      transform-style:preserve-3d;
-      z-index:10;
-      filter:drop-shadow(0 6px 16px rgba(124,58,237,0.7));
-      transition:transform 0.6s cubic-bezier(.4,0,.2,1);
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      height: 0;
+      border-left: 152px solid transparent;
+      border-right: 152px solid transparent;
+      border-top: 110px solid #3b0070;
+      transform-origin: center top;
+      transform-style: preserve-3d;
+      z-index: 10;
+      filter: drop-shadow(0 6px 16px rgba(124, 58, 237, 0.7));
+      transition: transform 0.6s cubic-bezier(.4, 0, .2, 1);
     }
+
     .env-flap.opened {
-      transform:rotateX(-175deg);
+      transform: rotateX(-175deg);
     }
+
     /* Shine on flap */
     .env-flap-shine {
-      position:absolute;
-      top:-108px; left:60px;
-      width:180px; height:90px;
-      background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent);
-      clip-path:polygon(50% 0%, 0% 100%, 100% 100%);
-      pointer-events:none;
+      position: absolute;
+      top: -108px;
+      left: 60px;
+      width: 180px;
+      height: 90px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      pointer-events: none;
     }
 
     /* LE badge on flap */
     .env-flap-label {
-      position:absolute;
-      top:-90px; left:50%; transform:translateX(-50%);
-      font-family:var(--font-head); font-size:.6rem; font-weight:900;
-      letter-spacing:4px; color:rgba(255,215,0,0.7);
-      pointer-events:none;
-      z-index:11;
+      position: absolute;
+      top: -90px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-head);
+      font-size: .6rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: rgba(255, 215, 0, 0.7);
+      pointer-events: none;
+      z-index: 11;
     }
 
     /* Stars on envelope */
     .env-stars {
-      position:absolute;
-      top:20px; left:50%; transform:translateX(-50%);
-      font-size:1rem; color:rgba(255,215,0,0.5);
-      letter-spacing:4px; z-index:4;
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1rem;
+      color: rgba(255, 215, 0, 0.5);
+      letter-spacing: 4px;
+      z-index: 4;
     }
 
     /* ── HUB TABS ── */
@@ -787,6 +1468,7 @@
       margin-left: auto;
       margin-right: auto;
     }
+
     .hub-tab {
       flex: 1;
       padding: 12px 20px;
@@ -803,21 +1485,26 @@
       transition: all 0.2s ease;
       text-align: center;
     }
+
     .hub-tab:hover {
       background: var(--surface2);
       color: var(--text);
       border-color: var(--accent);
       transform: translateY(-2px);
     }
+
     .hub-tab.active {
       background: var(--accent);
       color: var(--black);
       border-color: var(--accent);
-      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
     }
 
     @media (max-width: 500px) {
-      .hub-tabs { flex-direction: column; gap: 8px; }
+      .hub-tabs {
+        flex-direction: column;
+        gap: 8px;
+      }
     }
   </style>
 </head>
@@ -825,7 +1512,8 @@
 
 <header>
   <div class="logo">
-    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet">
+    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+      alt="LigaPro Ecuabet">
     <h1>LigaPro <span>Ecuabet</span></h1>
   </div>
   <div id="nav" class="nav-buttons"></div>
@@ -850,137 +1538,138 @@
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input id="searchInput" type="text" placeholder="Buscar jugador o equipo..." oninput="render()">
-      </div>
+    </div>
   </div>
 
   <div class="players-grid" id="grid"></div>
 
 </div>
 
-  <!-- NORMAL CARD OVERLAY (bronce, plata, oro) -->
-  <div id="cardOverlay" onclick="closeCard(event)">
-    <div id="fifaCard" class="fifa-card"></div>
-  </div>
+<!-- NORMAL CARD OVERLAY (bronce, plata, oro) -->
+<div id="cardOverlay" onclick="closeCard(event)">
+  <div id="fifaCard" class="fifa-card"></div>
+</div>
 
-  <!-- ELITE ENVELOPE SCENE -->
-  <div id="eliteScene" onclick="closeEliteScene(event)">
-    <div class="scene-wrapper" id="sceneWrapper">
-      <!-- envelope -->
-      <div class="env-container" id="envContainer">
-        <div class="env-body" id="envBody">
-          <div class="env-stars">★ ★ ★ ★ ★</div>
-          <div class="env-left"></div>
-          <div class="env-right"></div>
-          <div class="env-seal" id="envSeal">★</div>
-          <!-- flap -->
-          <div class="env-flap" id="envFlap">
-            <div class="env-flap-shine"></div>
-            <div class="env-flap-label">ELITE</div>
-          </div>
+<!-- ELITE ENVELOPE SCENE -->
+<div id="eliteScene" onclick="closeEliteScene(event)">
+  <div class="scene-wrapper" id="sceneWrapper">
+    <!-- envelope -->
+    <div class="env-container" id="envContainer">
+      <div class="env-body" id="envBody">
+        <div class="env-stars">★ ★ ★ ★ ★</div>
+        <div class="env-left"></div>
+        <div class="env-right"></div>
+        <div class="env-seal" id="envSeal">★</div>
+        <!-- flap -->
+        <div class="env-flap" id="envFlap">
+          <div class="env-flap-shine"></div>
+          <div class="env-flap-label">ELITE</div>
         </div>
       </div>
-      <!-- Elite FIFA card (hidden initially, shown after envelope) -->
-      <div id="eliteFifaCard" class="fifa-card card-elite" style="display:none; position:absolute; top:0; left:50%; transform:translateX(-50%);"></div>
     </div>
+    <!-- Elite FIFA card (hidden initially, shown after envelope) -->
+    <div id="eliteFifaCard" class="fifa-card card-elite"
+      style="display:none; position:absolute; top:0; left:50%; transform:translateX(-50%);"></div>
   </div>
+</div>
 
-  <script>
-    const API_J = "/api/index?ruta=jugadores";
-    const API_T = "/api/index?ruta=teams";
-    let _jug = [], _teams = [], _tierFilter = "all", _isAdmin = false;
+<script>
+  const API_J = "/api/index?ruta=jugadores";
+  const API_T = "/api/index?ruta=teams";
+  let _jug = [], _teams = [], _tierFilter = "all", _isAdmin = false;
 
-    const TIER = grl => {
-      if (grl == null) return "none";
-      if (grl >= 91) return "elite";
-      if (grl >= 80) return "gold";
-      if (grl >= 70) return "silver";
-      return "bronze";
-    };
-    const TIER_LABEL = {
-      elite:  "⭐ Elite Morado ⭐",
-      gold:   "Carta Oro",
-      silver: "Carta Plata",
-      bronze: "Carta Bronce",
-      none:   "Sin Rating"
-    };
-    const STARS = grl => {
-      if (grl == null) return "";
-      if (grl >= 91) return "⭐⭐⭐⭐⭐";
-      if (grl >= 80) return "⭐⭐⭐⭐";
-      if (grl >= 70) return "⭐⭐⭐";
-      return "⭐⭐";
-    };
+  const TIER = grl => {
+    if (grl == null) return "none";
+    if (grl >= 91) return "elite";
+    if (grl >= 80) return "gold";
+    if (grl >= 70) return "silver";
+    return "bronze";
+  };
+  const TIER_LABEL = {
+    elite: "⭐ Elite Morado ⭐",
+    gold: "Carta Oro",
+    silver: "Carta Plata",
+    bronze: "Carta Bronce",
+    none: "Sin Rating"
+  };
+  const STARS = grl => {
+    if (grl == null) return "";
+    if (grl >= 91) return "⭐⭐⭐⭐⭐";
+    if (grl >= 80) return "⭐⭐⭐⭐";
+    if (grl >= 70) return "⭐⭐⭐";
+    return "⭐⭐";
+  };
 
-    async function init() {
-      const u = JSON.parse(localStorage.getItem("user") || "null");
-      _isAdmin = !!(u && u.role === "admin");
-      const [rj, rt] = await Promise.all([
-        fetch(API_J).then(r => r.json()),
-        fetch(API_T).then(r => r.json())
-      ]);
-      _jug   = Array.isArray(rj) ? rj : [];
-      _teams = Array.isArray(rt) ? rt : [];
-      render();
+  async function init() {
+    const u = JSON.parse(localStorage.getItem("user") || "null");
+    _isAdmin = !!(u && u.role === "admin");
+    const [rj, rt] = await Promise.all([
+      fetch(API_J).then(r => r.json()),
+      fetch(API_T).then(r => r.json())
+    ]);
+    _jug = Array.isArray(rj) ? rj : [];
+    _teams = Array.isArray(rt) ? rt : [];
+    render();
+  }
+
+  function teamLogo(nombre) {
+    return (_teams.find(t => t.nombre === nombre) || {}).logo || "";
+  }
+
+  function setTier(t, btn) {
+    _tierFilter = t;
+    document.querySelectorAll(".btn-tier").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render();
+  }
+
+  function render() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    let list = [..._jug];
+    if (q) list = list.filter(j => j.nombre.toLowerCase().includes(q) || (j.equipo || "").toLowerCase().includes(q));
+    if (_tierFilter !== "all") list = list.filter(j => TIER(j.grl) === _tierFilter);
+
+    list.sort((a, b) => (b.grl ?? -1) - (a.grl ?? -1) || (b.goles || 0) - (a.goles || 0));
+
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="icon">🎴</div><p>No se encontraron jugadores.</p></div>`;
+      return;
     }
 
-    function teamLogo(nombre) {
-      return (_teams.find(t => t.nombre === nombre) || {}).logo || "";
-    }
-
-    function setTier(t, btn) {
-      _tierFilter = t;
-      document.querySelectorAll(".btn-tier").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      render();
-    }
-
-    function render() {
-      const q = document.getElementById("searchInput").value.toLowerCase();
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-
-      let list = [..._jug];
-      if (q) list = list.filter(j => j.nombre.toLowerCase().includes(q) || (j.equipo||"").toLowerCase().includes(q));
-      if (_tierFilter !== "all") list = list.filter(j => TIER(j.grl) === _tierFilter);
-
-      list.sort((a,b) => (b.grl ?? -1) - (a.grl ?? -1) || (b.goles||0) - (a.goles||0));
-
-      if (!list.length) {
-        grid.innerHTML = `<div class="empty-state"><div class="icon">🎴</div><p>No se encontraron jugadores.</p></div>`;
-        return;
-      }
-
-      list.forEach((j, i) => {
-        const tier = TIER(j.grl);
-        const div = document.createElement("div");
-        div.className = "player-row";
-        div.style.animationDelay = (i * 0.04) + "s";
-        const logo = teamLogo(j.equipo);
-        const grlPill = j.grl != null
-          ? `<span class="grl-pill grl-${tier === "none" ? "none" : tier}">${j.grl}</span>`
-          : `<span class="grl-pill grl-none">—</span>`;
-        div.innerHTML = `
-          <span class="rank">${i+1}</span>
+    list.forEach((j, i) => {
+      const tier = TIER(j.grl);
+      const div = document.createElement("div");
+      div.className = "player-row";
+      div.style.animationDelay = (i * 0.04) + "s";
+      const logo = teamLogo(j.equipo);
+      const grlPill = j.grl != null
+        ? `<span class="grl-pill grl-${tier === "none" ? "none" : tier}">${j.grl}</span>`
+        : `<span class="grl-pill grl-none">—</span>`;
+      div.innerHTML = `
+          <span class="rank">${i + 1}</span>
           <img class="p-avatar" src="${j.foto || ''}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(j.nombre)}&background=1a1a1a&color=c9a84c&bold=true'" alt="">
           <div class="p-info">
             <div class="p-name">${j.nombre}</div>
             <div class="p-team">${logo ? `<img src="${logo}" width="14" style="vertical-align:middle;border-radius:2px;margin-right:4px;">` : ""}${j.equipo || "Sin equipo"}</div>
           </div>
           ${grlPill}`;
-        div.onclick = () => openCard(j);
-        grid.appendChild(div);
-      });
-    }
+      div.onclick = () => openCard(j);
+      grid.appendChild(div);
+    });
+  }
 
-    /* ─── BUILD CARD HTML (shared between normal and elite) ─── */
-    function buildCardHTML(j, isAdmin) {
-      const tier = TIER(j.grl);
-      const logo = teamLogo(j.equipo);
-      const grl  = j.grl != null ? j.grl : "—";
-      const adminGrlBtn = isAdmin
-        ? `<button class="btn-set-grl" onclick="promptGRL('${j._id}')">⚙️ Asignar GRL</button>`
-        : "";
-      return `
+  /* ─── BUILD CARD HTML (shared between normal and elite) ─── */
+  function buildCardHTML(j, isAdmin) {
+    const tier = TIER(j.grl);
+    const logo = teamLogo(j.equipo);
+    const grl = j.grl != null ? j.grl : "—";
+    const adminGrlBtn = isAdmin
+      ? `<button class="btn-set-grl" onclick="promptGRL('${j._id}')">⚙️ Asignar GRL</button>`
+      : "";
+    return `
         <button class="card-close" onclick="${tier === 'elite' ? 'closeEliteScene()' : 'closeCard()'}">✕</button>
         <div class="card-tier-label">${TIER_LABEL[tier]}</div>
         <div class="card-grl">${grl}</div>
@@ -992,115 +1681,116 @@
         <div class="card-team">${logo ? `<img src="${logo}" width="16" style="vertical-align:middle;border-radius:3px;margin-right:5px;">` : ""}${j.equipo || "Sin equipo"}</div>
         <div class="card-divider"></div>
         <div class="card-stats">
-          <div class="stat-item"><div class="stat-val">${j.goles||0}</div><div class="stat-key">Goles</div></div>
-          <div class="stat-item"><div class="stat-val">${j.asistencias||0}</div><div class="stat-key">Asist.</div></div>
-          <div class="stat-item"><div class="stat-val">${j.mvp||0}</div><div class="stat-key">MVPs</div></div>
-          <div class="stat-item"><div class="stat-val">${j.amarillas||0}</div><div class="stat-key">🟨</div></div>
-          <div class="stat-item"><div class="stat-val">${j.rojas||0}</div><div class="stat-key">🟥</div></div>
-          <div class="stat-item"><div class="stat-val">${(j.goles||0)+(j.asistencias||0)}</div><div class="stat-key">G+A</div></div>
+          <div class="stat-item"><div class="stat-val">${j.goles || 0}</div><div class="stat-key">Goles</div></div>
+          <div class="stat-item"><div class="stat-val">${j.asistencias || 0}</div><div class="stat-key">Asist.</div></div>
+          <div class="stat-item"><div class="stat-val">${j.mvp || 0}</div><div class="stat-key">MVPs</div></div>
+          <div class="stat-item"><div class="stat-val">${j.amarillas || 0}</div><div class="stat-key">🟨</div></div>
+          <div class="stat-item"><div class="stat-val">${j.rojas || 0}</div><div class="stat-key">🟥</div></div>
+          <div class="stat-item"><div class="stat-val">${(j.goles || 0) + (j.asistencias || 0)}</div><div class="stat-key">G+A</div></div>
         </div>
         ${adminGrlBtn}`;
+  }
+
+  /* ─── OPEN CARD ─── */
+  function openCard(j) {
+    const tier = TIER(j.grl);
+
+    if (tier === "elite") {
+      openEliteCard(j);
+      return;
     }
 
-    /* ─── OPEN CARD ─── */
-    function openCard(j) {
-      const tier = TIER(j.grl);
+    const card = document.getElementById("fifaCard");
+    card.className = "fifa-card card-" + (tier === "none" ? "bronze" : tier);
+    card.innerHTML = buildCardHTML(j, _isAdmin);
+    document.getElementById("cardOverlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
 
-      if (tier === "elite") {
-        openEliteCard(j);
-        return;
-      }
+  /* ─── ELITE ENVELOPE SEQUENCE ─── */
+  function openEliteCard(j) {
+    const scene = document.getElementById("eliteScene");
+    const envFlap = document.getElementById("envFlap");
+    const envSeal = document.getElementById("envSeal");
+    const eliteCard = document.getElementById("eliteFifaCard");
 
-      const card = document.getElementById("fifaCard");
-      card.className = "fifa-card card-" + (tier === "none" ? "bronze" : tier);
-      card.innerHTML = buildCardHTML(j, _isAdmin);
-      document.getElementById("cardOverlay").classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
+    // Reset state
+    envFlap.classList.remove("opened");
+    eliteCard.style.display = "none";
+    eliteCard.style.opacity = "0";
+    eliteCard.style.animation = "none";
+    eliteCard.innerHTML = "";
 
-    /* ─── ELITE ENVELOPE SEQUENCE ─── */
-    function openEliteCard(j) {
-      const scene = document.getElementById("eliteScene");
-      const envFlap = document.getElementById("envFlap");
-      const envSeal = document.getElementById("envSeal");
-      const eliteCard = document.getElementById("eliteFifaCard");
+    // Show scene
+    scene.classList.add("active");
+    document.body.style.overflow = "hidden";
 
-      // Reset state
-      envFlap.classList.remove("opened");
-      eliteCard.style.display = "none";
-      eliteCard.style.opacity = "0";
-      eliteCard.style.animation = "none";
-      eliteCard.innerHTML = "";
+    // Step 1: envelope arrives (0.6s) — already handled by CSS animation
+    // Step 2: after 1s, open the flap
+    setTimeout(() => {
+      envFlap.classList.add("opened");
+      // Seal fades with flap
+      envSeal.style.transition = "opacity 0.4s";
+      envSeal.style.opacity = "0";
+    }, 1000);
 
-      // Show scene
-      scene.classList.add("active");
-      document.body.style.overflow = "hidden";
+    // Step 3: after 1.8s, card rises from envelope
+    setTimeout(() => {
+      eliteCard.innerHTML = buildCardHTML(j, _isAdmin);
+      eliteCard.style.display = "block";
+      eliteCard.style.opacity = "1";
+      eliteCard.style.animation = "cardRise 1s cubic-bezier(.34,1.2,.64,1) both";
+    }, 1800);
+  }
 
-      // Step 1: envelope arrives (0.6s) — already handled by CSS animation
-      // Step 2: after 1s, open the flap
-      setTimeout(() => {
-        envFlap.classList.add("opened");
-        // Seal fades with flap
-        envSeal.style.transition = "opacity 0.4s";
-        envSeal.style.opacity = "0";
-      }, 1000);
+  function closeEliteScene(e) {
+    if (e && e.target !== document.getElementById("eliteScene")) return;
+    const scene = document.getElementById("eliteScene");
+    scene.classList.remove("active");
+    document.body.style.overflow = "";
+    // Reset seal opacity for next time
+    document.getElementById("envSeal").style.opacity = "1";
+  }
 
-      // Step 3: after 1.8s, card rises from envelope
-      setTimeout(() => {
-        eliteCard.innerHTML = buildCardHTML(j, _isAdmin);
-        eliteCard.style.display = "block";
-        eliteCard.style.opacity = "1";
-        eliteCard.style.animation = "cardRise 1s cubic-bezier(.34,1.2,.64,1) both";
-      }, 1800);
-    }
+  /* ─── CLOSE NORMAL CARD ─── */
+  function closeCard(e) {
+    if (e && e.target !== document.getElementById("cardOverlay")) return;
+    document.getElementById("cardOverlay").classList.remove("open");
+    document.body.style.overflow = "";
+  }
 
-    function closeEliteScene(e) {
-      if (e && e.target !== document.getElementById("eliteScene")) return;
-      const scene = document.getElementById("eliteScene");
-      scene.classList.remove("active");
-      document.body.style.overflow = "";
-      // Reset seal opacity for next time
-      document.getElementById("envSeal").style.opacity = "1";
-    }
-
-    /* ─── CLOSE NORMAL CARD ─── */
-    function closeCard(e) {
-      if (e && e.target !== document.getElementById("cardOverlay")) return;
+  /* ─── ASSIGN GRL ─── */
+  async function promptGRL(id) {
+    const val = prompt("Ingresa el GRL del jugador (0-100):");
+    if (val === null) return;
+    const n = parseInt(val);
+    if (isNaN(n) || n < 0 || n > 100) { alert("Ingresa un número entre 0 y 100"); return; }
+    const res = await fetch("/api/index?ruta=jugadores", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, grl: n })
+    });
+    if (res.ok) {
+      const jug = _jug.find(x => x._id === id);
+      if (jug) jug.grl = n;
+      // Close all
       document.getElementById("cardOverlay").classList.remove("open");
+      closeEliteScene();
       document.body.style.overflow = "";
+      render();
+      setTimeout(() => openCard(_jug.find(x => x._id === id)), 100);
+    } else {
+      alert("Error al guardar GRL");
     }
+  }
 
-    /* ─── ASSIGN GRL ─── */
-    async function promptGRL(id) {
-      const val = prompt("Ingresa el GRL del jugador (0-100):");
-      if (val === null) return;
-      const n = parseInt(val);
-      if (isNaN(n) || n < 0 || n > 100) { alert("Ingresa un número entre 0 y 100"); return; }
-      const res = await fetch("/api/index?ruta=jugadores", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, grl: n })
-      });
-      if (res.ok) {
-        const jug = _jug.find(x => x._id === id);
-        if (jug) jug.grl = n;
-        // Close all
-        document.getElementById("cardOverlay").classList.remove("open");
-        closeEliteScene();
-        document.body.style.overflow = "";
-        render();
-        setTimeout(() => openCard(_jug.find(x => x._id === id)), 100);
-      } else {
-        alert("Error al guardar GRL");
-      }
-    }
-
-    init();
-  </script>
+  init();
+</script>
 
 <footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
+  <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
 </footer>
 
 </body>
+
 </html>

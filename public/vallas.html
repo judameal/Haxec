@@ -1,228 +1,517 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vallas Invictas — LigaPro Ecuaverd</title>
-  <meta name="description" content="Vallas invictas (arcos a 0) por equipo en todas las competiciones de la LigaPro Ecuaverd.">
+  <title>Vallas Invictas — LigaPro Ecuabet</title>
+  <meta name="description"
+    content="Vallas invictas (arcos a 0) por equipo en todas las competiciones de la LigaPro Ecuabet.">
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    @keyframes fadeDown { from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);} }
-    @keyframes fadeUp   { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
 
-    .ap-title-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
-    .admin-title { animation:fadeDown .4s ease both; }
-    .back-btn    { animation:fadeDown .4s ease .08s both; }
-    .page-sub { color:var(--muted); font-size:.88rem; margin-bottom:24px; font-weight:500; animation:fadeDown .4s ease .14s both; }
-
-    .comp-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; opacity:0; animation:fadeDown .4s ease .18s forwards; }
-    .comp-tab {
-      padding:9px 20px; border-radius:10px; background:var(--surface); border:1.5px solid var(--border);
-      color:var(--muted); font-family:var(--font-head); font-size:.76rem; font-weight:800;
-      letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .2s;
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .comp-tab:hover { border-color:var(--accent); color:var(--text); }
-    .comp-tab.active { background:var(--accent); color:var(--black); border-color:var(--accent); box-shadow:0 4px 14px var(--accent-glow); }
 
-    .section-block { margin-bottom:28px; opacity:0; animation:fadeUp .45s ease both; }
-    .section-block:nth-child(1){animation-delay:.22s;} .section-block:nth-child(2){animation-delay:.34s;}
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
 
-    .section-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-    .section-header h2 { font-family:var(--font-head); font-size:.78rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--black); margin:0; white-space:nowrap; }
-    .section-header h2 span { color:var(--accent); }
-    .section-line { flex:1; height:1.5px; background:var(--border); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    .info-note { background:rgba(184,134,11,.08); border-left:3px solid var(--accent); padding:10px 14px; border-radius:6px; font-size:.85rem; color:var(--muted); margin-bottom:16px; }
+    .ap-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
 
-    .stats-card { background:var(--surface); border:1.5px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.05); }
-    .stats-table { width:100%; border-collapse:collapse; table-layout:fixed; }
-    .stats-table thead tr { background:var(--black); border-bottom:2px solid var(--accent); }
-    .stats-table th { padding:11px 16px; font-family:var(--font-head); font-size:.7rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.7); text-align:left; }
-    .stats-table th.center { text-align:center; }
-    .stats-table tbody tr { border-bottom:1px solid var(--border); transition:background .14s; }
-    .stats-table tbody tr:last-child { border-bottom:none; }
-    .stats-table tbody tr:hover { background:var(--surface2); }
-    .stats-table td { padding:11px 16px; font-size:.9rem; font-weight:500; color:var(--text); vertical-align:middle; background:transparent; border-bottom:none; }
-    .stats-table td.center { text-align:center; }
+    .admin-title {
+      animation: fadeDown .4s ease both;
+    }
 
-    .col-rank { width:50px; }
-    .rank-num { font-family:var(--font-head); font-size:.9rem; font-weight:900; color:var(--muted); display:inline-block; width:28px; text-align:center; }
-    .rank-num.gold{color:#f59e0b;} .rank-num.silver{color:#94a3b8;} .rank-num.bronze{color:#b45309;}
+    .back-btn {
+      animation: fadeDown .4s ease .08s both;
+    }
 
-    .team-cell { display:flex; align-items:center; gap:10px; }
-    .team-logo-sm { width:28px; height:28px; object-fit:contain; border-radius:4px; flex-shrink:0; }
-    .team-name-txt { font-family:var(--font-head); font-weight:800; font-size:.9rem; color:var(--black); }
+    .page-sub {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 24px;
+      font-weight: 500;
+      animation: fadeDown .4s ease .14s both;
+    }
 
-    .col-stat { width:90px; }
-    .stat-badge { display:inline-block; background:var(--black); color:var(--accent); border:1px solid var(--accent); font-family:var(--font-head); font-weight:900; border-radius:7px; padding:3px 12px; font-size:.9rem; min-width:32px; text-align:center; }
-    .col-pj { width:60px; }
-    .pj-num { font-family:var(--font-head); font-size:.85rem; font-weight:600; color:var(--muted); }
+    .comp-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeDown .4s ease .18s forwards;
+    }
 
-    .empty-msg { text-align:center; color:var(--muted); padding:32px 0; font-size:.88rem; font-family:var(--font-head); letter-spacing:1px; text-transform:uppercase; }
-    .loading-state { display:flex; justify-content:center; align-items:center; padding:32px; }
+    .comp-tab {
+      padding: 9px 20px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-head);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
 
-    .section-panel { display:none; }
-    .section-panel.active { display:block; }
+    .comp-tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
 
-    @media(max-width:500px) { .comp-tabs{flex-direction:column;} }
+    .comp-tab.active {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .section-block {
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .45s ease both;
+    }
+
+    .section-block:nth-child(1) {
+      animation-delay: .22s;
+    }
+
+    .section-block:nth-child(2) {
+      animation-delay: .34s;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      font-family: var(--font-head);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .section-header h2 span {
+      color: var(--accent);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1.5px;
+      background: var(--border);
+    }
+
+    .info-note {
+      background: rgba(184, 134, 11, .08);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .stats-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .stats-table thead tr {
+      background: var(--black);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .stats-table th {
+      padding: 11px 16px;
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .7);
+      text-align: left;
+    }
+
+    .stats-table th.center {
+      text-align: center;
+    }
+
+    .stats-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .14s;
+    }
+
+    .stats-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .stats-table tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    .stats-table td {
+      padding: 11px 16px;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--text);
+      vertical-align: middle;
+      background: transparent;
+      border-bottom: none;
+    }
+
+    .stats-table td.center {
+      text-align: center;
+    }
+
+    .col-rank {
+      width: 50px;
+    }
+
+    .rank-num {
+      font-family: var(--font-head);
+      font-size: .9rem;
+      font-weight: 900;
+      color: var(--muted);
+      display: inline-block;
+      width: 28px;
+      text-align: center;
+    }
+
+    .rank-num.gold {
+      color: #f59e0b;
+    }
+
+    .rank-num.silver {
+      color: #94a3b8;
+    }
+
+    .rank-num.bronze {
+      color: #b45309;
+    }
+
+    .team-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .team-logo-sm {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .team-name-txt {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .9rem;
+      color: var(--black);
+    }
+
+    .col-stat {
+      width: 90px;
+    }
+
+    .stat-badge {
+      display: inline-block;
+      background: var(--black);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      font-family: var(--font-head);
+      font-weight: 900;
+      border-radius: 7px;
+      padding: 3px 12px;
+      font-size: .9rem;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .col-pj {
+      width: 60px;
+    }
+
+    .pj-num {
+      font-family: var(--font-head);
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--muted);
+      padding: 32px 0;
+      font-size: .88rem;
+      font-family: var(--font-head);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .loading-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px;
+    }
+
+    .section-panel {
+      display: none;
+    }
+
+    .section-panel.active {
+      display: block;
+    }
+
+    @media(max-width:500px) {
+      .comp-tabs {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
+
 <body>
-<div class="hex-mid"></div>
+  <div class="hex-mid"></div>
 
-<header>
-  <div class="logo">
-    <img class="hero-logo-img" src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuaverd">
-    <h1>LigaPro <span>Ecuaverd</span></h1>
-  </div>
-</header>
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+  </header>
 
-<div class="admin-container">
-  <div class="ap-title-row">
-    <h1 class="admin-title">🧤 Vallas Invictas</h1>
-    <button class="back-btn" onclick="history.back()">⬅ Volver</button>
-  </div>
-  <p class="page-sub">Arcos a cero · Liga · Copa · Supercopa</p>
+  <div class="admin-container">
+    <div class="ap-title-row">
+      <h1 class="admin-title">🧤 Vallas Invictas</h1>
+      <button class="back-btn" onclick="history.back()">⬅ Volver</button>
+    </div>
+    <p class="page-sub">Arcos a cero · Liga · Copa · Supercopa</p>
 
-  <div class="info-note">🛡️ Se cuenta cada partido jugado en el que el equipo <strong>no recibió ningún gol</strong> (arco a 0).</div>
+    <div class="info-note">🛡️ Se cuenta cada partido jugado en el que el equipo <strong>no recibió ningún gol</strong>
+      (arco a 0).</div>
 
-  <div class="comp-tabs">
-    <button class="comp-tab active" id="tab-liga"      onclick="switchTab('liga')">📋 Liga</button>
-    <button class="comp-tab"        id="tab-copa"      onclick="switchTab('copa')">🏆 Copa</button>
-    <button class="comp-tab"        id="tab-supercopa" onclick="switchTab('supercopa')">⭐ Supercopa</button>
-    <button class="comp-tab"        id="tab-total"     onclick="switchTab('total')">📊 Total</button>
-  </div>
+    <div class="comp-tabs">
+      <button class="comp-tab active" id="tab-liga" onclick="switchTab('liga')">📋 Liga</button>
+      <button class="comp-tab" id="tab-copa" onclick="switchTab('copa')">🏆 Copa</button>
+      <button class="comp-tab" id="tab-supercopa" onclick="switchTab('supercopa')">⭐ Supercopa</button>
+      <button class="comp-tab" id="tab-total" onclick="switchTab('total')">📊 Total</button>
+    </div>
 
-  <!-- LIGA -->
-  <div class="section-panel active" id="panel-liga">
-    <div class="section-block">
-      <div class="section-header"><h2>🧤 Vallas invictas <span>Liga</span></h2><div class="section-line"></div></div>
-      <div class="stats-card"><div id="vallas-liga"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    <!-- LIGA -->
+    <div class="section-panel active" id="panel-liga">
+      <div class="section-block">
+        <div class="section-header">
+          <h2>🧤 Vallas invictas <span>Liga</span></h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="stats-card">
+          <div id="vallas-liga">
+            <div class="loading-state">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COPA -->
+    <div class="section-panel" id="panel-copa">
+      <div class="section-block">
+        <div class="section-header">
+          <h2>🏆 Vallas invictas <span>Copa</span></h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="stats-card">
+          <div id="vallas-copa">
+            <div class="loading-state">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPERCOPA -->
+    <div class="section-panel" id="panel-supercopa">
+      <div class="section-block">
+        <div class="section-header">
+          <h2>⭐ Vallas invictas <span>Supercopa</span></h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="stats-card">
+          <div id="vallas-supercopa">
+            <div class="loading-state">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="section-panel" id="panel-total">
+      <div class="section-block">
+        <div class="section-header">
+          <h2>📊 Vallas totales <span>todas competiciones</span></h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="stats-card">
+          <div id="vallas-total">
+            <div class="loading-state">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- COPA -->
-  <div class="section-panel" id="panel-copa">
-    <div class="section-block">
-      <div class="section-header"><h2>🏆 Vallas invictas <span>Copa</span></h2><div class="section-line"></div></div>
-      <div class="stats-card"><div id="vallas-copa"><div class="loading-state"><div class="spinner"></div></div></div></div>
-    </div>
-  </div>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-  <!-- SUPERCOPA -->
-  <div class="section-panel" id="panel-supercopa">
-    <div class="section-block">
-      <div class="section-header"><h2>⭐ Vallas invictas <span>Supercopa</span></h2><div class="section-line"></div></div>
-      <div class="stats-card"><div id="vallas-supercopa"><div class="loading-state"><div class="spinner"></div></div></div></div>
-    </div>
-  </div>
+  <script>
+    function rankClass(i) { return i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : ""; }
+    function rankIcon(i) { return i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : String(i + 1); }
 
-  <!-- TOTAL -->
-  <div class="section-panel" id="panel-total">
-    <div class="section-block">
-      <div class="section-header"><h2>📊 Vallas totales <span>todas competiciones</span></h2><div class="section-line"></div></div>
-      <div class="stats-card"><div id="vallas-total"><div class="loading-state"><div class="spinner"></div></div></div></div>
-    </div>
-  </div>
-</div>
-
-<footer><p>© 2026 LigaPro Ecuaverd — Hecho por Judameal</p></footer>
-
-<script>
-function rankClass(i) { return i===0?"gold":i===1?"silver":i===2?"bronze":""; }
-function rankIcon(i)  { return i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1); }
-
-function switchTab(tab) {
-  document.querySelectorAll(".comp-tab").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("tab-" + tab).classList.add("active");
-  document.getElementById("panel-" + tab).classList.add("active");
-}
-
-function calcularVallas(partidos) {
-  const mapa = {};
-  for (const p of partidos) {
-    if (!p.jugado || !p.resultado || !p.local || !p.visitante) continue;
-    const gl = Number(p.resultado.local    || 0);
-    const gv = Number(p.resultado.visitante || 0);
-    const nl = p.local.nombre;
-    const nv = p.visitante.nombre;
-    const ll = p.local.logo  || "";
-    const lv = p.visitante.logo || "";
-    if (!mapa[nl]) mapa[nl] = { vallas:0, pj:0, logo:ll };
-    if (!mapa[nv]) mapa[nv] = { vallas:0, pj:0, logo:lv };
-    mapa[nl].pj++; mapa[nv].pj++;
-    if (gv === 0) mapa[nl].vallas++;
-    if (gl === 0) mapa[nv].vallas++;
-  }
-  return mapa;
-}
-
-function combinarMapas(mapas) {
-  const total = {};
-  for (const mapa of mapas) {
-    for (const [nombre, d] of Object.entries(mapa)) {
-      if (!total[nombre]) total[nombre] = { vallas:0, pj:0, logo:d.logo };
-      total[nombre].vallas += d.vallas;
-      total[nombre].pj     += d.pj;
+    function switchTab(tab) {
+      document.querySelectorAll(".comp-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
+      document.getElementById("tab-" + tab).classList.add("active");
+      document.getElementById("panel-" + tab).classList.add("active");
     }
-  }
-  return total;
-}
 
-function renderVallas(contId, mapa) {
-  const cont = document.getElementById(contId);
-  const ranking = Object.entries(mapa)
-    .map(([nombre, d]) => ({ nombre, ...d }))
-    .filter(e => e.vallas > 0)
-    .sort((a, b) => b.vallas - a.vallas || a.nombre.localeCompare(b.nombre));
+    function calcularVallas(partidos) {
+      const mapa = {};
+      for (const p of partidos) {
+        if (!p.jugado || !p.resultado || !p.local || !p.visitante) continue;
+        const gl = Number(p.resultado.local || 0);
+        const gv = Number(p.resultado.visitante || 0);
+        const nl = p.local.nombre;
+        const nv = p.visitante.nombre;
+        const ll = p.local.logo || "";
+        const lv = p.visitante.logo || "";
+        if (!mapa[nl]) mapa[nl] = { vallas: 0, pj: 0, logo: ll };
+        if (!mapa[nv]) mapa[nv] = { vallas: 0, pj: 0, logo: lv };
+        mapa[nl].pj++; mapa[nv].pj++;
+        if (gv === 0) mapa[nl].vallas++;
+        if (gl === 0) mapa[nv].vallas++;
+      }
+      return mapa;
+    }
 
-  if (!ranking.length) {
-    cont.innerHTML = '<p class="empty-msg">Sin arcos a 0 registrados aún</p>';
-    return;
-  }
+    function combinarMapas(mapas) {
+      const total = {};
+      for (const mapa of mapas) {
+        for (const [nombre, d] of Object.entries(mapa)) {
+          if (!total[nombre]) total[nombre] = { vallas: 0, pj: 0, logo: d.logo };
+          total[nombre].vallas += d.vallas;
+          total[nombre].pj += d.pj;
+        }
+      }
+      return total;
+    }
 
-  let filas = "";
-  for (let i = 0; i < ranking.length; i++) {
-    const e = ranking[i];
-    const logoHTML = e.logo ? `<img class="team-logo-sm" src="${e.logo}" alt="${e.nombre}">` : "";
-    filas += `<tr>
+    function renderVallas(contId, mapa) {
+      const cont = document.getElementById(contId);
+      const ranking = Object.entries(mapa)
+        .map(([nombre, d]) => ({ nombre, ...d }))
+        .filter(e => e.vallas > 0)
+        .sort((a, b) => b.vallas - a.vallas || a.nombre.localeCompare(b.nombre));
+
+      if (!ranking.length) {
+        cont.innerHTML = '<p class="empty-msg">Sin arcos a 0 registrados aún</p>';
+        return;
+      }
+
+      let filas = "";
+      for (let i = 0; i < ranking.length; i++) {
+        const e = ranking[i];
+        const logoHTML = e.logo ? `<img class="team-logo-sm" src="${e.logo}" alt="${e.nombre}">` : "";
+        filas += `<tr>
       <td class="col-rank center"><span class="rank-num ${rankClass(i)}">${rankIcon(i)}</span></td>
       <td><div class="team-cell">${logoHTML}<div class="team-name-txt">${e.nombre}</div></div></td>
       <td class="col-pj center"><span class="pj-num">${e.pj} PJ</span></td>
       <td class="col-stat center"><span class="stat-badge">🧤 ${e.vallas}</span></td>
     </tr>`;
-  }
+      }
 
-  cont.innerHTML = `<table class="stats-table">
+      cont.innerHTML = `<table class="stats-table">
     <colgroup><col class="col-rank"><col><col class="col-pj"><col class="col-stat"></colgroup>
     <thead><tr><th class="center">#</th><th>Equipo</th><th class="center">PJ</th><th class="center">Vallas</th></tr></thead>
     <tbody>${filas}</tbody>
   </table>`;
-}
+    }
 
-async function cargar() {
-  try {
-    const [partidos, copaPartidos, supercopaPartidos] = await Promise.all([
-      fetch("/api/index?ruta=partidos").then(r => r.json()).catch(() => []),
-      fetch("/api/index?ruta=copa_partidos").then(r => r.json()).catch(() => []),
-      fetch("/api/index?ruta=supercopa_partidos").then(r => r.json()).catch(() => [])
-    ]);
+    async function cargar() {
+      try {
+        const [partidos, copaPartidos, supercopaPartidos] = await Promise.all([
+          fetch("/api/index?ruta=partidos").then(r => r.json()).catch(() => []),
+          fetch("/api/index?ruta=copa_partidos").then(r => r.json()).catch(() => []),
+          fetch("/api/index?ruta=supercopa_partidos").then(r => r.json()).catch(() => [])
+        ]);
 
-    const mapaLiga      = calcularVallas(partidos);
-    const mapaCopa      = calcularVallas(copaPartidos);
-    const mapaSupercopa = calcularVallas(supercopaPartidos);
-    const mapaTotal     = combinarMapas([mapaLiga, mapaCopa, mapaSupercopa]);
+        const mapaLiga = calcularVallas(partidos);
+        const mapaCopa = calcularVallas(copaPartidos);
+        const mapaSupercopa = calcularVallas(supercopaPartidos);
+        const mapaTotal = combinarMapas([mapaLiga, mapaCopa, mapaSupercopa]);
 
-    renderVallas("vallas-liga",      mapaLiga);
-    renderVallas("vallas-copa",      mapaCopa);
-    renderVallas("vallas-supercopa", mapaSupercopa);
-    renderVallas("vallas-total",     mapaTotal);
-  } catch(e) {
-    console.error("Error vallas:", e);
-  }
-}
-cargar();
-</script>
+        renderVallas("vallas-liga", mapaLiga);
+        renderVallas("vallas-copa", mapaCopa);
+        renderVallas("vallas-supercopa", mapaSupercopa);
+        renderVallas("vallas-total", mapaTotal);
+      } catch (e) {
+        console.error("Error vallas:", e);
+      }
+    }
+    cargar();
+  </script>
 </body>
+
 </html>

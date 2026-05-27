@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Equipos</title>
   <link rel="stylesheet" href="css/styles.css">
@@ -10,6 +11,7 @@
       justify-content: space-between;
       margin-bottom: 22px;
     }
+
     .color-dot {
       display: inline-block;
       width: 14px;
@@ -19,6 +21,7 @@
       vertical-align: middle;
       margin-right: 6px;
     }
+
     .color-cell {
       display: flex;
       align-items: center;
@@ -27,6 +30,7 @@
       font-size: 0.88rem;
       font-weight: 600;
     }
+
     .form-card label {
       display: block;
       font-size: 0.72rem;
@@ -37,11 +41,13 @@
       margin-bottom: 5px;
       margin-top: 4px;
     }
+
     .form-card input[type="file"] {
       padding: 8px 12px;
       font-size: 0.88rem;
       cursor: pointer;
     }
+
     .form-save-btn {
       width: 100%;
       background: var(--black);
@@ -58,10 +64,12 @@
       margin-top: 6px;
       transition: all .2s;
     }
+
     .form-save-btn:hover {
       background: var(--accent);
       color: var(--black);
     }
+
     .team-nombre-cell {
       display: flex;
       align-items: center;
@@ -70,20 +78,29 @@
       cursor: pointer;
       transition: color .2s;
     }
-    .team-nombre-cell:hover { color: var(--accent); }
+
+    .team-nombre-cell:hover {
+      color: var(--accent);
+    }
+
     .team-nombre-cell img {
       width: 28px;
       height: 28px;
       object-fit: contain;
       border-radius: 5px;
     }
+
     .expand-arrow {
       margin-left: auto;
       font-size: 0.75rem;
       color: var(--muted);
       transition: transform .2s;
     }
-    .expand-arrow.open { transform: rotate(180deg); }
+
+    .expand-arrow.open {
+      transform: rotate(180deg);
+    }
+
     .player-chip {
       display: inline-flex;
       align-items: center;
@@ -96,6 +113,7 @@
       font-weight: 600;
       margin: 3px;
     }
+
     .player-chip .chip-dorsal {
       background: var(--black);
       color: var(--accent);
@@ -107,118 +125,117 @@
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+  </header>
+  <div class="admin-container">
+
+    <div class="ap-title-row">
+      <h1 class="admin-title">Equipos</h1>
+      <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+    </div>
+
+    <button class="add-btn" onclick="toggleForm()">+ Añadir equipo</button>
+
+    <div id="formTeam" class="form-card" style="display:none; margin-top:16px;">
+      <h3>Nuevo equipo</h3>
+
+      <label>Nombre del equipo</label>
+      <input id="nombre" placeholder="Ej: Los Cracks FC">
+
+      <label>Logo (URL)</label>
+      <input type="text" id="logo" placeholder="URL del logo">
+
+      <label>Color local</label>
+      <input id="local" placeholder="Ej: #22c55e o Verde">
+
+      <label>Color visitante</label>
+      <input id="visitante" placeholder="Ej: #ffffff o Blanco">
+
+      <button class="form-save-btn" onclick="crearEquipo()">Guardar equipo</button>
+    </div>
+
+    <div class="admin-card">
+      <table id="tablaTeams">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding-left:16px;">Equipo</th>
+            <th>Local</th>
+            <th>Visitante</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
   </div>
-</header>
-<div class="admin-container">
 
-  <div class="ap-title-row">
-    <h1 class="admin-title">Equipos</h1>
-    <button class="back-btn" onclick="goBack()">⬅ Volver</button>
-  </div>
-
-  <button class="add-btn" onclick="toggleForm()">+ Añadir equipo</button>
-
-  <div id="formTeam" class="form-card" style="display:none; margin-top:16px;">
-    <h3>Nuevo equipo</h3>
-
-    <label>Nombre del equipo</label>
-    <input id="nombre" placeholder="Ej: Los Cracks FC">
-
-    <label>Logo (URL)</label>
-    <input type="text" id="logo" placeholder="URL del logo">
-
-    <label>Color local</label>
-    <input id="local" placeholder="Ej: #22c55e o Verde">
-
-    <label>Color visitante</label>
-    <input id="visitante" placeholder="Ej: #ffffff o Blanco">
-
-    <button class="form-save-btn" onclick="crearEquipo()">Guardar equipo</button>
-  </div>
-
-  <div class="admin-card">
-    <table id="tablaTeams">
-      <thead>
-        <tr>
-          <th style="text-align:left; padding-left:16px;">Equipo</th>
-          <th>Local</th>
-          <th>Visitante</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-</div>
-
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
-<script src="js/app.js"></script>
-<script>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
+  <script src="js/app.js"></script>
+  <script>
 
 
-function toggleForm() {
-  const form = document.getElementById("formTeam");
-  form.style.display = form.style.display === "none" ? "block" : "none";
-}
+    function toggleForm() {
+      const form = document.getElementById("formTeam");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
 
 
 
-async function crearEquipo() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const logo = document.getElementById("logo").value.trim();
-  const local = document.getElementById("local").value;
-  const visitante = document.getElementById("visitante").value;
+    async function crearEquipo() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const logo = document.getElementById("logo").value.trim();
+      const local = document.getElementById("local").value;
+      const visitante = document.getElementById("visitante").value;
 
-  if (!nombre || !logo) {
-    alert("El nombre y el logo son obligatorios");
-    return;
-  }
+      if (!nombre || !logo) {
+        alert("El nombre y el logo son obligatorios");
+        return;
+      }
 
-  await fetch("/api/index?ruta=teams", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nombre, logo, local, visitante })
-  });
+      await fetch("/api/index?ruta=teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, logo, local, visitante })
+      });
 
-  location.reload();
-}
+      location.reload();
+    }
 
-async function cargarTeams() {
-  const [teams, jugadores] = await Promise.all([
-    fetch("/api/index?ruta=teams").then(r => r.json()),
-    fetch("/api/index?ruta=jugadores").then(r => r.json())
-  ]);
+    async function cargarTeams() {
+      const [teams, jugadores] = await Promise.all([
+        fetch("/api/index?ruta=teams").then(r => r.json()),
+        fetch("/api/index?ruta=jugadores").then(r => r.json())
+      ]);
 
-  const tbody = document.querySelector("#tablaTeams tbody");
+      const tbody = document.querySelector("#tablaTeams tbody");
 
-  teams.forEach(t => {
-    const jugadoresEquipo = jugadores.filter(j =>
-      j.equipo.toLowerCase() === t.nombre.toLowerCase()
-    );
+      teams.forEach(t => {
+        const jugadoresEquipo = jugadores.filter(j =>
+          j.equipo.toLowerCase() === t.nombre.toLowerCase()
+        );
 
-    const localDot = t.local
-      ? `<span class="color-dot" style="background:${t.local};"></span>${t.local}`
-      : "—";
-    const visitanteDot = t.visitante
-      ? `<span class="color-dot" style="background:${t.visitante};"></span>${t.visitante}`
-      : "—";
+        const localDot = t.local
+          ? `<span class="color-dot" style="background:${t.local};"></span>${t.local}`
+          : "—";
+        const visitanteDot = t.visitante
+          ? `<span class="color-dot" style="background:${t.visitante};"></span>${t.visitante}`
+          : "—";
 
-    // Fila principal
-    const row = document.createElement("tr");
-    row.innerHTML = `
+        // Fila principal
+        const row = document.createElement("tr");
+        row.innerHTML = `
       <td style="padding-left:16px;">
         <div class="team-nombre-cell" onclick="toggleEquipo('${t._id}')">
           <img src="${t.logo}" alt="${t.nombre}">
@@ -232,22 +249,22 @@ async function cargarTeams() {
         <button onclick="eliminar('${t._id}')" style="border-color:#ef4444;color:#ef4444;">Eliminar</button>
       </td>
     `;
-    tbody.appendChild(row);
+        tbody.appendChild(row);
 
-    // Fila detalle expandible
-    const detailRow = document.createElement("tr");
-    detailRow.id = "detalle-" + t._id;
-    detailRow.style.display = "none";
+        // Fila detalle expandible
+        const detailRow = document.createElement("tr");
+        detailRow.id = "detalle-" + t._id;
+        detailRow.style.display = "none";
 
-    const chipsHTML = jugadoresEquipo.length > 0
-      ? jugadoresEquipo.map(j => `
+        const chipsHTML = jugadoresEquipo.length > 0
+          ? jugadoresEquipo.map(j => `
           <span class="player-chip">
             <span class="chip-dorsal">${j.dorsal}</span>
             ${j.nombre}
           </span>`).join("")
-      : `<span style="color:var(--muted);font-size:0.88rem;font-style:italic;">Sin jugadores registrados</span>`;
+          : `<span style="color:var(--muted);font-size:0.88rem;font-style:italic;">Sin jugadores registrados</span>`;
 
-    detailRow.innerHTML = `
+        detailRow.innerHTML = `
       <td colspan="4" style="background:var(--surface2); padding:16px 20px;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
           <img src="${t.logo}" width="40" style="border-radius:8px;">
@@ -261,34 +278,35 @@ async function cargarTeams() {
         </div>
       </td>
     `;
-    tbody.appendChild(detailRow);
-  });
-}
+        tbody.appendChild(detailRow);
+      });
+    }
 
-function toggleEquipo(id) {
-  const fila = document.getElementById("detalle-" + id);
-  const arrow = document.getElementById("arrow-" + id);
-  const abierto = fila.style.display !== "none";
-  fila.style.display = abierto ? "none" : "table-row";
-  arrow.classList.toggle("open", !abierto);
-}
+    function toggleEquipo(id) {
+      const fila = document.getElementById("detalle-" + id);
+      const arrow = document.getElementById("arrow-" + id);
+      const abierto = fila.style.display !== "none";
+      fila.style.display = abierto ? "none" : "table-row";
+      arrow.classList.toggle("open", !abierto);
+    }
 
-async function eliminar(id) {
-  if (!confirm("¿Eliminar este equipo?")) return;
-  await fetch("/api/index?ruta=teams", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  });
-  location.reload();
-}
+    async function eliminar(id) {
+      if (!confirm("¿Eliminar este equipo?")) return;
+      await fetch("/api/index?ruta=teams", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+      location.reload();
+    }
 
-function goBack() {
-  window.location.href = "/haxball.html";
-}
+    function goBack() {
+      window.location.href = "/haxball.html";
+    }
 
-cargarTeams();
-</script>
+    cargarTeams();
+  </script>
 
 </body>
+
 </html>

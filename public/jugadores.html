@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Jugadores</title>
   <link rel="stylesheet" href="css/styles.css">
@@ -10,6 +11,7 @@
       justify-content: space-between;
       margin-bottom: 22px;
     }
+
     .dorsal-badge {
       display: inline-block;
       background: var(--black);
@@ -22,11 +24,13 @@
       font-weight: 900;
       letter-spacing: 1px;
     }
+
     .sin-equipo {
       color: var(--muted);
       font-size: 0.85rem;
       font-style: italic;
     }
+
     .form-card label {
       display: block;
       font-size: 0.72rem;
@@ -37,6 +41,7 @@
       margin-bottom: 5px;
       margin-top: 12px;
     }
+
     .form-save-btn {
       width: 100%;
       background: var(--black);
@@ -53,10 +58,12 @@
       margin-top: 14px;
       transition: all .2s;
     }
+
     .form-save-btn:hover {
       background: var(--accent);
       color: var(--black);
     }
+
     .preview-box {
       display: flex;
       align-items: center;
@@ -66,19 +73,23 @@
       font-size: 0.88rem;
       margin-top: 6px;
     }
+
     .preview-ok {
       background: #e8f5e9;
       color: #2e7d32;
       border: 0.5px solid #a5d6a7;
     }
+
     .preview-error {
       background: #fdecea;
       color: #c62828;
       border: 0.5px solid #ef9a9a;
     }
+
     .preview-ok img {
       border-radius: 4px;
     }
+
     .player-avatar {
       width: 34px;
       height: 34px;
@@ -86,6 +97,7 @@
       object-fit: cover;
       border: 1px solid var(--accent, #ccc);
     }
+
     .avatar-placeholder {
       width: 34px;
       height: 34px;
@@ -99,27 +111,31 @@
       color: #fff;
       letter-spacing: 0.5px;
     }
+
     /* Modal de edición */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0, 0, 0, 0.55);
       z-index: 100;
       align-items: center;
       justify-content: center;
     }
+
     .modal-overlay.open {
       display: flex;
     }
+
     .modal-box {
       background: var(--bg, #fff);
       border-radius: 14px;
       padding: 28px 24px 20px;
       width: 100%;
       max-width: 380px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
     }
+
     .modal-box h3 {
       margin: 0 0 16px;
       font-size: 1rem;
@@ -128,6 +144,7 @@
       letter-spacing: 1px;
       text-transform: uppercase;
     }
+
     .modal-box label {
       display: block;
       font-size: 0.72rem;
@@ -138,15 +155,18 @@
       margin-bottom: 5px;
       margin-top: 12px;
     }
+
     .modal-box input {
       width: 100%;
       box-sizing: border-box;
     }
+
     .modal-actions {
       display: flex;
       gap: 10px;
       margin-top: 18px;
     }
+
     .modal-actions button {
       flex: 1;
       padding: 10px;
@@ -159,30 +179,36 @@
       cursor: pointer;
       transition: all .2s;
     }
+
     .btn-cancelar {
       background: transparent;
       border: 1px solid var(--muted, #888);
       color: var(--muted, #888);
     }
+
     .btn-cancelar:hover {
       border-color: var(--black);
       color: var(--black);
     }
+
     .btn-guardar {
       background: var(--black);
       border: none;
       color: #fff;
     }
+
     .btn-guardar:hover {
       background: var(--accent);
       color: var(--black);
     }
+
     .foto-preview-edit {
       margin-top: 8px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .foto-preview-edit img {
       width: 40px;
       height: 40px;
@@ -190,217 +216,217 @@
       object-fit: cover;
       border: 1px solid var(--accent, #ccc);
     }
+
     .foto-preview-edit span {
       font-size: 0.8rem;
       color: var(--muted);
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+  </header>
+
+  <div class="admin-container">
+
+    <div class="ap-title-row">
+      <h1 class="admin-title">Jugadores</h1>
+      <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+    </div>
+
+    <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
+
+    <div id="formJugador" class="form-card" style="display:none; margin-top:16px;">
+      <h3>Nuevo jugador</h3>
+
+      <label>Nombre</label>
+      <input id="nombre" placeholder="Ej: Judameal">
+
+      <label>Dorsal</label>
+      <input id="dorsal" placeholder="Ej: 10" type="number">
+
+      <label>Foto (URL)</label>
+      <input type="text" id="foto" placeholder="URL de la foto" oninput="previsualizarFoto()">
+      <div id="fotoPreviewNuevo" style="margin-top:8px;"></div>
+
+      <label>Equipo</label>
+      <input id="equipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipo()">
+      <div id="previewEquipo" style="margin-bottom:12px;"></div>
+
+      <button class="form-save-btn" onclick="crearJugador()">Guardar jugador</button>
+    </div>
+
+    <div class="admin-card">
+      <table id="tablaJugadores">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding-left:16px;">Jugador</th>
+            <th>#</th>
+            <th>Foto</th>
+            <th>Equipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
   </div>
-</header>
 
-<div class="admin-container">
+  <!-- Modal edición -->
+  <div class="modal-overlay" id="modalEditar">
+    <div class="modal-box">
+      <h3>Editar jugador</h3>
 
-  <div class="ap-title-row">
-    <h1 class="admin-title">Jugadores</h1>
-    <button class="back-btn" onclick="goBack()">⬅ Volver</button>
-  </div>
+      <input type="hidden" id="editId">
 
-  <button class="add-btn" onclick="toggleForm()">+ Añadir jugador</button>
+      <label>Nombre</label>
+      <input id="editNombre" placeholder="Nombre">
 
-  <div id="formJugador" class="form-card" style="display:none; margin-top:16px;">
-    <h3>Nuevo jugador</h3>
+      <label>Dorsal</label>
+      <input id="editDorsal" type="number" placeholder="Dorsal">
 
-    <label>Nombre</label>
-    <input id="nombre" placeholder="Ej: Judameal">
+      <label>Foto (URL, dejar vacío para mantener)</label>
+      <div class="foto-preview-edit" id="editFotoActualPreview"></div>
+      <input type="text" id="editFoto" placeholder="URL de la nueva foto" oninput="previsualizarFotoEdit()">
 
-    <label>Dorsal</label>
-    <input id="dorsal" placeholder="Ej: 10" type="number">
+      <label>Equipo</label>
+      <input id="editEquipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipoEdit()">
+      <div id="previewEquipoEdit" style="margin-bottom:4px;"></div>
 
-    <label>Foto (URL)</label>
-    <input type="text" id="foto" placeholder="URL de la foto" oninput="previsualizarFoto()">
-    <div id="fotoPreviewNuevo" style="margin-top:8px;"></div>
-
-    <label>Equipo</label>
-    <input id="equipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipo()">
-    <div id="previewEquipo" style="margin-bottom:12px;"></div>
-
-    <button class="form-save-btn" onclick="crearJugador()">Guardar jugador</button>
-  </div>
-
-  <div class="admin-card">
-    <table id="tablaJugadores">
-      <thead>
-        <tr>
-          <th style="text-align:left; padding-left:16px;">Jugador</th>
-          <th>#</th>
-          <th>Foto</th>
-          <th>Equipo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-</div>
-
-<!-- Modal edición -->
-<div class="modal-overlay" id="modalEditar">
-  <div class="modal-box">
-    <h3>Editar jugador</h3>
-
-    <input type="hidden" id="editId">
-
-    <label>Nombre</label>
-    <input id="editNombre" placeholder="Nombre">
-
-    <label>Dorsal</label>
-    <input id="editDorsal" type="number" placeholder="Dorsal">
-
-    <label>Foto (URL, dejar vacío para mantener)</label>
-    <div class="foto-preview-edit" id="editFotoActualPreview"></div>
-    <input type="text" id="editFoto" placeholder="URL de la nueva foto" oninput="previsualizarFotoEdit()">
-
-    <label>Equipo</label>
-    <input id="editEquipo" placeholder="Nombre exacto del equipo" oninput="verificarEquipoEdit()">
-    <div id="previewEquipoEdit" style="margin-bottom:4px;"></div>
-
-    <div class="modal-actions">
-      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-guardar" onclick="guardarEdicion()">Guardar</button>
+      <div class="modal-actions">
+        <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-guardar" onclick="guardarEdicion()">Guardar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-<script src="js/app.js"></script>
-<script>
-var _teamsCache = null;
-let equipoValido = null;
-let equipoValidoEdit = null;
+  <script src="js/app.js"></script>
+  <script>
+    var _teamsCache = null;
+    let equipoValido = null;
+    let equipoValidoEdit = null;
 
-function goBack() {
-  window.location.href = "/haxball.html";
-}
+    function goBack() {
+      window.location.href = "/haxball.html";
+    }
 
-function toggleForm() {
-  const form = document.getElementById("formJugador");
-  form.style.display = form.style.display === "none" ? "block" : "none";
-}
+    function toggleForm() {
+      const form = document.getElementById("formJugador");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
 
-// ——— Preview foto al crear ———
-function previsualizarFoto() {
-  const url = document.getElementById("foto").value.trim();
-  const preview = document.getElementById("fotoPreviewNuevo");
-  if (!url) { preview.innerHTML = ""; return; }
-  preview.innerHTML = `<img src="${url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--accent,#ccc);" onerror="this.style.display='none'">`;
-}
+    // ——— Preview foto al crear ———
+    function previsualizarFoto() {
+      const url = document.getElementById("foto").value.trim();
+      const preview = document.getElementById("fotoPreviewNuevo");
+      if (!url) { preview.innerHTML = ""; return; }
+      preview.innerHTML = `<img src="${url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--accent,#ccc);" onerror="this.style.display='none'">`;
+    }
 
-// ——— Verificar equipo (crear) ———
-async function verificarEquipo() {
-  const input = document.getElementById("equipo").value;
-  const preview = document.getElementById("previewEquipo");
-  if (!input) { preview.innerHTML = ""; equipoValido = null; return; }
+    // ——— Verificar equipo (crear) ———
+    async function verificarEquipo() {
+      const input = document.getElementById("equipo").value;
+      const preview = document.getElementById("previewEquipo");
+      if (!input) { preview.innerHTML = ""; equipoValido = null; return; }
 
-  const teams = await fetchTeams();
-  const encontrado = teams.find(t => t.nombre.toLowerCase() === input.toLowerCase());
+      const teams = await fetchTeams();
+      const encontrado = teams.find(t => t.nombre.toLowerCase() === input.toLowerCase());
 
-  if (encontrado) {
-    equipoValido = encontrado;
-    preview.innerHTML = `
+      if (encontrado) {
+        equipoValido = encontrado;
+        preview.innerHTML = `
       <div class="preview-box preview-ok">
         <img src="${encontrado.logo}" width="26">
         <span><strong>${encontrado.nombre}</strong></span>
       </div>`;
-  } else {
-    equipoValido = null;
-    preview.innerHTML = `<div class="preview-box preview-error"><span>Equipo no encontrado</span></div>`;
-  }
-}
+      } else {
+        equipoValido = null;
+        preview.innerHTML = `<div class="preview-box preview-error"><span>Equipo no encontrado</span></div>`;
+      }
+    }
 
-// ——— Verificar equipo (editar) ———
-async function verificarEquipoEdit() {
-  const input = document.getElementById("editEquipo").value;
-  const preview = document.getElementById("previewEquipoEdit");
-  if (!input) { preview.innerHTML = ""; equipoValidoEdit = null; return; }
+    // ——— Verificar equipo (editar) ———
+    async function verificarEquipoEdit() {
+      const input = document.getElementById("editEquipo").value;
+      const preview = document.getElementById("previewEquipoEdit");
+      if (!input) { preview.innerHTML = ""; equipoValidoEdit = null; return; }
 
-  const teams = await fetchTeams();
-  const encontrado = teams.find(t => t.nombre.toLowerCase() === input.toLowerCase());
+      const teams = await fetchTeams();
+      const encontrado = teams.find(t => t.nombre.toLowerCase() === input.toLowerCase());
 
-  if (encontrado) {
-    equipoValidoEdit = encontrado;
-    preview.innerHTML = `
+      if (encontrado) {
+        equipoValidoEdit = encontrado;
+        preview.innerHTML = `
       <div class="preview-box preview-ok">
         <img src="${encontrado.logo}" width="26">
         <span><strong>${encontrado.nombre}</strong></span>
       </div>`;
-  } else {
-    equipoValidoEdit = null;
-    preview.innerHTML = `<div class="preview-box preview-error"><span>Equipo no encontrado</span></div>`;
-  }
-}
+      } else {
+        equipoValidoEdit = null;
+        preview.innerHTML = `<div class="preview-box preview-error"><span>Equipo no encontrado</span></div>`;
+      }
+    }
 
-// ——— Crear jugador ———
-async function crearJugador() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const dorsal = document.getElementById("dorsal").value.trim();
-  const foto = document.getElementById("foto").value.trim();
+    // ——— Crear jugador ———
+    async function crearJugador() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const dorsal = document.getElementById("dorsal").value.trim();
+      const foto = document.getElementById("foto").value.trim();
 
-  if (!nombre || !dorsal) { alert("Completa nombre y dorsal"); return; }
+      if (!nombre || !dorsal) { alert("Completa nombre y dorsal"); return; }
 
-  await fetch("/api/index?ruta=jugadores", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      nombre,
-      dorsal,
-      equipo: equipoValido ? equipoValido.nombre : "Sin equipo",
-      foto
-    })
-  });
+      await fetch("/api/index?ruta=jugadores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          dorsal,
+          equipo: equipoValido ? equipoValido.nombre : "Sin equipo",
+          foto
+        })
+      });
 
-  location.reload();
-}
+      location.reload();
+    }
 
-// ——— Cargar tabla ———
-async function cargarJugadores() {
-  const [jugadores, teams] = await Promise.all([
-    fetch("/api/index?ruta=jugadores").then(r => r.json()),
-    fetchTeams()
-  ]);
+    // ——— Cargar tabla ———
+    async function cargarJugadores() {
+      const [jugadores, teams] = await Promise.all([
+        fetch("/api/index?ruta=jugadores").then(r => r.json()),
+        fetchTeams()
+      ]);
 
-  const tbody = document.querySelector("#tablaJugadores tbody");
+      const tbody = document.querySelector("#tablaJugadores tbody");
 
-  jugadores.forEach(j => {
-    const equipo = teams.find(t => t.nombre.toLowerCase() === (j.equipo || "").toLowerCase());
+      jugadores.forEach(j => {
+        const equipo = teams.find(t => t.nombre.toLowerCase() === (j.equipo || "").toLowerCase());
 
-    const logoCell = equipo
-      ? `<div style="display:flex;align-items:center;gap:8px;justify-content:center;">
+        const logoCell = equipo
+          ? `<div style="display:flex;align-items:center;gap:8px;justify-content:center;">
            <img src="${equipo.logo}" width="24" style="border-radius:4px;">
            <span style="font-size:0.88rem;font-weight:600;">${equipo.nombre}</span>
          </div>`
-      : `<span class="sin-equipo">Sin equipo</span>`;
+          : `<span class="sin-equipo">Sin equipo</span>`;
 
-    const fotoCell = j.foto
-      ? `<img class="player-avatar" src="${j.foto}" alt="${j.nombre}">`
-      : `<div class="avatar-placeholder">${iniciales(j.nombre)}</div>`;
+        const fotoCell = j.foto
+          ? `<img class="player-avatar" src="${j.foto}" alt="${j.nombre}">`
+          : `<div class="avatar-placeholder">${iniciales(j.nombre)}</div>`;
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
+        const row = document.createElement("tr");
+        row.innerHTML = `
       <td style="text-align:left; padding-left:16px; font-weight:700;">${j.nombre}</td>
       <td><span class="dorsal-badge">${j.dorsal}</span></td>
       <td style="text-align:center;">${fotoCell}</td>
@@ -410,112 +436,113 @@ async function cargarJugadores() {
         <button onclick="eliminarJugador('${j._id}')" style="border-color:#ef4444;color:#ef4444;">Eliminar</button>
       </td>
     `;
-    tbody.appendChild(row);
-  });
-}
-document.addEventListener("DOMContentLoaded", cargarJugadores);
+        tbody.appendChild(row);
+      });
+    }
+    document.addEventListener("DOMContentLoaded", cargarJugadores);
 
-// ——— Modal edición ———
-function abrirModal(id, nombre, dorsal, equipo, foto) {
-  document.getElementById("editId").value = id;
-  document.getElementById("editNombre").value = nombre;
-  document.getElementById("editDorsal").value = dorsal;
-  document.getElementById("editEquipo").value = equipo;
-  document.getElementById("editFoto").value = "";
-  equipoValidoEdit = null;
+    // ——— Modal edición ———
+    function abrirModal(id, nombre, dorsal, equipo, foto) {
+      document.getElementById("editId").value = id;
+      document.getElementById("editNombre").value = nombre;
+      document.getElementById("editDorsal").value = dorsal;
+      document.getElementById("editEquipo").value = equipo;
+      document.getElementById("editFoto").value = "";
+      equipoValidoEdit = null;
 
-  const previewActual = document.getElementById("editFotoActualPreview");
-  if (foto) {
-    previewActual.innerHTML = `<img src="${foto}"><span>Foto actual</span>`;
-  } else {
-    previewActual.innerHTML = `<span>Sin foto</span>`;
-  }
+      const previewActual = document.getElementById("editFotoActualPreview");
+      if (foto) {
+        previewActual.innerHTML = `<img src="${foto}"><span>Foto actual</span>`;
+      } else {
+        previewActual.innerHTML = `<span>Sin foto</span>`;
+      }
 
-  // Verificar equipo actual al abrir
-  document.getElementById("previewEquipoEdit").innerHTML = "";
-  if (equipo && equipo !== "Sin equipo") {
-    verificarEquipoEdit();
-  }
+      // Verificar equipo actual al abrir
+      document.getElementById("previewEquipoEdit").innerHTML = "";
+      if (equipo && equipo !== "Sin equipo") {
+        verificarEquipoEdit();
+      }
 
-  document.getElementById("modalEditar").classList.add("open");
-}
+      document.getElementById("modalEditar").classList.add("open");
+    }
 
-function cerrarModal() {
-  document.getElementById("modalEditar").classList.remove("open");
-}
+    function cerrarModal() {
+      document.getElementById("modalEditar").classList.remove("open");
+    }
 
-function previsualizarFotoEdit() {
-  const url = document.getElementById("editFoto").value.trim();
-  if (!url) return;
-  const preview = document.getElementById("editFotoActualPreview");
-  preview.innerHTML = `<img src="${url}" onerror="this.style.display='none'"><span>Nueva foto</span>`;
-}
+    function previsualizarFotoEdit() {
+      const url = document.getElementById("editFoto").value.trim();
+      if (!url) return;
+      const preview = document.getElementById("editFotoActualPreview");
+      preview.innerHTML = `<img src="${url}" onerror="this.style.display='none'"><span>Nueva foto</span>`;
+    }
 
-async function guardarEdicion() {
-  const id = document.getElementById("editId").value;
-  const nombre = document.getElementById("editNombre").value.trim();
-  const dorsal = document.getElementById("editDorsal").value.trim();
-  const equipoInput = document.getElementById("editEquipo").value.trim();
+    async function guardarEdicion() {
+      const id = document.getElementById("editId").value;
+      const nombre = document.getElementById("editNombre").value.trim();
+      const dorsal = document.getElementById("editDorsal").value.trim();
+      const equipoInput = document.getElementById("editEquipo").value.trim();
 
-  if (!nombre || !dorsal) { alert("Completa nombre y dorsal"); return; }
+      if (!nombre || !dorsal) { alert("Completa nombre y dorsal"); return; }
 
-  let equipoFinal = "Sin equipo";
-  if (equipoValidoEdit) {
-    equipoFinal = equipoValidoEdit.nombre;
-  } else if (equipoInput) {
-    // Intento final de verificar
-    const teams = await fetchTeams();
-    const encontrado = teams.find(t => t.nombre.toLowerCase() === equipoInput.toLowerCase());
-    if (encontrado) equipoFinal = encontrado.nombre;
-    else { alert("Equipo no existe, se guardará 'Sin equipo'"); }
-  }
+      let equipoFinal = "Sin equipo";
+      if (equipoValidoEdit) {
+        equipoFinal = equipoValidoEdit.nombre;
+      } else if (equipoInput) {
+        // Intento final de verificar
+        const teams = await fetchTeams();
+        const encontrado = teams.find(t => t.nombre.toLowerCase() === equipoInput.toLowerCase());
+        if (encontrado) equipoFinal = encontrado.nombre;
+        else { alert("Equipo no existe, se guardará 'Sin equipo'"); }
+      }
 
-  const body = { id, nombre, dorsal, equipo: equipoFinal };
-  const editFotoUrl = document.getElementById("editFoto").value.trim();
-  if (editFotoUrl) body.foto = editFotoUrl;
+      const body = { id, nombre, dorsal, equipo: equipoFinal };
+      const editFotoUrl = document.getElementById("editFoto").value.trim();
+      if (editFotoUrl) body.foto = editFotoUrl;
 
-  await fetch("/api/index?ruta=jugadores", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
+      await fetch("/api/index?ruta=jugadores", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
 
-  location.reload();
-}
+      location.reload();
+    }
 
-// ——— Eliminar ———
-async function eliminarJugador(id) {
-  if (!confirm("¿Eliminar jugador?")) return;
-  await fetch("/api/index?ruta=jugadores", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  });
-  location.reload();
-}
+    // ——— Eliminar ———
+    async function eliminarJugador(id) {
+      if (!confirm("¿Eliminar jugador?")) return;
+      await fetch("/api/index?ruta=jugadores", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+      location.reload();
+    }
 
-// ——— Utilidades ———
-async function fetchTeams() {
-  if (_teamsCache) return _teamsCache;
-  _teamsCache = await fetch("/api/index?ruta=teams").then(r => r.json());
-  return _teamsCache;
-}
+    // ——— Utilidades ———
+    async function fetchTeams() {
+      if (_teamsCache) return _teamsCache;
+      _teamsCache = await fetch("/api/index?ruta=teams").then(r => r.json());
+      return _teamsCache;
+    }
 
 
 
-function iniciales(nombre) {
-  return nombre.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
-}
+    function iniciales(nombre) {
+      return nombre.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
+    }
 
-function escapeAttr(str) {
-  return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
-}
+    function escapeAttr(str) {
+      return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
 
-// Cerrar modal al clicar fuera
-document.getElementById("modalEditar").addEventListener("click", function(e) {
-  if (e.target === this) cerrarModal();
-});
-</script>
+    // Cerrar modal al clicar fuera
+    document.getElementById("modalEditar").addEventListener("click", function (e) {
+      if (e.target === this) cerrarModal();
+    });
+  </script>
 
 </body>
+
 </html>

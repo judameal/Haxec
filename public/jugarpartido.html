@@ -1,191 +1,197 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jugar Partido — Haxec Esport</title>
+  <title>Jugar Partido — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-<div class="hex-mid"></div>
+  <div class="hex-mid"></div>
 
-<header>
-  <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
-  </div>
-</header>
-
-<div class="admin-container">
-
-  <h1 class="admin-title">Jugar Partido</h1>
-  <button class="back-btn" onclick="volver()">← Volver</button>
-
-  <!-- INFO PARTIDO -->
-  <div id="infoPartido" class="match-header-card">
-    <div class="spinner"></div>
-  </div>
-
-  <!-- RESULTADO -->
-  <div class="form-card">
-    <h3>Resultado</h3>
-    <div class="score-inputs">
-      <input type="number" id="golesLocal" placeholder="0" min="0" value="0">
-      <div class="score-sep">–</div>
-      <input type="number" id="golesVisitante" placeholder="0" min="0" value="0">
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;margin-top:6px;">
-      <div id="labelLocal" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
-      <div></div>
-      <div id="labelVisitante" style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;"></div>
+  </header>
+
+  <div class="admin-container">
+
+    <h1 class="admin-title">Jugar Partido</h1>
+    <button class="back-btn" onclick="volver()">← Volver</button>
+
+    <!-- INFO PARTIDO -->
+    <div id="infoPartido" class="match-header-card">
+      <div class="spinner"></div>
     </div>
+
+    <!-- RESULTADO -->
+    <div class="form-card">
+      <h3>Resultado</h3>
+      <div class="score-inputs">
+        <input type="number" id="golesLocal" placeholder="0" min="0" value="0">
+        <div class="score-sep">–</div>
+        <input type="number" id="golesVisitante" placeholder="0" min="0" value="0">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;margin-top:6px;">
+        <div id="labelLocal"
+          style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;">
+        </div>
+        <div></div>
+        <div id="labelVisitante"
+          style="text-align:center;font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:700;">
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPOS -->
+    <div class="teams-container">
+      <div class="team-box">
+        <h3 id="nombreLocal">Local</h3>
+        <div id="jugadoresLocal"></div>
+      </div>
+      <div class="team-box">
+        <h3 id="nombreVisitante">Visitante</h3>
+        <div id="jugadoresVisitante"></div>
+      </div>
+    </div>
+
+    <!-- EVENTOS -->
+    <div class="form-card">
+      <h3>Eventos del Partido</h3>
+      <div id="eventos">
+        <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">
+          Haz clic en un jugador para registrar un evento
+        </div>
+      </div>
+    </div>
+
+    <!-- MVP -->
+    <div class="form-card">
+      <h3>MVP del Partido</h3>
+      <select id="mvp">
+        <option value="">— Seleccionar MVP —</option>
+      </select>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="form-card">
+      <h3>Notas</h3>
+      <textarea id="notas" placeholder="Observaciones del partido..."></textarea>
+    </div>
+
+    <button class="add-btn" onclick="guardar()">⚽ Guardar Partido</button>
+
   </div>
 
-  <!-- EQUIPOS -->
-  <div class="teams-container">
-    <div class="team-box">
-      <h3 id="nombreLocal">Local</h3>
-      <div id="jugadoresLocal"></div>
-    </div>
-    <div class="team-box">
-      <h3 id="nombreVisitante">Visitante</h3>
-      <div id="jugadoresVisitante"></div>
-    </div>
-  </div>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-  <!-- EVENTOS -->
-  <div class="form-card">
-    <h3>Eventos del Partido</h3>
-    <div id="eventos">
-      <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">
-        Haz clic en un jugador para registrar un evento
+  <!-- MODAL EVENTOS -->
+  <div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="cerrarModalSiOverlay(event)">
+    <div class="modal-box">
+      <h3 id="modalTitulo">Registrar evento</h3>
+
+      <!-- PASO 1: elegir acción -->
+      <div id="pasoAccion">
+        <div class="action-grid">
+          <button class="action-btn" onclick="selAccion('gol')">
+            <span class="icon">⚽</span> Gol
+          </button>
+          <button class="action-btn" onclick="selAccion('asistencia')">
+            <span class="icon">👟</span> Asistencia
+          </button>
+          <button class="action-btn" onclick="selAccion('amarilla')">
+            <span class="icon">🟨</span> Amarilla
+          </button>
+          <button class="action-btn" onclick="selAccion('roja')">
+            <span class="icon">🟥</span> Roja
+          </button>
+        </div>
+        <button class="modal-cancel" onclick="cerrarModal()" style="width:100%;">Cancelar</button>
+      </div>
+
+      <!-- PASO 2: minuto -->
+      <div id="pasoMinuto" style="display:none;">
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:14px;">
+          Acción: <strong id="accionLabel" style="color:var(--text);"></strong>
+        </p>
+        <input type="number" id="minutoInput" class="modal-input" placeholder="Minuto (ej: 35)" min="1" max="120">
+        <div class="modal-actions">
+          <button class="modal-cancel" onclick="volverPaso1()">← Volver</button>
+          <button class="modal-confirm" onclick="confirmarEvento()">Confirmar</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MVP -->
-  <div class="form-card">
-    <h3>MVP del Partido</h3>
-    <select id="mvp"><option value="">— Seleccionar MVP —</option></select>
-  </div>
+  <script>
+    const API = "/api/index";
+    let match = null;
+    let eventos = [];
+    let eventoActual = { jugador: null, equipo: null, tipo: null };
 
-  <!-- NOTAS -->
-  <div class="form-card">
-    <h3>Notas</h3>
-    <textarea id="notas" placeholder="Observaciones del partido..."></textarea>
-  </div>
+    const ICONOS = { gol: '⚽', asistencia: '👟', amarilla: '🟨', roja: '🟥' };
 
-  <button class="add-btn" onclick="guardar()">⚽ Guardar Partido</button>
-
-</div>
-
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
-
-<!-- MODAL EVENTOS -->
-<div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="cerrarModalSiOverlay(event)">
-  <div class="modal-box">
-    <h3 id="modalTitulo">Registrar evento</h3>
-
-    <!-- PASO 1: elegir acción -->
-    <div id="pasoAccion">
-      <div class="action-grid">
-        <button class="action-btn" onclick="selAccion('gol')">
-          <span class="icon">⚽</span> Gol
-        </button>
-        <button class="action-btn" onclick="selAccion('asistencia')">
-          <span class="icon">👟</span> Asistencia
-        </button>
-        <button class="action-btn" onclick="selAccion('amarilla')">
-          <span class="icon">🟨</span> Amarilla
-        </button>
-        <button class="action-btn" onclick="selAccion('roja')">
-          <span class="icon">🟥</span> Roja
-        </button>
-      </div>
-      <button class="modal-cancel" onclick="cerrarModal()" style="width:100%;">Cancelar</button>
-    </div>
-
-    <!-- PASO 2: minuto -->
-    <div id="pasoMinuto" style="display:none;">
-      <p style="color:var(--muted);font-size:.9rem;margin-bottom:14px;">
-        Acción: <strong id="accionLabel" style="color:var(--text);"></strong>
-      </p>
-      <input type="number" id="minutoInput" class="modal-input" placeholder="Minuto (ej: 35)" min="1" max="120">
-      <div class="modal-actions">
-        <button class="modal-cancel" onclick="volverPaso1()">← Volver</button>
-        <button class="modal-confirm" onclick="confirmarEvento()">Confirmar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const API = "/api/index";
-let match = null;
-let eventos = [];
-let eventoActual = { jugador: null, equipo: null, tipo: null };
-
-const ICONOS = { gol: '⚽', asistencia: '👟', amarilla: '🟨', roja: '🟥' };
-
-/* ── VOLVER ──────────────────────────────────────────────── */
-function volver() {
-  window.location.href = "/partidos.html";
-}
-
-/* ── CALENDAR ────────────────────────────────────────────── */
-function generarCalendario(equipos) {
-  const lista = [...equipos];
-  if (lista.length % 2 !== 0) lista.push(null);
-  const n = lista.length;
-  const jornadas = [];
-  for (let i = 0; i < n - 1; i++) {
-    const jornada = [];
-    for (let j = 0; j < n / 2; j++) {
-      const local = lista[j], visitante = lista[n - 1 - j];
-      if (local && visitante) jornada.push({ local, visitante });
+    /* ── VOLVER ──────────────────────────────────────────────── */
+    function volver() {
+      window.location.href = "/partidos.html";
     }
-    jornadas.push(jornada);
-    lista.splice(1, 0, lista.pop());
-  }
-  const vuelta = jornadas.map(j =>
-    j.map(p => ({ local: p.visitante, visitante: p.local }))
-  );
-  return [...jornadas, ...vuelta];
-}
 
-/* ── CARGAR ──────────────────────────────────────────────── */
-async function cargar() {
-  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado") || "null");
-  if (!sel) { volver(); return; }
+    /* ── CALENDAR ────────────────────────────────────────────── */
+    function generarCalendario(equipos) {
+      const lista = [...equipos];
+      if (lista.length % 2 !== 0) lista.push(null);
+      const n = lista.length;
+      const jornadas = [];
+      for (let i = 0; i < n - 1; i++) {
+        const jornada = [];
+        for (let j = 0; j < n / 2; j++) {
+          const local = lista[j], visitante = lista[n - 1 - j];
+          if (local && visitante) jornada.push({ local, visitante });
+        }
+        jornadas.push(jornada);
+        lista.splice(1, 0, lista.pop());
+      }
+      const vuelta = jornadas.map(j =>
+        j.map(p => ({ local: p.visitante, visitante: p.local }))
+      );
+      return [...jornadas, ...vuelta];
+    }
 
-  const torneo = sel.torneo || "liga";
-  const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
+    /* ── CARGAR ──────────────────────────────────────────────── */
+    async function cargar() {
+      const sel = JSON.parse(localStorage.getItem("partidoSeleccionado") || "null");
+      if (!sel) { volver(); return; }
 
-  const [equipos, jugadores, partidos] = await Promise.all([
-    fetch(API + "?ruta=teams").then(r => r.json()),
-    fetch(API + "?ruta=jugadores").then(r => r.json()),
-    fetch(API + "?ruta=" + rutaPartidos).then(r => r.json())
-  ]);
+      const torneo = sel.torneo || "liga";
+      const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
 
-  // Buscar el partido por ID
-  match = partidos.find(p => p._id === sel.pid);
+      const [equipos, jugadores, partidos] = await Promise.all([
+        fetch(API + "?ruta=teams").then(r => r.json()),
+        fetch(API + "?ruta=jugadores").then(r => r.json()),
+        fetch(API + "?ruta=" + rutaPartidos).then(r => r.json())
+      ]);
 
-  if (!match) {
-    // Fallback para ligas antiguas que no usan pid
-    const calendario = generarCalendario(equipos);
-    if (sel.jornada !== undefined) match = calendario[sel.jornada][sel.partido];
-  }
+      // Buscar el partido por ID
+      match = partidos.find(p => p._id === sel.pid);
 
-  if (!match) { alert("Partido no encontrado"); volver(); return; }
+      if (!match) {
+        // Fallback para ligas antiguas que no usan pid
+        const calendario = generarCalendario(equipos);
+        if (sel.jornada !== undefined) match = calendario[sel.jornada][sel.partido];
+      }
 
-  // Info partido
-  document.getElementById("infoPartido").innerHTML = `
+      if (!match) { alert("Partido no encontrado"); volver(); return; }
+
+      // Info partido
+      document.getElementById("infoPartido").innerHTML = `
     <div style="font-size:0.8rem; text-transform:uppercase; color:var(--accent); margin-bottom:10px; letter-spacing:2px; font-weight:800;">
       ${torneo === "liga" ? "LigaPro Ecuabet" : (torneo === "copa" ? "Copa Ecuador" : "Supercopa")}
     </div>
@@ -198,97 +204,97 @@ async function cargar() {
     </h3>
   `;
 
-  document.getElementById("nombreLocal").innerText = match.local.nombre;
-  document.getElementById("nombreVisitante").innerText = match.visitante.nombre;
-  document.getElementById("labelLocal").innerText = match.local.nombre;
-  document.getElementById("labelVisitante").innerText = match.visitante.nombre;
+      document.getElementById("nombreLocal").innerText = match.local.nombre;
+      document.getElementById("nombreVisitante").innerText = match.visitante.nombre;
+      document.getElementById("labelLocal").innerText = match.local.nombre;
+      document.getElementById("labelVisitante").innerText = match.visitante.nombre;
 
-  const jugLocal = jugadores.filter(j => j.equipo === match.local.nombre);
-  const jugVisit = jugadores.filter(j => j.equipo === match.visitante.nombre);
+      const jugLocal = jugadores.filter(j => j.equipo === match.local.nombre);
+      const jugVisit = jugadores.filter(j => j.equipo === match.visitante.nombre);
 
-  renderJugadores(jugLocal, "jugadoresLocal", "local");
-  renderJugadores(jugVisit, "jugadoresVisitante", "visitante");
+      renderJugadores(jugLocal, "jugadoresLocal", "local");
+      renderJugadores(jugVisit, "jugadoresVisitante", "visitante");
 
-  const mvpSel = document.getElementById("mvp");
-  jugadores.forEach(j => {
-    mvpSel.innerHTML += `<option value="${j.nombre}">${j.nombre} (${j.equipo})</option>`;
-  });
-}
+      const mvpSel = document.getElementById("mvp");
+      jugadores.forEach(j => {
+        mvpSel.innerHTML += `<option value="${j.nombre}">${j.nombre} (${j.equipo})</option>`;
+      });
+    }
 
-/* ── JUGADORES ───────────────────────────────────────────── */
-function renderJugadores(lista, id, equipo) {
-  const cont = document.getElementById(id);
-  cont.innerHTML = "";
-  if (!lista.length) {
-    cont.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">Sin jugadores</div>`;
-    return;
-  }
-  lista.forEach(j => {
-    const div = document.createElement("div");
-    div.className = "jugador-item";
-    div.innerHTML = `<span>${j.nombre}</span>`;
-    div.onclick = () => abrirModal(j.nombre, equipo);
-    cont.appendChild(div);
-  });
-}
+    /* ── JUGADORES ───────────────────────────────────────────── */
+    function renderJugadores(lista, id, equipo) {
+      const cont = document.getElementById(id);
+      cont.innerHTML = "";
+      if (!lista.length) {
+        cont.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">Sin jugadores</div>`;
+        return;
+      }
+      lista.forEach(j => {
+        const div = document.createElement("div");
+        div.className = "jugador-item";
+        div.innerHTML = `<span>${j.nombre}</span>`;
+        div.onclick = () => abrirModal(j.nombre, equipo);
+        cont.appendChild(div);
+      });
+    }
 
-/* ── MODAL ───────────────────────────────────────────────── */
-function abrirModal(jugador, equipo) {
-  eventoActual = { jugador, equipo, tipo: null };
-  document.getElementById("modalTitulo").textContent = `🎮 ${jugador}`;
-  document.getElementById("pasoAccion").style.display = "block";
-  document.getElementById("pasoMinuto").style.display = "none";
-  document.getElementById("minutoInput").value = "";
-  document.getElementById("modalOverlay").style.display = "flex";
-}
+    /* ── MODAL ───────────────────────────────────────────────── */
+    function abrirModal(jugador, equipo) {
+      eventoActual = { jugador, equipo, tipo: null };
+      document.getElementById("modalTitulo").textContent = `🎮 ${jugador}`;
+      document.getElementById("pasoAccion").style.display = "block";
+      document.getElementById("pasoMinuto").style.display = "none";
+      document.getElementById("minutoInput").value = "";
+      document.getElementById("modalOverlay").style.display = "flex";
+    }
 
-function cerrarModal() {
-  document.getElementById("modalOverlay").style.display = "none";
-}
+    function cerrarModal() {
+      document.getElementById("modalOverlay").style.display = "none";
+    }
 
-function cerrarModalSiOverlay(e) {
-  if (e.target === document.getElementById("modalOverlay")) cerrarModal();
-}
+    function cerrarModalSiOverlay(e) {
+      if (e.target === document.getElementById("modalOverlay")) cerrarModal();
+    }
 
-function selAccion(tipo) {
-  eventoActual.tipo = tipo;
-  document.getElementById("accionLabel").innerHTML = `${ICONOS[tipo]} ${tipo}`;
-  document.getElementById("pasoAccion").style.display = "none";
-  document.getElementById("pasoMinuto").style.display = "block";
-  document.getElementById("minutoInput").focus();
-}
+    function selAccion(tipo) {
+      eventoActual.tipo = tipo;
+      document.getElementById("accionLabel").innerHTML = `${ICONOS[tipo]} ${tipo}`;
+      document.getElementById("pasoAccion").style.display = "none";
+      document.getElementById("pasoMinuto").style.display = "block";
+      document.getElementById("minutoInput").focus();
+    }
 
-function volverPaso1() {
-  document.getElementById("pasoAccion").style.display = "block";
-  document.getElementById("pasoMinuto").style.display = "none";
-}
+    function volverPaso1() {
+      document.getElementById("pasoAccion").style.display = "block";
+      document.getElementById("pasoMinuto").style.display = "none";
+    }
 
-function confirmarEvento() {
-  const minuto = parseInt(document.getElementById("minutoInput").value);
-  if (!minuto || minuto < 1) {
-    document.getElementById("minutoInput").focus();
-    return;
-  }
-  eventos.push({
-    jugador: eventoActual.jugador,
-    tipo: eventoActual.tipo,
-    minuto,
-    equipo: eventoActual.equipo
-  });
-  cerrarModal();
-  renderEventos();
-  showToast(`${ICONOS[eventoActual.tipo]} ${eventoActual.jugador} — min. ${minuto}`);
-}
+    function confirmarEvento() {
+      const minuto = parseInt(document.getElementById("minutoInput").value);
+      if (!minuto || minuto < 1) {
+        document.getElementById("minutoInput").focus();
+        return;
+      }
+      eventos.push({
+        jugador: eventoActual.jugador,
+        tipo: eventoActual.tipo,
+        minuto,
+        equipo: eventoActual.equipo
+      });
+      cerrarModal();
+      renderEventos();
+      showToast(`${ICONOS[eventoActual.tipo]} ${eventoActual.jugador} — min. ${minuto}`);
+    }
 
-/* ── EVENTOS ─────────────────────────────────────────────── */
-function renderEventos() {
-  const cont = document.getElementById("eventos");
-  const sorted = [...eventos].sort((a, b) => a.minuto - b.minuto);
-  if (!sorted.length) {
-    cont.innerHTML = `<div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">Haz clic en un jugador para registrar un evento</div>`;
-    return;
-  }
-  cont.innerHTML = sorted.map(e => `
+    /* ── EVENTOS ─────────────────────────────────────────────── */
+    function renderEventos() {
+      const cont = document.getElementById("eventos");
+      const sorted = [...eventos].sort((a, b) => a.minuto - b.minuto);
+      if (!sorted.length) {
+        cont.innerHTML = `<div style="color:var(--muted);font-size:.9rem;text-align:center;padding:20px 0;">Haz clic en un jugador para registrar un evento</div>`;
+        return;
+      }
+      cont.innerHTML = sorted.map(e => `
     <div class="evento-item">
       <span class="evento-minuto">${e.minuto}'</span>
       <span class="evento-icon">${ICONOS[e.tipo] || '•'}</span>
@@ -296,75 +302,76 @@ function renderEventos() {
       <span class="evento-tipo">${e.tipo}</span>
     </div>
   `).join("");
-}
-
-/* ── GUARDAR ─────────────────────────────────────────────── */
-async function guardar() {
-  const golesLocal     = parseInt(document.getElementById("golesLocal").value)     || 0;
-  const golesVisitante = parseInt(document.getElementById("golesVisitante").value) || 0;
-  const mvp   = document.getElementById("mvp").value;
-  const notas = document.getElementById("notas").value;
-
-  const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
-  const torneo = sel.torneo || "liga";
-  const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
-
-  if (!match) {
-    showToast("⚠️ Error: partido no cargado", true);
-    return;
-  }
-
-  const btn = document.querySelector(".add-btn");
-  btn.disabled = true;
-  btn.textContent = "Guardando...";
-
-  try {
-    const res = await fetch(API + "?ruta=" + rutaPartidos, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id:        match._id,
-        local:     { nombre: match.local.nombre },
-        visitante: { nombre: match.visitante.nombre },
-        resultado: { local: golesLocal, visitante: golesVisitante },
-        eventos,
-        mvp,
-        notas
-      })
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || res.status);
     }
 
-    showToast("✅ Resultado guardado correctamente");
-    setTimeout(() => {
-        if (torneo === "liga") window.location.href = "/partidos.html";
-        else if (torneo === "copa") window.location.href = "/copaecuador.html";
-        else window.location.href = "/supercopa.html";
-    }, 1400);
+    /* ── GUARDAR ─────────────────────────────────────────────── */
+    async function guardar() {
+      const golesLocal = parseInt(document.getElementById("golesLocal").value) || 0;
+      const golesVisitante = parseInt(document.getElementById("golesVisitante").value) || 0;
+      const mvp = document.getElementById("mvp").value;
+      const notas = document.getElementById("notas").value;
 
-  } catch (e) {
-    console.error("Error guardando partido:", e);
-    showToast(`❌ Error: ${e.message}`, true);
-    btn.disabled = false;
-    btn.textContent = "⚽ Guardar Partido";
-  }
-}
+      const sel = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+      const torneo = sel.torneo || "liga";
+      const rutaPartidos = torneo === "liga" ? "partidos" : (torneo === "copa" ? "copa_partidos" : "supercopa_partidos");
 
-/* ── TOAST ───────────────────────────────────────────────── */
-function showToast(msg, isError = false) {
-  const t = document.createElement("div");
-  t.className = "toast";
-  if (isError) t.style.borderColor = "var(--red)";
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2800);
-}
+      if (!match) {
+        showToast("⚠️ Error: partido no cargado", true);
+        return;
+      }
 
-cargar();
-</script>
+      const btn = document.querySelector(".add-btn");
+      btn.disabled = true;
+      btn.textContent = "Guardando...";
+
+      try {
+        const res = await fetch(API + "?ruta=" + rutaPartidos, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: match._id,
+            local: { nombre: match.local.nombre },
+            visitante: { nombre: match.visitante.nombre },
+            resultado: { local: golesLocal, visitante: golesVisitante },
+            eventos,
+            mvp,
+            notas
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || res.status);
+        }
+
+        showToast("✅ Resultado guardado correctamente");
+        setTimeout(() => {
+          if (torneo === "liga") window.location.href = "/partidos.html";
+          else if (torneo === "copa") window.location.href = "/copaecuador.html";
+          else window.location.href = "/supercopa.html";
+        }, 1400);
+
+      } catch (e) {
+        console.error("Error guardando partido:", e);
+        showToast(`❌ Error: ${e.message}`, true);
+        btn.disabled = false;
+        btn.textContent = "⚽ Guardar Partido";
+      }
+    }
+
+    /* ── TOAST ───────────────────────────────────────────────── */
+    function showToast(msg, isError = false) {
+      const t = document.createElement("div");
+      t.className = "toast";
+      if (isError) t.style.borderColor = "var(--red)";
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2800);
+    }
+
+    cargar();
+  </script>
 
 </body>
+
 </html>

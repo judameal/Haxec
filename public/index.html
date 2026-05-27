@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LigaPro Ecuaverd</title>
+  <title>LigaPro Ecuabet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       min-height: 100vh;
@@ -68,7 +77,9 @@
       animation: fadeUp .45s ease .18s forwards;
     }
 
-    .hero-title .gold { color: #b8860b; }
+    .hero-title .gold {
+      color: #b8860b;
+    }
 
     .hero-divider {
       width: 48px;
@@ -114,10 +125,11 @@
       cursor: pointer;
       transition: background .18s, transform .18s, box-shadow .18s;
     }
+
     .btn-primary:hover {
       background: #b8860b;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(184,134,11,.25);
+      box-shadow: 0 8px 24px rgba(184, 134, 11, .25);
     }
 
     .btn-ghost {
@@ -134,6 +146,7 @@
       cursor: pointer;
       transition: border-color .18s, color .18s, transform .18s;
     }
+
     .btn-ghost:hover {
       border-color: #0f1410;
       transform: translateY(-2px);
@@ -151,7 +164,7 @@
       width: 100%;
       height: auto;
       display: block;
-      filter: drop-shadow(0 8px 24px rgba(0,0,0,.1));
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, .1));
     }
 
     /* ── BADGE ABAJO ── */
@@ -193,59 +206,94 @@
 
     /* ── ANIMACIONES ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(.94); }
-      to   { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(.94);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     @media (max-width: 640px) {
-      .hero { flex-direction: column-reverse; align-items: center; text-align: center; gap: 32px; }
-      .hero-logo { width: 180px; }
-      .hero-btns { justify-content: center; }
-      .hero-sub { max-width: 100%; }
-      .hero-badge { justify-content: center; }
+      .hero {
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+        gap: 32px;
+      }
+
+      .hero-logo {
+        width: 180px;
+      }
+
+      .hero-btns {
+        justify-content: center;
+      }
+
+      .hero-sub {
+        max-width: 100%;
+      }
+
+      .hero-badge {
+        justify-content: center;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<main>
-  <div class="hero">
+  <main>
+    <div class="hero">
 
-    <!-- TEXTO -->
-    <div class="hero-left">
-      <p class="hero-eyebrow">Temporada 1</p>
-      <h1 class="hero-title">LigaPro<br><span class="gold">Ecuaverd</span></h1>
-      <div class="hero-divider"></div>
-      <p class="hero-sub">
-        La plataforma de estadísticas, resultados y clasificaciones de la liga.
-      </p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="goLogin()">Iniciar sesión</button>
-        <button class="btn-ghost"   onclick="goRegister()">Crear cuenta</button>
+      <!-- TEXTO -->
+      <div class="hero-left">
+        <p class="hero-eyebrow">Temporada 1</p>
+        <h1 class="hero-title">LigaPro<br><span class="gold">Ecuabet</span></h1>
+        <div class="hero-divider"></div>
+        <p class="hero-sub">
+          La plataforma de estadísticas, resultados y clasificaciones de la liga.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="goLogin()">Iniciar sesión</button>
+          <button class="btn-ghost" onclick="goRegister()">Crear cuenta</button>
+        </div>
+        <div class="hero-badge">
+          <div class="badge-dot"></div>
+          <span class="badge-text">LigaPro Ecuabet · Ecuador</span>
+        </div>
       </div>
-      <div class="hero-badge">
-        <div class="badge-dot"></div>
-        <span class="badge-text">LigaPro Ecuaverd · Ecuador</span>
+
+      <!-- LOGO -->
+      <div class="hero-logo">
+        <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+          alt="LigaPro Ecuabet Logo">
       </div>
-    </div>
+  </main>
 
-    <!-- LOGO -->
-    <div class="hero-logo">
-      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet Logo">
-  </div>
-</main>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-<footer>
-  <p>© 2026 LigaPro Ecuaverd — Hecho por Judameal</p>
-</footer>
-
-<script>
-  function goLogin()    { window.location.href = "/login.html"; }
-  function goRegister() { window.location.href = "/register.html"; }
-</script>
+  <script>
+    function goLogin() { window.location.href = "/login.html"; }
+    function goRegister() { window.location.href = "/register.html"; }
+  </script>
 </body>
+
 </html>

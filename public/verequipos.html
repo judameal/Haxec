@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Equipos — Haxec Esport</title>
+  <title>Equipos — LigaPro Ecuabet</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-
     @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ── BACK BUTTON ── */
     .back-link {
@@ -39,11 +59,12 @@
       margin-bottom: 24px;
       align-self: flex-start;
     }
+
     .back-link:hover {
       border-color: var(--accent);
       color: var(--accent);
       transform: translateX(-3px);
-      box-shadow: 0 4px 14px rgba(34,197,94,.15);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, .15);
     }
 
     /* ── HUB TABS ── */
@@ -57,6 +78,7 @@
       width: 100%;
       max-width: 500px;
     }
+
     .hub-tab {
       flex: 1;
       padding: 12px 20px;
@@ -73,17 +95,19 @@
       transition: all 0.2s ease;
       text-align: center;
     }
+
     .hub-tab:hover {
       background: var(--surface2);
       color: var(--text);
       border-color: var(--accent);
       transform: translateY(-2px);
     }
+
     .hub-tab.active {
       background: var(--accent);
       color: var(--black);
       border-color: var(--accent);
-      box-shadow: 0 6px 20px rgba(34,197,94,0.25);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
     }
 
     /* ══ PAGE LAYOUT ══ */
@@ -96,6 +120,7 @@
       position: relative;
       z-index: 1;
     }
+
     .hero-eyebrow {
       font-family: var(--font-head);
       font-size: 0.7rem;
@@ -107,6 +132,7 @@
       opacity: 0;
       animation: fadeDown .45s ease .1s forwards;
     }
+
     .hero-title {
       font-family: var(--font-head);
       font-size: clamp(2rem, 6vw, 3.4rem);
@@ -120,7 +146,11 @@
       opacity: 0;
       animation: fadeDown .45s ease .18s forwards;
     }
-    .hero-title span { color: var(--accent); }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
     .hero-sub {
       font-family: var(--font-body);
       font-size: 0.88rem;
@@ -131,8 +161,10 @@
       opacity: 0;
       animation: fadeDown .45s ease .24s forwards;
     }
+
     .hero-divider {
-      width: 44px; height: 3px;
+      width: 44px;
+      height: 3px;
       background: var(--accent);
       border-radius: 2px;
       margin: 0 auto 36px;
@@ -149,11 +181,17 @@
       max-width: 900px;
       animation: fadeUp .45s ease .4s both;
     }
+
     @media (max-width: 700px) {
-      .equipos-grid { grid-template-columns: 1fr; }
+      .equipos-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
     @media (min-width: 701px) and (max-width: 960px) {
-      .equipos-grid { grid-template-columns: repeat(2, 1fr); }
+      .equipos-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     /* CARD */
@@ -165,14 +203,16 @@
       cursor: pointer;
       transition: border-color .2s, box-shadow .2s, transform .2s;
     }
+
     .equipo-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 6px 24px rgba(34,197,94,.15);
+      box-shadow: 0 6px 24px rgba(34, 197, 94, .15);
       transform: translateY(-2px);
     }
+
     .equipo-card.open {
       border-color: var(--accent);
-      box-shadow: 0 6px 24px rgba(34,197,94,.18);
+      box-shadow: 0 6px 24px rgba(34, 197, 94, .18);
     }
 
     /* CARD HEADER */
@@ -184,16 +224,21 @@
       border-bottom: 1.5px solid transparent;
       transition: border-color .2s;
     }
-    .equipo-card.open .card-header { border-bottom-color: var(--border); }
+
+    .equipo-card.open .card-header {
+      border-bottom-color: var(--border);
+    }
 
     .card-logo {
-      width: 52px; height: 52px;
+      width: 52px;
+      height: 52px;
       object-fit: contain;
       border-radius: 10px;
       background: var(--surface2);
       padding: 4px;
       flex-shrink: 0;
     }
+
     .card-name {
       font-family: var(--font-head);
       font-size: 1rem;
@@ -202,14 +247,20 @@
       text-transform: uppercase;
       color: var(--black);
     }
+
     .card-chevron {
       margin-left: auto;
-      width: 20px; height: 20px;
+      width: 20px;
+      height: 20px;
       flex-shrink: 0;
       color: var(--muted);
       transition: transform .25s, color .2s;
     }
-    .equipo-card.open .card-chevron { transform: rotate(180deg); color: var(--accent); }
+
+    .equipo-card.open .card-chevron {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
 
     /* JUGADORES PANEL */
     .card-players {
@@ -217,9 +268,15 @@
       overflow: hidden;
       transition: max-height .35s ease;
     }
-    .equipo-card.open .card-players { max-height: 800px; }
 
-    .players-inner { padding: 14px 20px 18px; }
+    .equipo-card.open .card-players {
+      max-height: 800px;
+    }
+
+    .players-inner {
+      padding: 14px 20px 18px;
+    }
+
     .players-label {
       font-family: var(--font-head);
       font-size: 0.68rem;
@@ -229,6 +286,7 @@
       color: var(--muted);
       margin-bottom: 10px;
     }
+
     .player-row {
       display: flex;
       align-items: center;
@@ -236,7 +294,11 @@
       padding: 8px 0;
       border-bottom: 1px solid var(--border);
     }
-    .player-row:last-child { border-bottom: none; }
+
+    .player-row:last-child {
+      border-bottom: none;
+    }
+
     .player-dorsal {
       font-family: var(--font-head);
       font-size: 0.9rem;
@@ -244,12 +306,14 @@
       font-weight: 700;
       min-width: 28px;
     }
+
     .player-name {
       font-size: 0.92rem;
       font-weight: 600;
       color: var(--black);
       font-family: var(--font-body);
     }
+
     .sin-jugadores {
       font-size: 0.85rem;
       color: var(--muted);
@@ -267,8 +331,10 @@
       font-size: 0.9rem;
       letter-spacing: 1px;
     }
+
     .spinner {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       border: 3px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
@@ -283,96 +349,111 @@
       color: var(--muted);
       font-family: var(--font-head);
     }
-    .empty-state .empty-icon { font-size: 2.4rem; margin-bottom: 12px; opacity: .5; }
-    .empty-state p { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; }
+
+    .empty-state .empty-icon {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      opacity: .5;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
 
     @media (max-width: 500px) {
-      .hub-tabs { flex-direction: column; gap: 8px; }
+      .hub-tabs {
+        flex-direction: column;
+        gap: 8px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="hex-mid"></div>
+  <div class="hex-mid"></div>
 
-<header>
-  <div class="logo">
-    <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png" alt="LigaPro Ecuabet">
-    <h1>LigaPro <span>Ecuabet</span></h1>
+  <header>
+    <div class="logo">
+      <img src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+    <div id="nav" class="nav-buttons"></div>
+  </header>
+
+  <div class="home-wrap">
+
+    <a class="back-link" href="/haxball.html">← Volver</a>
+
+    <p class="hero-eyebrow">LigaPro Ecuabet</p>
+    <h1 class="hero-title">Centro de <span>Datos</span></h1>
+    <p class="hero-sub">Clubes y plantillas del torneo</p>
+    <div class="hero-divider"></div>
+
+    <div class="hub-tabs">
+      <button class="hub-tab" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
+      <button class="hub-tab" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
+      <button class="hub-tab active" onclick="window.location.href='/verequipos.html'">Equipos</button>
+    </div>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Cargando equipos...</p>
+    </div>
+
+    <div id="equiposGrid" class="equipos-grid" style="display:none;"></div>
+
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-icon">🏟️</div>
+      <p>No hay equipos registrados</p>
+    </div>
+
   </div>
-  <div id="nav" class="nav-buttons"></div>
-</header>
 
-<div class="home-wrap">
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-  <a class="back-link" href="/haxball.html">← Volver</a>
+  <script src="js/app.js"></script>
+  <script>
+    async function cargarVista() {
+      const [resTeams, resJug] = await Promise.all([
+        fetch("/api/index?ruta=teams"),
+        fetch("/api/index?ruta=jugadores")
+      ]);
 
-  <p class="hero-eyebrow">LigaPro Ecuabet</p>
-  <h1 class="hero-title">Centro de <span>Datos</span></h1>
-  <p class="hero-sub">Clubes y plantillas del torneo</p>
-  <div class="hero-divider"></div>
+      const teams = await resTeams.json();
+      const jugadores = await resJug.json();
 
-  <div class="hub-tabs">
-    <button class="hub-tab" onclick="window.location.href='/estadisticas.html'">Estadísticas</button>
-    <button class="hub-tab" onclick="window.location.href='/verjugadores.html'">Jugadores</button>
-    <button class="hub-tab active" onclick="window.location.href='/verequipos.html'">Equipos</button>
-  </div>
+      document.getElementById("loading").style.display = "none";
 
-  <div id="loading">
-    <div class="spinner"></div>
-    <p>Cargando equipos...</p>
-  </div>
+      if (!teams.length) {
+        document.getElementById("emptyState").style.display = "block";
+        return;
+      }
 
-  <div id="equiposGrid" class="equipos-grid" style="display:none;"></div>
+      const grid = document.getElementById("equiposGrid");
+      grid.style.display = "grid";
 
-  <div id="emptyState" class="empty-state" style="display:none;">
-    <div class="empty-icon">🏟️</div>
-    <p>No hay equipos registrados</p>
-  </div>
+      teams.forEach(t => {
+        const miembros = jugadores
+          .filter(j => j.equipo.toLowerCase() === t.nombre.toLowerCase())
+          .sort((a, b) => String(a.dorsal).localeCompare(String(b.dorsal), undefined, { numeric: true }));
 
-</div>
-
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
-
-<script src="js/app.js"></script>
-<script>
-async function cargarVista() {
-  const [resTeams, resJug] = await Promise.all([
-    fetch("/api/index?ruta=teams"),
-    fetch("/api/index?ruta=jugadores")
-  ]);
-
-  const teams     = await resTeams.json();
-  const jugadores = await resJug.json();
-
-  document.getElementById("loading").style.display = "none";
-
-  if (!teams.length) {
-    document.getElementById("emptyState").style.display = "block";
-    return;
-  }
-
-  const grid = document.getElementById("equiposGrid");
-  grid.style.display = "grid";
-
-  teams.forEach(t => {
-    const miembros = jugadores
-      .filter(j => j.equipo.toLowerCase() === t.nombre.toLowerCase())
-      .sort((a, b) => String(a.dorsal).localeCompare(String(b.dorsal), undefined, { numeric: true }));
-
-    const jugadoresHTML = miembros.length > 0
-      ? miembros.map(j => `
+        const jugadoresHTML = miembros.length > 0
+          ? miembros.map(j => `
           <div class="player-row">
             <span class="player-dorsal">${j.dorsal}</span>
             <span class="player-name">${j.nombre}</span>
           </div>`).join("")
-      : `<p class="sin-jugadores">Sin jugadores</p>`;
+          : `<p class="sin-jugadores">Sin jugadores</p>`;
 
-    const card = document.createElement("div");
-    card.className = "equipo-card";
-    card.innerHTML = `
+        const card = document.createElement("div");
+        card.className = "equipo-card";
+        card.innerHTML = `
       <div class="card-header">
         <img class="card-logo" src="${t.logo || 'img/logo.png'}" alt="${t.nombre}">
         <span class="card-name">${t.nombre}</span>
@@ -387,13 +468,14 @@ async function cargarVista() {
         </div>
       </div>
     `;
-    card.addEventListener("click", () => card.classList.toggle("open"));
-    grid.appendChild(card);
-  });
-}
+        card.addEventListener("click", () => card.classList.toggle("open"));
+        grid.appendChild(card);
+      });
+    }
 
-cargarVista();
-</script>
+    cargarVista();
+  </script>
 
 </body>
+
 </html>

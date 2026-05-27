@@ -1,106 +1,106 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Asignar Horario</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+  </header>
+
+  <div class="admin-container">
+
+    <h1 class="admin-title">ASIGNAR HORARIO</h1>
+
+    <button class="back-btn" onclick="goBack()">⬅ Volver</button>
+
+    <div class="form-card">
+
+      <p id="infoPartido" style="margin-bottom:10px;"></p>
+
+      <input type="date" id="fecha">
+      <input type="time" id="hora">
+
+      <button onclick="guardarHorario()">Guardar</button>
+
+    </div>
+
   </div>
-</header>
 
-<div class="admin-container">
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-  <h1 class="admin-title">ASIGNAR HORARIO</h1>
+  <script>
+    const API = "/api";
 
-  <button class="back-btn" onclick="goBack()">⬅ Volver</button>
-
-  <div class="form-card">
-
-    <p id="infoPartido" style="margin-bottom:10px;"></p>
-
-    <input type="date" id="fecha">
-    <input type="time" id="hora">
-
-    <button onclick="guardarHorario()">Guardar</button>
-
-  </div>
-
-</div>
-
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
-
-<script>
-const API = "/api";
-
-/* 🔙 VOLVER */
-function goBack() {
-  window.location.href = "/partidos.html";
-}
-
-/* 📥 MOSTRAR INFO DEL PARTIDO */
-async function cargarInfo() {
-  const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
-
-  if (!partido) {
-    alert("No hay partido seleccionado");
-    goBack();
-    return;
-  }
-
-  const resTeams = await fetch(API + "/teams");
-  const equipos = await resTeams.json();
-
-  // 🔥 generar calendario igual que en partidos.html
-  function generarCalendario(equipos) {
-    const jornadas = [];
-    const lista = [...equipos];
-
-    if (lista.length % 2 !== 0) lista.push(null);
-
-    const n = lista.length;
-
-    for (let i = 0; i < n - 1; i++) {
-      const jornada = [];
-
-      for (let j = 0; j < n / 2; j++) {
-        const local = lista[j];
-        const visitante = lista[n - 1 - j];
-
-        if (local && visitante) {
-          jornada.push({ local, visitante });
-        }
-      }
-
-      jornadas.push(jornada);
-      lista.splice(1, 0, lista.pop());
+    /* 🔙 VOLVER */
+    function goBack() {
+      window.location.href = "/partidos.html";
     }
 
-    const vuelta = jornadas.map(j =>
-      j.map(p => ({
-        local: p.visitante,
-        visitante: p.local
-      }))
-    );
+    /* 📥 MOSTRAR INFO DEL PARTIDO */
+    async function cargarInfo() {
+      const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-    return [...jornadas, ...vuelta];
-  }
+      if (!partido) {
+        alert("No hay partido seleccionado");
+        goBack();
+        return;
+      }
 
-  const calendario = generarCalendario(equipos);
+      const resTeams = await fetch(API + "/teams");
+      const equipos = await resTeams.json();
 
-  const match = calendario[partido.jornada][partido.partido];
+      // 🔥 generar calendario igual que en partidos.html
+      function generarCalendario(equipos) {
+        const jornadas = [];
+        const lista = [...equipos];
 
-  document.getElementById("infoPartido").innerHTML = `
+        if (lista.length % 2 !== 0) lista.push(null);
+
+        const n = lista.length;
+
+        for (let i = 0; i < n - 1; i++) {
+          const jornada = [];
+
+          for (let j = 0; j < n / 2; j++) {
+            const local = lista[j];
+            const visitante = lista[n - 1 - j];
+
+            if (local && visitante) {
+              jornada.push({ local, visitante });
+            }
+          }
+
+          jornadas.push(jornada);
+          lista.splice(1, 0, lista.pop());
+        }
+
+        const vuelta = jornadas.map(j =>
+          j.map(p => ({
+            local: p.visitante,
+            visitante: p.local
+          }))
+        );
+
+        return [...jornadas, ...vuelta];
+      }
+
+      const calendario = generarCalendario(equipos);
+
+      const match = calendario[partido.jornada][partido.partido];
+
+      document.getElementById("infoPartido").innerHTML = `
     <strong>
       <img src="${match.local.logo}" width="20"> ${match.local.nombre}
       vs
@@ -108,58 +108,59 @@ async function cargarInfo() {
     </strong>
   `;
 
-  // 🔥 cargar si ya tenía horario
-  const resPartidos = await fetch(API + "/partidos");
-  const data = await resPartidos.json();
+      // 🔥 cargar si ya tenía horario
+      const resPartidos = await fetch(API + "/partidos");
+      const data = await resPartidos.json();
 
-  const existente = data.find(p =>
-    p.jornada === partido.jornada &&
-    p.partido === partido.partido
-  );
+      const existente = data.find(p =>
+        p.jornada === partido.jornada &&
+        p.partido === partido.partido
+      );
 
-  if (existente) {
-    document.getElementById("fecha").value = existente.fecha || "";
-    document.getElementById("hora").value = existente.hora || "";
-  }
-}
+      if (existente) {
+        document.getElementById("fecha").value = existente.fecha || "";
+        document.getElementById("hora").value = existente.hora || "";
+      }
+    }
 
-/* 💾 GUARDAR */
-async function guardarHorario() {
-  const fecha = document.getElementById("fecha").value;
-  const hora = document.getElementById("hora").value;
+    /* 💾 GUARDAR */
+    async function guardarHorario() {
+      const fecha = document.getElementById("fecha").value;
+      const hora = document.getElementById("hora").value;
 
-  if (!fecha || !hora) {
-    alert("Completa fecha y hora");
-    return;
-  }
+      if (!fecha || !hora) {
+        alert("Completa fecha y hora");
+        return;
+      }
 
-  const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+      const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-  try {
-    await fetch(API + "/partidos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        jornada: partido.jornada,
-        partido: partido.partido,
-        fecha,
-        hora
-      })
-    });
+      try {
+        await fetch(API + "/partidos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            jornada: partido.jornada,
+            partido: partido.partido,
+            fecha,
+            hora
+          })
+        });
 
-    alert("Horario guardado ✅");
-    window.location.href = "/partidos.html";
+        alert("Horario guardado ✅");
+        window.location.href = "/partidos.html";
 
-  } catch (err) {
-    console.error(err);
-    alert("Error al guardar");
-  }
-}
+      } catch (err) {
+        console.error(err);
+        alert("Error al guardar");
+      }
+    }
 
-cargarInfo();
-</script>
+    cargarInfo();
+  </script>
 
 </body>
+
 </html>

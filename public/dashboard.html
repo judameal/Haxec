@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Admin Panel</title>
   <link rel="stylesheet" href="css/styles.css">
@@ -15,16 +16,19 @@
       letter-spacing: 1px;
       text-transform: uppercase;
     }
+
     .role-admin {
       background: var(--black);
       color: var(--accent);
       border: 1px solid var(--accent);
     }
+
     .role-user {
       background: var(--surface2);
       color: var(--muted);
       border: 1px solid var(--border);
     }
+
     .ap-title-row {
       display: flex;
       align-items: center;
@@ -33,67 +37,66 @@
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <div class="logo">
-    <img
-    class="hero-logo-img"
-    src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
-    alt="LigaPro Ecuabet"
-  >
-    <h1>LigaPro <span>Ecuabet</span></h1>
+  <header>
+    <div class="logo">
+      <img class="hero-logo-img"
+        src="https://assets.football-logos.cc/logos/ecuador/512x512/liga-pro-serie-a.9a546764.png"
+        alt="LigaPro Ecuabet">
+      <h1>LigaPro <span>Ecuabet</span></h1>
+    </div>
+    <div id="nav" class="nav-buttons"></div>
+  </header>
+
+  <div id="adminPanelBtn"></div>
+
+  <div class="admin-container">
+
+    <div class="ap-title-row">
+      <h1 class="admin-title">Panel de Control</h1>
+      <button class="back-btn" onclick="back()">⬅ Volver</button>
+    </div>
+
+    <div class="admin-card">
+      <table id="tablaUsuarios">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding-left:16px;">Usuario</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
   </div>
-  <div id="nav" class="nav-buttons"></div>
-</header>
 
-<div id="adminPanelBtn"></div>
+  <footer>
+    <p>© 2026 LigaPro Ecuabet — Hecho por Judameal</p>
+  </footer>
 
-<div class="admin-container">
+  <script src="js/app.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  <div class="ap-title-row">
-    <h1 class="admin-title">Panel de Control</h1>
-    <button class="back-btn" onclick="back()">⬅ Volver</button>
-  </div>
+    if (!user || user.role !== "admin") {
+      window.location.href = "/haxball.html";
+    }
 
-  <div class="admin-card">
-    <table id="tablaUsuarios">
-      <thead>
-        <tr>
-          <th style="text-align:left; padding-left:16px;">Usuario</th>
-          <th>Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    async function cargarUsuarios() {
+      const res = await fetch("/api/index?ruta=users");
+      const users = await res.json();
 
-</div>
+      const tbody = document.querySelector("#tablaUsuarios tbody");
 
-<footer>
-  <p>© 2026 Haxec Esport — Hecho por Judameal</p>
-</footer>
+      users.forEach(u => {
+        const esAdmin = u.role === "admin";
+        const row = document.createElement("tr");
 
-<script src="js/app.js"></script>
-<script>
-const user = JSON.parse(localStorage.getItem("user"));
-
-if (!user || user.role !== "admin") {
-  window.location.href = "/haxball.html";
-}
-
-async function cargarUsuarios() {
-  const res = await fetch("/api/index?ruta=users");
-  const users = await res.json();
-
-  const tbody = document.querySelector("#tablaUsuarios tbody");
-
-  users.forEach(u => {
-    const esAdmin = u.role === "admin";
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
+        row.innerHTML = `
       <td style="text-align:left; padding-left:16px; font-weight:700;">${u.username}</td>
       <td>
         <span class="role-badge ${esAdmin ? 'role-admin' : 'role-user'}">
@@ -107,44 +110,45 @@ async function cargarUsuarios() {
       </td>
     `;
 
-    tbody.appendChild(row);
-  });
-}
+        tbody.appendChild(row);
+      });
+    }
 
-async function hacerAdmin(username) {
-  await fetch("/api/index?ruta=setRole", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, role: "admin" })
-  });
-  location.reload();
-}
+    async function hacerAdmin(username) {
+      await fetch("/api/index?ruta=setRole", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, role: "admin" })
+      });
+      location.reload();
+    }
 
-async function quitarAdmin(username) {
-  await fetch("/api/index?ruta=setRole", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, role: "user" })
-  });
-  location.reload();
-}
+    async function quitarAdmin(username) {
+      await fetch("/api/index?ruta=setRole", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, role: "user" })
+      });
+      location.reload();
+    }
 
-async function eliminar(username) {
-  if (!confirm(`¿Eliminar a ${username}?`)) return;
-  await fetch("/api/index?ruta=deleteUser", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username })
-  });
-  location.reload();
-}
+    async function eliminar(username) {
+      if (!confirm(`¿Eliminar a ${username}?`)) return;
+      await fetch("/api/index?ruta=deleteUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username })
+      });
+      location.reload();
+    }
 
-function back() {
-  window.location.href = "/haxball.html";
-}
+    function back() {
+      window.location.href = "/haxball.html";
+    }
 
-cargarUsuarios();
-</script>
+    cargarUsuarios();
+  </script>
 
 </body>
+
 </html>

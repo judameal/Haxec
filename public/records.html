@@ -523,9 +523,14 @@ async function cargar() {
     document.getElementById("recLoading").style.display = "none";
     document.getElementById("panel-jugadores").classList.add("active");
 
-    /* ── Añadir campo calculado: goles_producidos = goles + asistencias ── */
+    /* ── Calcular totales para todas las competiciones y goles producidos ── */
     jugadores.forEach(j => {
-      j.goles_producidos = (j.goles || 0) + (j.asistencias || 0);
+      j.goles = (j.goles_liga || 0) + (j.goles_copa || 0) + (j.goles_supercopa || 0) + (j.goles || 0);
+      j.asistencias = (j.asistencias_liga || 0) + (j.asistencias_copa || 0) + (j.asistencias_supercopa || 0) + (j.asistencias || 0);
+      j.goles_producidos = j.goles + j.asistencias;
+      j.mvp = (j.mvp_liga || 0) + (j.mvp_copa || 0) + (j.mvp_supercopa || 0) + (j.mvp || 0);
+      j.amarillas = (j.amarillas_liga || 0) + (j.amarillas_copa || 0) + (j.amarillas_supercopa || 0) + (j.amarillas || 0);
+      j.rojas = (j.rojas_liga || 0) + (j.rojas_copa || 0) + (j.rojas_supercopa || 0) + (j.rojas || 0);
     });
 
     const allPartidos = [...partidos, ...copaPartidos, ...supercopaPartidos];
