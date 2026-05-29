@@ -205,14 +205,20 @@ async function handlePartidos(req, res) {
     return res.status(200).json({ message: "Horario guardado" });
   }
 
-  /* PUT: registrar resultado */
+  /* PUT: solo horario o registrar resultado */
   if (req.method === "PUT") {
-    const { id, resultado, eventos = [], mvp, notas, local, visitante } = req.body;
+    const { id, soloHorario, fecha, hora, resultado, eventos = [], mvp, notas, local, visitante } = req.body;
     if (!id) return res.status(400).json({ message: "Falta el id del partido" });
 
     let objectId;
     try { objectId = new ObjectId(id); }
     catch (_) { return res.status(400).json({ message: "Id inválido" }); }
+
+    // Actualizar solo el horario (desde horarios.html)
+    if (soloHorario) {
+      await partidos.updateOne({ _id: objectId }, { $set: { fecha: fecha || "", hora: hora || "" } });
+      return res.status(200).json({ message: "Horario actualizado" });
+    }
 
     const partido = await partidos.findOne({ _id: objectId });
     if (!partido) return res.status(404).json({ message: "Partido no encontrado" });

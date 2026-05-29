@@ -42,7 +42,6 @@
 
   <script>
     const API_PARTIDOS = "/api/index?ruta=partidos";
-    const API_TEAMS = "/api/index?ruta=teams";
 
     /* 🔙 VOLVER */
     function goBack() {
@@ -51,76 +50,46 @@
 
     /* 📥 MOSTRAR INFO DEL PARTIDO */
     async function cargarInfo() {
-      const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+      const seleccionado = JSON.parse(localStorage.getItem("partidoSeleccionado"));
 
-      if (!partido) {
+      if (!seleccionado || !seleccionado.pid) {
         alert("No hay partido seleccionado");
         goBack();
         return;
       }
 
-      const resTeams = await fetch(API_TEAMS);
-      const equipos = await resTeams.json();
+      try {
+        // Cargar todos los partidos y filtrar por _id
+        const res = await fetch(API_PARTIDOS);
+        const data = await res.json();
 
-      // 🔥 generar calendario igual que en partidos.html
-      function generarCalendario(equipos) {
-        const jornadas = [];
-        const lista = [...equipos];
+        const partido = data.find(p => String(p._id) === String(seleccionado.pid));
 
-        if (lista.length % 2 !== 0) lista.push(null);
-
-        const n = lista.length;
-
-        for (let i = 0; i < n - 1; i++) {
-          const jornada = [];
-
-          for (let j = 0; j < n / 2; j++) {
-            const local = lista[j];
-            const visitante = lista[n - 1 - j];
-
-            if (local && visitante) {
-              jornada.push({ local, visitante });
-            }
-          }
-
-          jornadas.push(jornada);
-          lista.splice(1, 0, lista.pop());
+        if (!partido) {
+          alert("Partido no encontrado en la base de datos");
+          goBack();
+          return;
         }
 
-        const vuelta = jornadas.map(j =>
-          j.map(p => ({
-            local: p.visitante,
-            visitante: p.local
-          }))
-        );
+        // Guardar el _id en window para usarlo al guardar
+        window._partidoId = String(partido._id);
 
-        return [...jornadas, ...vuelta];
-      }
+        const local = partido.local?.nombre || "—";
+        const visitante = partido.visitante?.nombre || "—";
+        const jornada = (partido.jornada ?? 0) + 1;
 
-      const calendario = generarCalendario(equipos);
+        document.getElementById("infoPartido").innerHTML = `
+          <strong>Jornada ${jornada}: ${local} vs ${visitante}</strong>
+        `;
 
-      const match = calendario[partido.jornada][partido.partido];
+        // 🔥 Pre-cargar horario existente
+        if (partido.fecha) document.getElementById("fecha").value = partido.fecha;
+        if (partido.hora) document.getElementById("hora").value = partido.hora;
 
-      document.getElementById("infoPartido").innerHTML = `
-    <strong>
-      <img src="${match.local.logo}" width="20"> ${match.local.nombre}
-      vs
-      ${match.visitante.nombre} <img src="${match.visitante.logo}" width="20">
-    </strong>
-  `;
-
-      // 🔥 cargar si ya tenía horario
-      const resPartidos = await fetch(API_PARTIDOS);
-      const data = await resPartidos.json();
-
-      const existente = data.find(p =>
-        p.jornada === partido.jornada &&
-        p.partido === partido.partido
-      );
-
-      if (existente) {
-        document.getElementById("fecha").value = existente.fecha || "";
-        document.getElementById("hora").value = existente.hora || "";
+      } catch (err) {
+        console.error(err);
+        alert("Error al cargar el partido");
+        goBack();
       }
     }
 
@@ -134,28 +103,36 @@
         return;
       }
 
-      const partido = JSON.parse(localStorage.getItem("partidoSeleccionado"));
+      if (!window._partidoId) {
+        alert("Error: no se pudo identificar el partido");
+        return;
+      }
 
       try {
-        await fetch(API_PARTIDOS, {
-          method: "POST",
+        const res = await fetch(API_PARTIDOS, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            jornada: partido.jornada,
-            partido: partido.partido,
+            id: window._partidoId,
+            soloHorario: true,
             fecha,
             hora
           })
         });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.message || "Error desconocido");
+        }
 
         alert("Horario guardado ✅");
         window.location.href = "/partidos.html";
 
       } catch (err) {
         console.error(err);
-        alert("Error al guardar");
+        alert("Error al guardar: " + err.message);
       }
     }
 
